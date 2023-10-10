@@ -1,13 +1,12 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using API.Dtos;
 using API.Models;
 using API.Models.Authentication;
 
-namespace NewAPI.Services;
+namespace API.Services;
 
 public class AuthenticationService : IAuthenticationService
 {
@@ -68,8 +67,8 @@ public class AuthenticationService : IAuthenticationService
         {
             Claims = new Dictionary<string, object>
             {
-                { "aud", "EventAppAudience" }, // Use the same audience name as in your JWT configuration
-                { "iss", "EventAppIssuer" }
+                { "aud", "ApiAppAudience" }, // Use the same audience name as in your JWT configuration
+                { "iss", "ApiAppIssuer" }
             },
             Subject = new ClaimsIdentity(new Claim[]
             {

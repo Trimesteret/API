@@ -1,7 +1,7 @@
 using API.Dtos;
 using API.Models.Authentication;
 
-namespace NewAPI.Services;
+namespace API.Services;
 
 public interface IAuthenticationService
 {

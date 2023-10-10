@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using API.Models;
-using Microsoft.AspNetCore.Authentication;
+using API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,8 +31,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = "EventAppIssuer",         // Replace with your issuer
-            ValidAudience = "EventAppAudience",     // Replace with your audience
+            ValidIssuer = "ApiAppIssuer",         // Replace with your issuer
+            ValidAudience = "ApiAppAudience",     // Replace with your audience
             IssuerSigningKey = new SymmetricSecurityKey("b0493a0d-f88e-4b0b-94eb-665f7207c92c"u8.ToArray()), // Replace with your secret key
         };
     });

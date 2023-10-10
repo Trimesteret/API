@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using API.Models;
 using API.Models.Common;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
