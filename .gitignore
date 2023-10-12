@@ -32,3 +32,14 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
+
+#Temp files
+bin
+obj
+bin/Debug/net7.0/API.dll
+bin/Debug/net7.0/API.pdb
+obj/Debug/net7.0/API.csproj.CoreCompileInputs.cache
+obj/Debug/net7.0/API.dll
+obj/Debug/net7.0/API.pdb
+obj/Debug/net7.0/ref/API.dll
+obj/Debug/net7.0/refint/API.dll
