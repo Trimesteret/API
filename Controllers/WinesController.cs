@@ -8,7 +8,6 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
     public class WinesController : ControllerBase
     {
         private readonly DBContext _context;
