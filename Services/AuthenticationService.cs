@@ -59,6 +59,9 @@ public class AuthenticationService : IAuthenticationService
         };
     }
 
+    /**
+     * Generates a token
+     */
     private string GenerateToken(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
