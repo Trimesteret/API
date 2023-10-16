@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using API.Models;
@@ -7,55 +12,55 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class WinesController : ControllerBase
+    public class ItemController : ControllerBase
     {
         private readonly DBContext _context;
 
-        public WinesController(DBContext context)
+        public ItemController(DBContext context)
         {
             _context = context;
         }
 
-        // GET: api/Wines
+        // GET: api/Item
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Wine>>> GetWines()
+        public async Task<ActionResult<IEnumerable<Item>>> GetItems()
         {
-          if (_context.Wines == null)
+          if (_context.Items == null)
           {
               return NotFound();
           }
-            return await _context.Wines.ToListAsync();
+            return await _context.Items.ToListAsync();
         }
 
-        // GET: api/Wines/5
+        // GET: api/Item/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Wine>> GetWine(int? id)
+        public async Task<ActionResult<Item>> GetItem(int id)
         {
-          if (_context.Wines == null)
+          if (_context.Items == null)
           {
               return NotFound();
           }
-            var wine = await _context.Wines.FindAsync(id);
+            var item = await _context.Items.FindAsync(id);
 
-            if (wine == null)
+            if (item == null)
             {
                 return NotFound();
             }
 
-            return wine;
+            return item;
         }
 
-        // PUT: api/Wines/5
+        // PUT: api/Item/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutWine(int? id, Wine wine)
+        public async Task<IActionResult> PutItem(int id, Item item)
         {
-            if (id != wine.Id)
+            if (id != item.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(wine).State = EntityState.Modified;
+            _context.Entry(item).State = EntityState.Modified;
 
             try
             {
@@ -63,7 +68,7 @@ namespace API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!WineExists(id))
+                if (!ItemExists(id))
                 {
                     return NotFound();
                 }
@@ -76,44 +81,44 @@ namespace API.Controllers
             return NoContent();
         }
 
-        // POST: api/Wines
+        // POST: api/Item
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Wine>> PostWine(Wine wine)
+        public async Task<ActionResult<Item>> PostItem(Item item)
         {
-          if (_context.Wines == null)
+          if (_context.Items == null)
           {
-              return Problem("Entity set 'DBContext.Wines'  is null.");
+              return Problem("Entity set 'DBContext.Items'  is null.");
           }
-            _context.Wines.Add(wine);
+            _context.Items.Add(item);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetWine", new { id = wine.Id }, wine);
+            return CreatedAtAction("GetItem", new { id = item.Id }, item);
         }
 
-        // DELETE: api/Wines/5
+        // DELETE: api/Item/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteWine(int? id)
+        public async Task<IActionResult> DeleteItem(int id)
         {
-            if (_context.Wines == null)
+            if (_context.Items == null)
             {
                 return NotFound();
             }
-            var wine = await _context.Wines.FindAsync(id);
-            if (wine == null)
+            var item = await _context.Items.FindAsync(id);
+            if (item == null)
             {
                 return NotFound();
             }
 
-            _context.Wines.Remove(wine);
+            _context.Items.Remove(item);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool WineExists(int? id)
+        private bool ItemExists(int id)
         {
-            return (_context.Wines?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Items?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
