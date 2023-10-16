@@ -12,4 +12,5 @@ public class DBContext : DbContext
 
     public DbSet<Wine> Wines { get; set; } = null!;
     public DbSet<User> Users { get; set; } = null!;
+    public DbSet<Item> Items { get; set; } = null!;
 }
