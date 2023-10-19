@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using API.Models;
@@ -6,55 +11,55 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ItemController : ControllerBase
+    public class OrderController : ControllerBase
     {
         private readonly DBContext _context;
 
-        public ItemController(DBContext context)
+        public OrderController(DBContext context)
         {
             _context = context;
         }
 
-        // GET: api/Item
+        // GET: api/Order
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Item>>> GetItems()
+        public async Task<ActionResult<IEnumerable<Order>>> GetOrder()
         {
-          if (_context.Items == null)
+          if (_context.Order == null)
           {
               return NotFound();
           }
-            return await _context.Items.ToListAsync();
+            return await _context.Order.ToListAsync();
         }
 
-        // GET: api/Item/5
+        // GET: api/Order/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Item>> GetItem(int id)
+        public async Task<ActionResult<Order>> GetOrder(int id)
         {
-          if (_context.Items == null)
+          if (_context.Order == null)
           {
               return NotFound();
           }
-            var item = await _context.Items.FindAsync(id);
+            var order = await _context.Order.FindAsync(id);
 
-            if (item == null)
+            if (order == null)
             {
                 return NotFound();
             }
 
-            return item;
+            return order;
         }
 
-        // PUT: api/Item/5
+        // PUT: api/Order/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutItem(int id, Item item)
+        public async Task<IActionResult> PutOrder(int id, Order order)
         {
-            if (id != item.Id)
+            if (id != order.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(item).State = EntityState.Modified;
+            _context.Entry(order).State = EntityState.Modified;
 
             try
             {
@@ -62,7 +67,7 @@ namespace API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ItemExists(id))
+                if (!OrderExists(id))
                 {
                     return NotFound();
                 }
@@ -75,44 +80,44 @@ namespace API.Controllers
             return NoContent();
         }
 
-        // POST: api/Item
+        // POST: api/Order
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Item>> PostItem(Item item)
+        public async Task<ActionResult<Order>> PostOrder(Order order)
         {
-          if (_context.Items == null)
+          if (_context.Order == null)
           {
-              return Problem("Entity set 'DBContext.Items'  is null.");
+              return Problem("Entity set 'DBContext.Order'  is null.");
           }
-            _context.Items.Add(item);
+            _context.Order.Add(order);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetItem", new { id = item.Id }, item);
+            return CreatedAtAction("GetOrder", new { id = order.Id }, order);
         }
 
-        // DELETE: api/Item/5
+        // DELETE: api/Order/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteItem(int id)
+        public async Task<IActionResult> DeleteOrder(int id)
         {
-            if (_context.Items == null)
+            if (_context.Order == null)
             {
                 return NotFound();
             }
-            var item = await _context.Items.FindAsync(id);
-            if (item == null)
+            var order = await _context.Order.FindAsync(id);
+            if (order == null)
             {
                 return NotFound();
             }
 
-            _context.Items.Remove(item);
+            _context.Order.Remove(order);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool ItemExists(int id)
+        private bool OrderExists(int id)
         {
-            return (_context.Items?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Order?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
