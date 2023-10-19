@@ -1,5 +1,5 @@
 using API.Dtos;
-using API.Models.Authentication;
+using API.Models;
 
 namespace API.Services;
 

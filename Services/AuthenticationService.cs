@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using API.Dtos;
 using API.Models;
-using API.Models.Authentication;
 
 namespace API.Services;
 
@@ -77,7 +76,7 @@ public class AuthenticationService : IAuthenticationService
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role),
+                new Claim(ClaimTypes.Role, user.Role.ToString()),
                 // Add any other claims you want to include in the token
             }),
             Expires = DateTime.UtcNow.AddHours(24),
