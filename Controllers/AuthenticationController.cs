@@ -29,7 +29,7 @@ namespace API.Controllers
         }
 
         [HttpPost("LogOut")]
-        public async Task<ActionResult<Boolean>> Logout([FromBody] string token)
+        public async Task<ActionResult<Boolean>> Logout([FromQuery] string token)
         {
             if (string.IsNullOrEmpty(token))
             {
