@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using API.Dtos;
 using API.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Services;
 
@@ -53,9 +55,31 @@ public class AuthenticationService : IAuthenticationService
         return new AuthenticationResultDto
         {
             Token = token,
-            TokenExpiration = tokenExpiration,
+            TokenExpiration = new DateTimeOffset(tokenExpiration).ToUnixTimeMilliseconds(),
             UserRole = dbUser.Role
         };
+    }
+
+    /// <summary>
+    /// Log outs the user
+    /// </summary>
+    /// <param name="token">The token of the user</param>
+    /// <returns></returns>
+    public async Task<bool> LogOut(string token)
+    {
+        var dbUser = await _context.Users.FirstOrDefaultAsync(u => u.Token == token);
+
+        if (dbUser == null)
+        {
+            return false;
+        }
+
+        dbUser.Token = null;
+        dbUser.TokenExpiration = null;
+
+        await _context.SaveChangesAsync();
+
+        return true;
     }
 
     /**
