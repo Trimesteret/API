@@ -28,14 +28,9 @@ public class AuthenticationService : IAuthenticationService
         return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
     }
 
-    /// <summary>
-    /// Authenticates the user with email and password
-    /// </summary>
-    /// <param name="user"></param>
-    /// <returns>A Token and an Expiration</returns>
-    public async Task<AuthenticationResultDto> AuthenticateUser(AuthenticationDto user)
+    public async Task<AuthModel> Login(AuthenticationDto user)
     {
-        var dbUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email && u.Password == user.Password);
+        var dbUser = User.LoginUser(_context, user.Email, user.Password);
 
         if (dbUser == null)
         {
@@ -50,11 +45,21 @@ public class AuthenticationService : IAuthenticationService
 
         await _context.SaveChangesAsync();
 
-        return new AuthenticationResultDto
+        return new AuthModel
         {
             Token = token,
             UserRole = dbUser.Role
         };
+    }
+
+    /// <summary>
+    /// Authenticates the user with email and password
+    /// </summary>
+    /// <param name="user"></param>
+    /// <returns>A Token and an Expiration</returns>
+    public async Task<AuthModel> AuthenticateUser(AuthenticationDto user)
+    {
+
     }
 
     /// <summary>
@@ -79,31 +84,38 @@ public class AuthenticationService : IAuthenticationService
         return true;
     }
 
+    /// <summary>
+    /// Verifies a given token
+    /// </summary>
+    /// <param name="token">Token to verify</param>
+    /// <returns></returns>
+    public async Task<bool> VerifyToken(string token)
+    {
+        var dbUser = await _context.Users.FirstOrDefaultAsync(u => u.Token == token);
+
+        if (dbUser == null)
+        {
+            return false;
+        }
+
+        if (dbUser.TokenExpiration == null || dbUser.TokenExpiration <= DateTime.Now)
+        {
+            dbUser.Token = null;
+            dbUser.TokenExpiration = null;
+            await _context.SaveChangesAsync();
+            return false;
+        }
+
+        return true;
+    }
+
+    public Task<bool> SignupUser(string token)
+    {
+        throw new NotImplementedException();
+    }
+
     /**
      * Generates a token
      */
-    private string GenerateToken(User user)
-    {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = "b0493a0d-f88e-4b0b-94eb-665f7207c92c"u8.ToArray(); // Use the same secret key as in your JWT configuration
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Claims = new Dictionary<string, object>
-            {
-                { "aud", "ApiAppAudience" }, // Use the same audience name as in your JWT configuration
-                { "iss", "ApiAppIssuer" }
-            },
-            Subject = new ClaimsIdentity(new Claim[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role.ToString()),
-                // Add any other claims you want to include in the token
-            }),
-            Expires = DateTime.UtcNow.AddHours(24),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-        };
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
-    }
+
 }
