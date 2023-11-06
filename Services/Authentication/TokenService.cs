@@ -8,12 +8,10 @@ namespace API.Services.Authentication;
 
 public class TokenService : ITokenService
 {
-    private readonly DBContext _context;
     private readonly IConfiguration _configuration;
 
-    public TokenService(DBContext context, IConfiguration configuration)
+    public TokenService(IConfiguration configuration)
     {
-        _context = context;
         _configuration = configuration;
     }
 
@@ -31,8 +29,8 @@ public class TokenService : ITokenService
             Subject = new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.GetEmail()),
-                new Claim(ClaimTypes.Role, user.Role.ToString()),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.GetClassName()),
                 // Add any other claims you want to include in the token
             }),
             Expires = DateTime.UtcNow.AddHours(24),

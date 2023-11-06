@@ -1,9 +1,8 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using API.Dtos;
 using API.Models;
+using API.Models.Authentication;
+using API.Services.Authentication;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Services;
 
@@ -11,12 +10,16 @@ public class AuthenticationService : IAuthenticationService
 {
     private readonly DBContext _context;
     private readonly IConfiguration _configuration;
+    private readonly ITokenService _tokenService;
 
-    public AuthenticationService(DBContext context, IConfiguration configuration)
+    public AuthenticationService(DBContext dbContext, IConfiguration configuration, ITokenService tokenService)
     {
-        _context = context;
+        _context = dbContext;
         _configuration = configuration;
+        _tokenService = tokenService;
     }
+
+
 
     /// <summary>
     /// Checks if email is signed up
@@ -28,28 +31,22 @@ public class AuthenticationService : IAuthenticationService
         return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
     }
 
-    public async Task<AuthModel> Login(AuthenticationDto user)
+    public async Task<AuthPas> Login(AuthenticationDto user)
     {
-        var dbUser = User.LoginUser(_context, user.Email, user.Password);
+        var dbUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email && u.Password == user.Password);
 
         if (dbUser == null)
         {
             return null;
         }
 
-        var token = GenerateToken(dbUser);
-        var tokenExpiration = DateTime.UtcNow.AddHours(24);
+        var token = _tokenService.GenerateToken(dbUser);
 
-        dbUser.Token = token;
-        dbUser.TokenExpiration = tokenExpiration;
+        var authPas = dbUser.SetToken(_context, token, DateTime.Now.AddHours(24));
 
         await _context.SaveChangesAsync();
 
-        return new AuthModel
-        {
-            Token = token,
-            UserRole = dbUser.Role
-        };
+        return authPas;
     }
 
     /// <summary>
@@ -57,9 +54,9 @@ public class AuthenticationService : IAuthenticationService
     /// </summary>
     /// <param name="user"></param>
     /// <returns>A Token and an Expiration</returns>
-    public async Task<AuthModel> AuthenticateUser(AuthenticationDto user)
+    public async Task<AuthPas> AuthenticateUser(AuthenticationDto user)
     {
-
+        return null;
     }
 
     /// <summary>
@@ -76,8 +73,7 @@ public class AuthenticationService : IAuthenticationService
             return false;
         }
 
-        dbUser.Token = null;
-        dbUser.TokenExpiration = null;
+        dbUser.SetToken(_context, null, new DateTime());
 
         await _context.SaveChangesAsync();
 
@@ -100,8 +96,7 @@ public class AuthenticationService : IAuthenticationService
 
         if (dbUser.TokenExpiration == null || dbUser.TokenExpiration <= DateTime.Now)
         {
-            dbUser.Token = null;
-            dbUser.TokenExpiration = null;
+            dbUser.SetToken(_context,null, new DateTime());
             await _context.SaveChangesAsync();
             return false;
         }
@@ -109,13 +104,18 @@ public class AuthenticationService : IAuthenticationService
         return true;
     }
 
-    public Task<bool> SignupUser(string token)
+    public async Task<bool> CreateNewUser(UserDto user)
     {
-        throw new NotImplementedException();
+        var customer = new Customer(user.Id, user.FirstName, user.LastName, user.Phone, user.Email, user.Password, user.Token, user.TokenExpiration);
+
+        await _context.Customers.AddAsync(customer);
+        await _context.SaveChangesAsync();
+
+        return true;
     }
 
-    /**
-     * Generates a token
-     */
-
+    public async Task<List<User>> GetUsers()
+    {
+        return await _context.Users.ToListAsync();
+    }
 }

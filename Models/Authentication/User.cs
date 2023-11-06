@@ -1,66 +1,24 @@
-using API.Enums;
+using API.Dtos;
 
 namespace API.Models;
 
 public abstract class User
 {
-    private int? Id;
-    private string Name;
-    private int Phone;
-    private string Email;
-    public string Password;
-    public Roles? Role;
-    public string? Token;
-    public DateTime? TokenExpiration;
+    public int Id { get; protected set; }
+    public string FirstName { get; protected set; }
+    public string LastName { get; protected set; }
+    public int Phone { get; protected set; }
+    public string Email { get; protected set; }
+    public string Password { get; protected set; }
+    public string Token { get; protected set; }
+    public DateTime? TokenExpiration { get; protected set; }
 
-    public static List<User> Users = new List<User>();
-
-    public int GetId()
+    public AuthPas SetToken(DBContext dbContext,string token, DateTime tokenExpiration)
     {
-        return this.Id;
+        Token = token;
+        TokenExpiration = tokenExpiration;
+        return new AuthPas(token, tokenExpiration);
     }
 
-    public void SetToken(string token)
-    {
-        this.Token = token;
-    }
-
-    public string GetToken()
-    {
-        return this.Token;
-    }
-
-    public void SetEmail(string email)
-    {
-        this.Email = email;
-    }
-
-    public string GetEmail()
-    {
-        return this.Email;
-    }
-
-    public User(string name, int phone, string email, string password, Roles role)
-    {
-        this.Name = name;
-        this.Phone = phone;
-        this.Email = email;
-        this.Password = password;
-        this.Role = role;
-    }
-
-    public static List<User> GetUsers(DBContext context)
-    {
-        return context.Users.ToList();
-    }
-
-    public static User? GetUserById(DBContext context, int id)
-    {
-        return context.Users.FirstOrDefault(u => u.Id == id);
-    }
-
-    public static User? LoginUser(DBContext context, string email, string password)
-    {
-        return context.Users.FirstOrDefault(u => u.Email == email && u.Password == password);
-    }
+    public abstract string GetClassName();
 }

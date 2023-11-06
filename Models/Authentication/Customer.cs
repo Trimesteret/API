@@ -1,12 +1,8 @@
-using Microsoft.EntityFrameworkCore;
-
 namespace API.Models.Authentication;
 
-public class Employee : User
+public class Customer : User
 {
-    private readonly DBContext _context;
-
-    public Employee(int id, string firstName, string lastName, int phone, string email, string password, string token, DateTime? tokenExpiration)
+    public Customer(int id, string firstName, string lastName, int phone, string email, string password, string token, DateTime? tokenExpiration)
     {
         Id = id;
         FirstName = firstName;
@@ -21,6 +17,6 @@ public class Employee : User
     override
     public string GetClassName()
     {
-        return "Employee";
+        return "Customer";
     }
 }

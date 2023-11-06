@@ -1,28 +1,14 @@
 namespace API.Models;
 
-public class Item
+public abstract class Item
 {
-    private int Id;
-    private string Name;
-    private string? BarCode;
-    private int Quantity;
-    private float Price;
-    private DateTime ExpirationDate;
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string BarCode { get; set; }
+    public int Quantity { get; set; }
+    public float Price { get; set; }
+    public DateTime ExpirationDate { get; set; }
 
-
-    public static List<Item> Items = new List<Item>();
-
-
-
-    public int getId()
-    {
-        return this.Id;
-    }
-
-    public static List<Item> GetItems(DBContext context)
-    {
-        return context.Items.ToList();
-    }
 }
 
 

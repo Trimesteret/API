@@ -16,8 +16,8 @@ namespace API.Controllers.Shared
             _authenticationService = authService;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<AuthModel>> Login(AuthenticationDto user)
+        [HttpPost("Login")]
+        public async Task<ActionResult<AuthPas>> Login(AuthenticationDto user)
         {
             if(user == null)
             {
@@ -30,9 +30,9 @@ namespace API.Controllers.Shared
         }
 
         [HttpPost("Signup")]
-        public async Task<ActionResult<AuthModel>> Signup(User user)
+        public async Task<ActionResult<AuthPas>> Signup(UserDto user)
         {
-            var authenticationResult = await _authenticationService.SignUpUser(user);
+            var authenticationResult = await _authenticationService.CreateNewUser(user);
 
             if (authenticationResult == null)
             {
@@ -40,17 +40,18 @@ namespace API.Controllers.Shared
             }
 
             return Ok(authenticationResult);
+
         }
 
         [HttpPost("LogOut")]
-        public async Task<ActionResult<Boolean>> Logout([FromBody] AuthModel model)
+        public async Task<ActionResult<Boolean>> Logout([FromBody] AuthPas pas)
         {
-            if (string.IsNullOrEmpty(model?.Token))
+            if (string.IsNullOrEmpty(pas?.Token))
             {
                 return BadRequest("Token is missing");
             }
 
-            var logoutResult = await _authenticationService.LogOut(model.Token);
+            var logoutResult = await _authenticationService.LogOut(pas.Token);
 
             if (logoutResult)
             {
@@ -61,14 +62,14 @@ namespace API.Controllers.Shared
         }
 
         [HttpPost("Verify")]
-        public async Task<ActionResult<Boolean>> VerifyToken([FromBody] AuthModel model)
+        public async Task<ActionResult<Boolean>> VerifyToken([FromBody] AuthPas pas)
         {
-            if (string.IsNullOrEmpty(model?.Token))
+            if (string.IsNullOrEmpty(pas?.Token))
             {
                 return BadRequest("Token is missing");
             }
 
-            var verified = await _authenticationService.VerifyToken(model.Token);
+            var verified = await _authenticationService.VerifyToken(pas.Token);
 
             if (verified)
             {
