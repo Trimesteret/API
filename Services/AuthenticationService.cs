@@ -31,7 +31,7 @@ public class AuthenticationService : IAuthenticationService
     public async Task<AuthModel> Login(AuthenticationDto user)
     {
         var dbUser = User.LoginUser(_context, user.Email, user.Password);
-
+        dbUser
         if (dbUser == null)
         {
             return null;
