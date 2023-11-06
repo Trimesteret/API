@@ -1,12 +1,25 @@
 namespace API.Models.Authentication;
 
-public class Admin : User
+public class Admin : Employee
 {
-    private readonly DBContext _context;
-
-    public Admin(DBContext context)
+    public Admin(string firstName, string lastName, int phone, string email, string password)
     {
-        _context = context;
+        FirstName = firstName;
+        LastName = lastName;
+        Phone = phone;
+        Email = email;
+        Password = password;
+        Token = "";
+    }
+
+    public Admin(User user)
+    {
+        FirstName = user.FirstName;
+        LastName = user.LastName;
+        Phone = user.Phone;
+        Email = user.Email;
+        Password = user.Password;
+        Token = "";
     }
 
     override

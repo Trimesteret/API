@@ -4,18 +4,26 @@ namespace API.Models.Authentication;
 
 public class Employee : User
 {
-    private readonly DBContext _context;
+    public Employee(){}
 
-    public Employee(int id, string firstName, string lastName, int phone, string email, string password, string token, DateTime? tokenExpiration)
+    public Employee(string firstName, string lastName, int phone, string email, string password)
     {
-        Id = id;
         FirstName = firstName;
         LastName = lastName;
         Phone = phone;
         Email = email;
         Password = password;
-        Token = token;
-        TokenExpiration = tokenExpiration;
+        Token = "";
+    }
+
+    public Employee(User user)
+    {
+        FirstName = user.FirstName;
+        LastName = user.LastName;
+        Phone = user.Phone;
+        Email = user.Email;
+        Password = user.Password;
+        Token = "";
     }
 
     override

@@ -5,11 +5,11 @@ namespace API.Services;
 
 public interface IAuthenticationService
 {
-    Task<bool> CreateNewUser(UserDto user);
+    Task<bool> CreateNewUser(SignupDto signup);
 
-    Task<AuthPas> Login(AuthenticationDto user);
+    Task<AuthPas> Login(LoginDto user);
 
-    Task<AuthPas> AuthenticateUser(AuthenticationDto user);
+    Task<AuthPas> AuthenticateUser(LoginDto user);
 
     Task<bool> LogOut(string token);
 

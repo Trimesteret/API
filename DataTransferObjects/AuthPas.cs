@@ -2,8 +2,8 @@ namespace API.Dtos;
 
 public class AuthPas
 {
-    public string Token { get; protected set; }
-    public DateTime ExpirationDate { get; protected set; }
+    public string Token { get; set; }
+    public DateTime? ExpirationDate { get; set; }
 
     public AuthPas(string token, DateTime? expirationDate)
     {

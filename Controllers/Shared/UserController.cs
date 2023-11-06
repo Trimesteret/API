@@ -1,5 +1,6 @@
 using API.Models;
 using API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers.Shared
@@ -15,7 +16,8 @@ namespace API.Controllers.Shared
             _authenticationService = authService;
         }
 
-        [HttpGet("Users")]
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<List<User>>> GetUsers()
         {
             var users = await _authenticationService.GetUsers();

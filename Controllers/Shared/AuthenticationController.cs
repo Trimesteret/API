@@ -17,7 +17,7 @@ namespace API.Controllers.Shared
         }
 
         [HttpPost("Login")]
-        public async Task<ActionResult<AuthPas>> Login(AuthenticationDto user)
+        public async Task<ActionResult<AuthPas>> Login(LoginDto user)
         {
             if(user == null)
             {
@@ -30,9 +30,9 @@ namespace API.Controllers.Shared
         }
 
         [HttpPost("Signup")]
-        public async Task<ActionResult<AuthPas>> Signup(UserDto user)
+        public async Task<ActionResult<AuthPas>> Signup(SignupDto signup)
         {
-            var authenticationResult = await _authenticationService.CreateNewUser(user);
+            var authenticationResult = await _authenticationService.CreateNewUser(signup);
 
             if (authenticationResult == null)
             {

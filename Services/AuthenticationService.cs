@@ -31,7 +31,7 @@ public class AuthenticationService : IAuthenticationService
         return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
     }
 
-    public async Task<AuthPas> Login(AuthenticationDto user)
+    public async Task<AuthPas> Login(LoginDto user)
     {
         var dbUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email && u.Password == user.Password);
 
@@ -42,7 +42,7 @@ public class AuthenticationService : IAuthenticationService
 
         var token = _tokenService.GenerateToken(dbUser);
 
-        var authPas = dbUser.SetToken(_context, token, DateTime.Now.AddHours(24));
+        var authPas = dbUser.SetToken(token, DateTime.Now.AddHours(24));
 
         await _context.SaveChangesAsync();
 
@@ -54,7 +54,7 @@ public class AuthenticationService : IAuthenticationService
     /// </summary>
     /// <param name="user"></param>
     /// <returns>A Token and an Expiration</returns>
-    public async Task<AuthPas> AuthenticateUser(AuthenticationDto user)
+    public async Task<AuthPas> AuthenticateUser(LoginDto user)
     {
         return null;
     }
@@ -73,7 +73,7 @@ public class AuthenticationService : IAuthenticationService
             return false;
         }
 
-        dbUser.SetToken(_context, null, new DateTime());
+        dbUser.SetToken("", new DateTime());
 
         await _context.SaveChangesAsync();
 
@@ -96,7 +96,7 @@ public class AuthenticationService : IAuthenticationService
 
         if (dbUser.TokenExpiration == null || dbUser.TokenExpiration <= DateTime.Now)
         {
-            dbUser.SetToken(_context,null, new DateTime());
+            dbUser.SetToken(null, new DateTime());
             await _context.SaveChangesAsync();
             return false;
         }
@@ -104,11 +104,10 @@ public class AuthenticationService : IAuthenticationService
         return true;
     }
 
-    public async Task<bool> CreateNewUser(UserDto user)
+    public async Task<bool> CreateNewUser(SignupDto signup)
     {
-        var customer = new Customer(user.Id, user.FirstName, user.LastName, user.Phone, user.Email, user.Password, user.Token, user.TokenExpiration);
+        User.CreateNewUser(_context, signup);
 
-        await _context.Customers.AddAsync(customer);
         await _context.SaveChangesAsync();
 
         return true;

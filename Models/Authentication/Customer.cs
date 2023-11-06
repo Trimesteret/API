@@ -2,16 +2,24 @@ namespace API.Models.Authentication;
 
 public class Customer : User
 {
-    public Customer(int id, string firstName, string lastName, int phone, string email, string password, string token, DateTime? tokenExpiration)
+    public Customer(string firstName, string lastName, int phone, string email, string password)
     {
-        Id = id;
         FirstName = firstName;
         LastName = lastName;
         Phone = phone;
         Email = email;
         Password = password;
-        Token = token;
-        TokenExpiration = tokenExpiration;
+        Token = "";
+    }
+
+    public Customer(User user)
+    {
+        FirstName = user.FirstName;
+        LastName = user.LastName;
+        Phone = user.Phone;
+        Email = user.Email;
+        Password = user.Password;
+        Token = "";
     }
 
     override
