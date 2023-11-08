@@ -1,6 +1,6 @@
-using API.Models;
+using API.Models.Authentication;
 
-namespace API.Services.Authentication;
+namespace API.Services.Shared;
 
 public interface ITokenService
 {

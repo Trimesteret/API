@@ -1,7 +1,6 @@
-using API.Dtos;
-using API.Models.Authentication;
+using API.DataTransferObjects;
 
-namespace API.Models;
+namespace API.Models.Authentication;
 
 public abstract class User
 {
@@ -39,11 +38,15 @@ public abstract class User
         return newUser;
     }
 
-    public AuthPas SetToken(string token, DateTime tokenExpiration)
+    public void SetToken(string token, DateTime? tokenExpiration)
     {
         Token = token;
         TokenExpiration = tokenExpiration;
-        return new AuthPas(token, tokenExpiration);
+    }
+
+    public AuthPas GetTokenAuthPas()
+    {
+        return new AuthPas(Token, TokenExpiration);
     }
 
     public abstract string GetClassName();

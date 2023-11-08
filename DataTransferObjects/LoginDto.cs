@@ -1,4 +1,4 @@
-namespace API.Dtos;
+namespace API.DataTransferObjects;
 
 public class LoginDto
 {

@@ -1,6 +1,5 @@
-using API.Dtos;
-using API.Models;
-using API.Services;
+using API.DataTransferObjects;
+using API.Services.Shared;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers.Shared
@@ -17,59 +16,44 @@ namespace API.Controllers.Shared
         }
 
         [HttpPost("Login")]
-        public async Task<ActionResult<AuthPas>> Login(LoginDto user)
+        public async Task<ActionResult<AuthPas>> Login(LoginDto loginDto)
         {
-            if(user == null)
+            try
             {
-                return BadRequest("User is missing");
+                var authPas = await _authenticationService.Login(loginDto);
+                return authPas;
             }
-
-            var authenticationResult = await _authenticationService.Login(user);
-
-            return authenticationResult;
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPost("Signup")]
-        public async Task<ActionResult<AuthPas>> Signup(SignupDto signup)
+        public async Task<ActionResult<AuthPas>> Signup(SignupDto signupDto)
         {
-            var authenticationResult = await _authenticationService.CreateNewUser(signup);
-
-            if (authenticationResult == null)
-            {
-                return BadRequest("Incorrect username or password");
-            }
-
-            return Ok(authenticationResult);
-
+            return Ok(await _authenticationService.CreateNewUser(signupDto));
         }
 
         [HttpPost("LogOut")]
-        public async Task<ActionResult<Boolean>> Logout([FromBody] AuthPas pas)
+        public async Task<ActionResult<Boolean>> Logout([FromBody] AuthPas authPas)
         {
-            if (string.IsNullOrEmpty(pas?.Token))
+            try
             {
-                return BadRequest("Token is missing");
+                return Ok(await _authenticationService.LogOut(authPas));
             }
-
-            var logoutResult = await _authenticationService.LogOut(pas.Token);
-
-            if (logoutResult)
+            catch (Exception e)
             {
-                return Ok(true);
+                Console.WriteLine(e);
+                return BadRequest(e.Message);
             }
-
-            return BadRequest("Logout failed");
         }
 
         [HttpPost("Verify")]
-        public async Task<ActionResult<Boolean>> VerifyToken([FromBody] AuthPas pas)
+        public async Task<ActionResult<Boolean>> VerifyToken([FromBody] AuthPas authPas)
         {
-            if (string.IsNullOrEmpty(pas?.Token))
-            {
-                return BadRequest("Token is missing");
-            }
-
-            var verified = await _authenticationService.VerifyToken(pas.Token);
+            var verified = await _authenticationService.VerifyToken(authPas);
 
             if (verified)
             {

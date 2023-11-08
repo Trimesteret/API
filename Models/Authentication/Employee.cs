@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-
 namespace API.Models.Authentication;
 
 public class Employee : User

@@ -1,10 +1,10 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
-using API.Models;
+using API.Models.Authentication;
 
 
-namespace API.Services.Authentication;
+namespace API.Services.Shared;
 
 public class TokenService : ITokenService
 {
@@ -15,23 +15,26 @@ public class TokenService : ITokenService
         _configuration = configuration;
     }
 
+    /// <summary>
+    /// Generates a token for a given user
+    /// </summary>
+    /// <param name="user">The user to generate a token for</param>
+    /// <returns>Token as a string</returns>
     public string GenerateToken(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = "b0493a0d-f88e-4b0b-94eb-665f7207c92c"u8.ToArray(); // Use the same secret key as in your JWT configuration
+        var key = "b0493a0d-f88e-4b0b-94eb-665f7207c92c"u8.ToArray();
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Claims = new Dictionary<string, object>
             {
-                { "aud", "ApiAppAudience" }, // Use the same audience name as in your JWT configuration
+                { "aud", "ApiAppAudience" },
                 { "iss", "ApiAppIssuer" }
             },
             Subject = new ClaimsIdentity(new Claim[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.GetClassName()),
-                // Add any other claims you want to include in the token
+                new (ClaimTypes.Email, user.Email),
+                new (ClaimTypes.Role, user.GetClassName()),
             }),
             Expires = DateTime.UtcNow.AddHours(24),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
