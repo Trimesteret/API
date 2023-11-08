@@ -23,7 +23,7 @@ public class AuthenticationService : IAuthenticationService
     /// </summary>
     /// <param name="loginDto">The login data</param>
     /// <returns>An authentication pas for the users</returns>
-    /// <exception cref="Exception">If the email or password is incorrect</exception>
+    /// <exception cref="Exception"></exception>
     public async Task<AuthPas> Login(LoginDto loginDto)
     {
         var dbUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == loginDto.Email && u.Password == loginDto.Password);
@@ -64,11 +64,13 @@ public class AuthenticationService : IAuthenticationService
         return true;
     }
 
+
     /// <summary>
     /// Verifies a user by a given token
     /// </summary>
     /// <param name="authPas">The pas with token to verify</param>
-    /// <returns></returns>
+    /// <returns>Success boolean</returns>
+    /// <exception cref="Exception"></exception>
     public async Task<bool> VerifyToken(AuthPas authPas)
     {
         var dbUser = await _context.Users.FirstOrDefaultAsync(u => u.Token == authPas.Token);
