@@ -26,6 +26,7 @@ namespace API.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("BarCode")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Discriminator")
@@ -92,6 +93,10 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -108,10 +113,11 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("Role")
+                    b.Property<int>("Phone")
                         .HasColumnType("int");
 
                     b.Property<string>("Token")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime?>("TokenExpiration")
@@ -120,6 +126,10 @@ namespace API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("User");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("API.Models.Chocolate", b =>
@@ -144,6 +154,27 @@ namespace API.Migrations
                     b.HasBaseType("API.Models.Item");
 
                     b.HasDiscriminator().HasValue("Wine");
+                });
+
+            modelBuilder.Entity("API.Models.Authentication.Admin", b =>
+                {
+                    b.HasBaseType("API.Models.User");
+
+                    b.HasDiscriminator().HasValue("Admin");
+                });
+
+            modelBuilder.Entity("API.Models.Authentication.Customer", b =>
+                {
+                    b.HasBaseType("API.Models.User");
+
+                    b.HasDiscriminator().HasValue("Customer");
+                });
+
+            modelBuilder.Entity("API.Models.Authentication.Employee", b =>
+                {
+                    b.HasBaseType("API.Models.User");
+
+                    b.HasDiscriminator().HasValue("Employee");
                 });
 
             modelBuilder.Entity("API.Models.Item", b =>
