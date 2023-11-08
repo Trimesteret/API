@@ -53,14 +53,15 @@ namespace API.Controllers.Shared
         [HttpPost("Verify")]
         public async Task<ActionResult<Boolean>> VerifyToken([FromBody] AuthPas authPas)
         {
-            var verified = await _authenticationService.VerifyToken(authPas);
-
-            if (verified)
+            try
             {
-                return Ok(true);
+                return Ok(await _authenticationService.VerifyToken(authPas));
             }
-
-            return BadRequest("Verification failed");
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return BadRequest(e.Message);
+            }
         }
     }
 }
