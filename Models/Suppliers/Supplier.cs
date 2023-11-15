@@ -1,4 +1,6 @@
-namespace API.Models;
+using API.Models.Items;
+
+namespace API.Models.Suppliers;
 
 public class Supplier
 {

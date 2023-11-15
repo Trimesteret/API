@@ -49,5 +49,7 @@ public abstract class User
         return new AuthPas(Token, TokenExpiration);
     }
 
+    public abstract void ChangeUser(string firstName, string lastName, int phone, string email, string password, int? phoneNumber);
+
     public abstract string GetClassName();
 }

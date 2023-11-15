@@ -1,3 +1,5 @@
+using API.Models.Items;
+
 namespace API.Models.Authentication;
 
 public class Admin : Employee
@@ -28,4 +30,13 @@ public class Admin : Employee
         return "Admin";
     }
 
+    public void EditUser(User user, string firstName, string lastName, int phone, string email, string password, int? phoneNumber)
+    {
+        user.ChangeUser(firstName, lastName, phone, email, password, phoneNumber);
+    }
+
+    public Item CreateItem()
+    {
+
+    }
 }
