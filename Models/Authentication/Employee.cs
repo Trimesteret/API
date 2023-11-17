@@ -29,4 +29,14 @@ public class Employee : User
     {
         return "Employee";
     }
+
+    protected void ChangeEmployee(string firstName, string lastName, int phone, string email, string password, int? phoneNumber)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        Phone = phone;
+        Email = email;
+        Password = password;
+        Token = "";
+    }
 }

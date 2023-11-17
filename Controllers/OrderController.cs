@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using API.Models;
 using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
@@ -10,11 +8,6 @@ namespace API.Controllers
     [Authorize]
     public class OrderController : ControllerBase
     {
-        private readonly DBContext _context;
 
-        public OrderController(DBContext context)
-        {
-            _context = context;
-        }
     }
 }

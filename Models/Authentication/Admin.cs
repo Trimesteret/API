@@ -1,3 +1,5 @@
+using API.Models.Items;
+
 namespace API.Models.Authentication;
 
 public class Admin : Employee
@@ -28,4 +30,23 @@ public class Admin : Employee
         return "Admin";
     }
 
+    protected void ChangeAdmin(string firstName, string lastName, int phone, string email, string password, int? phoneNumber)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        Phone = phone;
+        Email = email;
+        Password = password;
+        Token = "";
+    }
+
+    public void EditUser(User user, string firstName, string lastName, int phone, string email, string password, int? phoneNumber)
+    {
+        Console.WriteLine(user.GetType());
+    }
+
+    public Item CreateItem(string name, string ean, int quantity, float price, string imageUrl, DateTime expirationDate)
+    {
+        return new DefaultItem(name, ean, quantity, price, imageUrl, expirationDate);
+    }
 }

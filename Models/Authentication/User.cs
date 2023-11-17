@@ -1,4 +1,5 @@
 using API.DataTransferObjects;
+using API.Enums;
 
 namespace API.Models.Authentication;
 
@@ -15,27 +16,26 @@ public abstract class User
 
     public static User CreateNewUser(DBContext context,SignupDto signupDto)
     {
-        User newUser;
-
         switch (signupDto.DesiredRole)
         {
-            case 1:
-                newUser = new Employee(signupDto.FirstName, signupDto.LastName, signupDto.Phone, signupDto.Email,
+            case Roles.Customer:
+                Customer newCustomer = new Customer(signupDto.FirstName, signupDto.LastName, signupDto.Phone,
+                    signupDto.Email, signupDto.Password);
+                context.Customers.Add(newCustomer);
+                return newCustomer;
+            case Roles.Employee:
+                Employee newEmployee = new Employee(signupDto.FirstName, signupDto.LastName, signupDto.Phone,
+                    signupDto.Email, signupDto.Password);
+                context.Employees.Add(newEmployee);
+                return newEmployee;
+            case Roles.Admin:
+                Admin newAdmin = new Admin(signupDto.FirstName, signupDto.LastName, signupDto.Phone, signupDto.Email,
                     signupDto.Password);
-                context.Employees.Add(newUser as Employee);
-                break;
-            case 2:
-                newUser = new Admin(signupDto.FirstName, signupDto.LastName, signupDto.Phone, signupDto.Email,
-                    signupDto.Password);
-                context.Admins.Add(newUser as Admin);
-                break;
+                context.Admins.Add(newAdmin);
+                return newAdmin;
             default:
-                newUser = new Customer(signupDto.FirstName, signupDto.LastName, signupDto.Phone, signupDto.Email,
-                    signupDto.Password);
-                context.Customers.Add(newUser as Customer);
-                break;
+                throw new Exception("Invalid role");
         }
-        return newUser;
     }
 
     public void SetToken(string token, DateTime? tokenExpiration)
@@ -47,6 +47,17 @@ public abstract class User
     public AuthPas GetTokenAuthPas()
     {
         return new AuthPas(Token, TokenExpiration);
+    }
+
+    public void ChangeUserStandardProperties(string firstName, string lastName, int phone, string email, string password)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        Phone = phone;
+        Email = email;
+        Password = password;
+        Token = "";
+        TokenExpiration = null;
     }
 
     public abstract string GetClassName();
