@@ -42,6 +42,8 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("Admin"));
 });
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddDbContext<DBContext>(opt =>
 {
     opt.UseMySql("server=localhost;port=3306;database=EVENTILOPE;user=THOMAS;password=password;",
@@ -50,6 +52,7 @@ builder.Services.AddDbContext<DBContext>(opt =>
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

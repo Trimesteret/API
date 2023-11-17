@@ -10,4 +10,5 @@ public interface IAuthenticationService
 
     Task<bool> LogOut(AuthPas authPas);
 
-    Task<bool> VerifyToken(AuthPas authPas); }
+    Task<bool> VerifyToken(AuthPas authPas);
+}

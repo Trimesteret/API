@@ -17,16 +17,7 @@ public class Customer : User
         Email = email;
         Password = password;
         Token = "";
-    }
-
-    public Customer(User user)
-    {
-        FirstName = user.FirstName;
-        LastName = user.LastName;
-        Phone = user.Phone;
-        Email = user.Email;
-        Password = user.Password;
-        Token = "";
+        CustomerPurchaseOrders = new List<CustomerPurchaseOrder>();
     }
 
     override
@@ -35,8 +26,7 @@ public class Customer : User
         return "Customer";
     }
 
-    override
-    public void ChangeUser(string firstName, string lastName, int phone, string email, string password, int? phoneNumber)
+    protected void ChangeCustomer(string firstName, string lastName, int phone, string email, string password, int? phoneNumber)
     {
         FirstName = firstName;
         LastName = lastName;
