@@ -35,8 +35,8 @@ public class Admin : Employee
         user.ChangeUser(firstName, lastName, phone, email, password, phoneNumber);
     }
 
-    public Item CreateItem()
+    public Item CreateItem(string name, string ean, int quantity, float price, string imageUrl, DateTime expirationDate)
     {
-
+        return new DefaultItem(name, ean, quantity, price, imageUrl, expirationDate);
     }
 }
