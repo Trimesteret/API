@@ -26,9 +26,7 @@ namespace API.Services.Shared
         /// <exception cref="Exception"></exception>
         public async Task<AuthPas> Login(LoginDto loginDto)
         {
-            var dbUser =
-                await _context.Users.FirstOrDefaultAsync(u =>
-                    u.Email == loginDto.Email && u.Password == loginDto.Password);
+            var dbUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == loginDto.Email && u.Password == loginDto.Password);
 
             if (dbUser == null)
             {

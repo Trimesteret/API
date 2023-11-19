@@ -37,7 +37,7 @@ public class Customer : User
         PhoneNumber = phoneNumber;
     }
 
-    public CustomerPurchaseOrder PlaceCustomerPurchaseOrder(Item[] items, string comment)
+    public CustomerPurchaseOrder PlaceCustomerPurchaseOrder(List<Item> items, string comment)
     {
         var customerPurchaseOrder = new CustomerPurchaseOrder(this, items, comment);
         this.CustomerPurchaseOrders.Add(customerPurchaseOrder);
