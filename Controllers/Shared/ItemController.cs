@@ -1,6 +1,5 @@
 using API.Models.Items;
 using API.Services.Shared;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers.Shared
@@ -19,7 +18,7 @@ namespace API.Controllers.Shared
         {
             return await _itemService.GetAllItems();
         }
-        
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Item>> GetItemById(int id)
         {
