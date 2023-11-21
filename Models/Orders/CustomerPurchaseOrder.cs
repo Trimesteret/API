@@ -5,12 +5,18 @@ namespace API.Models.Orders;
 
 public class CustomerPurchaseOrder: Order
 {
-    public Customer Customer { get; set; }
+    public Customer Customer { get; protected set; }
 
-    public CustomerPurchaseOrder(Customer customer, Item[] items, string? comment)
+    // Parameterless constructor for EF Core
+    protected CustomerPurchaseOrder()
+    {
+    }
+
+
+    public CustomerPurchaseOrder(Customer customer, List<Item> items, string? comment)
     {
         this.Customer = customer;
-        this.Items = items;
+        this.Items.AddRange(items);
         this.Comment = comment;
     }
 }

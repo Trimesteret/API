@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="EfCoreDialogsState">
+    <option name="keyValueStorage">
+      <map>
+        <entry key="Common:ff103dd9-be0f-b4f1-aa0d-dc24e10e9077:dbContext" value="API.Models.DBContext" />
+        <entry key="Common:noBuild" value="true" />
+        <entry key="Common:outputFolder" value="Migrations" />
+        <entry key="Common:targetFramework" value="net7.0" />
+        <entry key="Common:useDefaultConnection" value="true" />
+      </map>
+    </option>
+  </component>
+</project>
