@@ -2,7 +2,7 @@ namespace API.Models.Items;
 
 public class Liquor: Item
 {
-    public string? LiquorType { get; set; }
+    public string LiquorType { get; set; }
 
     public Liquor(string name, string ean, int quantity, float price, string imageUrl, string liquorType)
     {

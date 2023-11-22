@@ -13,7 +13,7 @@ public class CustomerPurchaseOrder: Order
     }
 
 
-    public CustomerPurchaseOrder(Customer customer, List<Item> items, string? comment)
+    public CustomerPurchaseOrder(Customer customer, List<Item> items, string comment)
     {
         this.Customer = customer;
         this.Items.AddRange(items);
