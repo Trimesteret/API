@@ -14,9 +14,10 @@ namespace API.Controllers.Shared
             _itemService = itemService;
         }
         [HttpGet]
-        public async Task<ActionResult<List<Item>>> GetItems()
+        public async Task<ActionResult<List<Item>>> GetItemsBySearch([FromQuery] string search)
         {
-            return await _itemService.GetAllItems();
+            Console.WriteLine(search);
+            return await _itemService.GetItemsBySearch(search);
         }
 
         [HttpGet("{id}")]
