@@ -24,13 +24,20 @@ namespace API.Controllers.Shared
             return await _userService.GetAllUsers();
         }
 
-        [HttpPost("/edit")]
+        [HttpGet("self")]
+        [Authorize]
+        public async Task<ActionResult<User>> GetSelf()
+        {
+            return await _userService.GetSelf();
+        }
+
+        [HttpPut("edit")]
         [Authorize]
         public async Task<ActionResult> EditSelf(UserStandardDto user)
         {
             try
             {
-                await _userService.EditUser(user);
+                await _userService.EditSelf(user);
             }
             catch (Exception e)
             {

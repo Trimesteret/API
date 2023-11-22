@@ -21,17 +21,24 @@ public class UserService : IUserService
     {
         return await _context.Users.ToListAsync();
     }
+    
+    public async Task<User> GetSelf()
+    {
+        return await _authService.GetActiveUser();
+    }
 
-    public async Task<ActionResult> EditUser(UserStandardDto user)
+    public Task<ActionResult> EditUser(UserStandardDto user)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<User> EditSelf(UserStandardDto user)
     {
         var requestingUser = await _authService.GetActiveUser();
-        if (requestingUser.Email != user.Email)
-        {
-            throw new Exception("You can only edit your own user");
-        }
 
-        Console.WriteLine(user.GetType());
-        Console.WriteLine(requestingUser.GetType());
-        throw new NotImplementedException();
+        requestingUser.ChangeUserStandardProperties(user.FirstName, user.LastName, user.Phone, user.Email, user.Password);
+
+        await _context.SaveChangesAsync();
+        return requestingUser;
     }
 }
