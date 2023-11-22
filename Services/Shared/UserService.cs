@@ -8,10 +8,10 @@ namespace API.Services.Shared;
 
 public class UserService : IUserService
 {
-    private readonly DBContext _context;
+    private readonly Context _context;
     private readonly IAuthService _authService;
 
-    public UserService(DBContext dbContext, IAuthService authService)
+    public UserService(Context dbContext, IAuthService authService)
     {
         _context = dbContext;
         _authService = authService;

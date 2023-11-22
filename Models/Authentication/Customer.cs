@@ -5,7 +5,7 @@ namespace API.Models.Authentication;
 
 public class Customer : User
 {
-    public int? PhoneNumber { get; protected set; } = null;
+    public int? PhoneNumber { get; protected set; }
 
     public List<CustomerPurchaseOrder> CustomerPurchaseOrders { get; protected set; }
 

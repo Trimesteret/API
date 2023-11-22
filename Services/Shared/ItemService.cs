@@ -6,9 +6,9 @@ namespace API.Services.Shared;
 
 public class ItemService : IItemService
 {
-    private readonly DBContext _context;
+    private readonly Context _context;
     
-    public ItemService(DBContext dbContext)
+    public ItemService(Context dbContext)
     {
         _context = dbContext;
     }
