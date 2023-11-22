@@ -21,7 +21,7 @@ public class UserService : IUserService
     {
         return await _context.Users.ToListAsync();
     }
-    
+
     public async Task<User> GetSelf()
     {
         return await _authService.GetActiveUser();
