@@ -7,14 +7,12 @@ namespace API.Services.Shared
 {
     public class AuthenticationService : IAuthenticationService
     {
-        private readonly DBContext _context;
-        private readonly IConfiguration _configuration;
+        private readonly Context _context;
         private readonly ITokenService _tokenService;
 
-        public AuthenticationService(DBContext dbContext, IConfiguration configuration, ITokenService tokenService)
+        public AuthenticationService(Context dbContext, ITokenService tokenService)
         {
             _context = dbContext;
-            _configuration = configuration;
             _tokenService = tokenService;
         }
 

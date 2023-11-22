@@ -8,10 +8,10 @@ namespace API.Services.Shared
     public class AuthService : IAuthService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly DBContext _context;
+        private readonly Context _context;
 
 
-        public AuthService(IHttpContextAccessor httpContextAccessor, DBContext context)
+        public AuthService(IHttpContextAccessor httpContextAccessor, Context context)
         {
             _httpContextAccessor = httpContextAccessor;
             _context = context;

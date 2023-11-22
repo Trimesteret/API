@@ -14,7 +14,7 @@ public abstract class User
     public string Token { get; protected set; }
     public DateTime? TokenExpiration { get; protected set; }
 
-    public static User CreateNewUser(DBContext context,SignupDto signupDto)
+    public static User CreateNewUser(Context context,SignupDto signupDto)
     {
         switch (signupDto.DesiredRole)
         {

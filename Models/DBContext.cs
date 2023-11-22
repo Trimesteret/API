@@ -6,10 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Models;
 
-public class DBContext : DbContext
+public class Context : DbContext
 {
-    public DBContext(DbContextOptions<DBContext> options) : base(options)
+    public Context(DbContextOptions<Context> options) : base(options)
     {
+
     }
 
     public DbSet<Employee> Employees { get; set; }

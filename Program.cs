@@ -44,7 +44,7 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddDbContext<DBContext>(opt =>
+builder.Services.AddDbContext<Context>(opt =>
 {
     opt.UseMySql("server=localhost;port=3306;database=EVENTILOPE;user=THOMAS;password=password;",
         new MySqlServerVersion(new Version(8, 0, 26))); // Specify the MySQL server version here
@@ -53,6 +53,7 @@ builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IItemService, ItemService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
