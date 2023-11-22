@@ -13,7 +13,7 @@ public class Wine : Item
     public string SuitableFor { get; protected set; }
     public string WineType { get; protected set; }
 
-    public Wine(string name, string ean, int quantity, float price, string imageUrl, DateTime expirationDate)
+    public Wine(string name, string ean, int quantity, float price, string imageUrl, DateTime? expirationDate)
     {
         this.Name = name;
         this.Ean = ean;
