@@ -7,8 +7,8 @@ public abstract class Item
     public string Ean { get; protected set; }
     public int Quantity { get; protected set; }
     public float Price { get; protected set; }
-    public string ImageUrl { get; protected set; }
-    public DateTime ExpirationDate { get; protected set; }
+    public string ImageUrl { get; protected set; }  
+    public DateTime? ExpirationDate { get; protected set; }
 }
 
 
