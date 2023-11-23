@@ -60,7 +60,7 @@ namespace API.Controllers.Shared
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return BadRequest(e.Message);
+                return Ok(false);
             }
         }
     }

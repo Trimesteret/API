@@ -5,11 +5,9 @@ namespace API.Models.Authentication;
 
 public class Customer : User
 {
-    public int? PhoneNumber { get; protected set; }
-
     public List<CustomerPurchaseOrder> CustomerPurchaseOrders { get; protected set; }
 
-    public Customer(string firstName, string lastName, int phone, string email, string password)
+    public Customer(string firstName, string lastName, string phone, string email, string password)
     {
         FirstName = firstName;
         LastName = lastName;
@@ -26,7 +24,7 @@ public class Customer : User
         return "Customer";
     }
 
-    protected void ChangeCustomer(string firstName, string lastName, int phone, string email, string password, int? phoneNumber)
+    protected void ChangeCustomer(string firstName, string lastName, string phone, string email, string password)
     {
         FirstName = firstName;
         LastName = lastName;
@@ -34,7 +32,6 @@ public class Customer : User
         Email = email;
         Password = password;
         Token = "";
-        PhoneNumber = phoneNumber;
     }
 
     public CustomerPurchaseOrder PlaceCustomerPurchaseOrder(List<Item> items, string comment)

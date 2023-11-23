@@ -4,7 +4,7 @@ namespace API.Models.Authentication;
 
 public class Admin : Employee
 {
-    public Admin(string firstName, string lastName, int phone, string email, string password)
+    public Admin(string firstName, string lastName, string phone, string email, string password)
     {
         FirstName = firstName;
         LastName = lastName;
@@ -30,7 +30,7 @@ public class Admin : Employee
         return "Admin";
     }
 
-    protected void ChangeAdmin(string firstName, string lastName, int phone, string email, string password, int? phoneNumber)
+    protected void ChangeAdmin(string firstName, string lastName, string phone, string email, string password, int? phoneNumber)
     {
         FirstName = firstName;
         LastName = lastName;
