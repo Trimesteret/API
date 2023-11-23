@@ -8,13 +8,13 @@ namespace API.Services.Shared
     public class AuthService : IAuthService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly Context _context;
+        private readonly SharedContext _sharedContext;
 
 
-        public AuthService(IHttpContextAccessor httpContextAccessor, Context context)
+        public AuthService(IHttpContextAccessor httpContextAccessor, SharedContext sharedContext)
         {
             _httpContextAccessor = httpContextAccessor;
-            _context = context;
+            _sharedContext = sharedContext;
         }
 
         public async Task<User> GetActiveUser()
@@ -25,7 +25,7 @@ namespace API.Services.Shared
                 throw new Exception("User not found");
             }
 
-            var user = await _context.Users.FirstOrDefaultAsync(user => user.Email == userEmail);
+            var user = await _sharedContext.Users.FirstOrDefaultAsync(user => user.Email == userEmail);
             if (user == null)
             {
                 throw new Exception("User not found");

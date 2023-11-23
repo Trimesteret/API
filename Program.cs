@@ -44,7 +44,7 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddDbContext<Context>(opt =>
+builder.Services.AddDbContext<SharedContext>(opt =>
 {
     opt.UseMySql("server=localhost;port=3306;database=EVENTILOPE;user=THOMAS;password=password;",
         new MySqlServerVersion(new Version(8, 0, 26))); // Specify the MySQL server version here

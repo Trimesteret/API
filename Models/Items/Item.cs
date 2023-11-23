@@ -1,3 +1,5 @@
+using API.Enums;
+
 namespace API.Models.Items;
 
 public abstract class Item
@@ -8,6 +10,8 @@ public abstract class Item
     public int Quantity { get; protected set; }
     public float Price { get; protected set; }
     public string ImageUrl { get; protected set; }
+    public string Description { get; protected set; }
+    public ItemType? Type { get; protected set; }
     public DateTime? ExpirationDate { get; protected set; }
 }
 

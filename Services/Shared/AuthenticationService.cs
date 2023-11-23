@@ -7,12 +7,12 @@ namespace API.Services.Shared
 {
     public class AuthenticationService : IAuthenticationService
     {
-        private readonly Context _context;
+        private readonly SharedContext _sharedContext;
         private readonly ITokenService _tokenService;
 
-        public AuthenticationService(Context dbContext, ITokenService tokenService)
+        public AuthenticationService(SharedContext dbSharedContext, ITokenService tokenService)
         {
-            _context = dbContext;
+            _sharedContext = dbSharedContext;
             _tokenService = tokenService;
         }
 
@@ -24,7 +24,7 @@ namespace API.Services.Shared
         /// <exception cref="Exception"></exception>
         public async Task<AuthPas> Login(LoginDto loginDto)
         {
-            var dbUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == loginDto.Email && u.Password == loginDto.Password);
+            var dbUser = await _sharedContext.Users.FirstOrDefaultAsync(u => u.Email == loginDto.Email && u.Password == loginDto.Password);
 
             if (dbUser == null)
             {
@@ -35,7 +35,7 @@ namespace API.Services.Shared
 
             dbUser.SetToken(token, DateTime.Now.AddHours(24));
 
-            await _context.SaveChangesAsync();
+            await _sharedContext.SaveChangesAsync();
 
             return dbUser.GetTokenAuthPas();
         }
@@ -48,7 +48,7 @@ namespace API.Services.Shared
         /// <exception cref="Exception"></exception>
         public async Task<bool> LogOut(AuthPas authPas)
         {
-            var dbUser = await _context.Users.FirstOrDefaultAsync(u => u.Token == authPas.Token);
+            var dbUser = await _sharedContext.Users.FirstOrDefaultAsync(u => u.Token == authPas.Token);
 
             if (dbUser == null)
             {
@@ -57,7 +57,7 @@ namespace API.Services.Shared
 
             dbUser.SetToken("", null);
 
-            await _context.SaveChangesAsync();
+            await _sharedContext.SaveChangesAsync();
 
             return true;
         }
@@ -71,7 +71,7 @@ namespace API.Services.Shared
         /// <exception cref="Exception"></exception>
         public async Task<bool> VerifyToken(AuthPas authPas)
         {
-            var dbUser = await _context.Users.FirstOrDefaultAsync(u => u.Token == authPas.Token);
+            var dbUser = await _sharedContext.Users.FirstOrDefaultAsync(u => u.Token == authPas.Token);
 
             if (dbUser == null)
             {
@@ -81,7 +81,7 @@ namespace API.Services.Shared
             if (dbUser.TokenExpiration == null || dbUser.TokenExpiration <= DateTime.Now)
             {
                 dbUser.SetToken("", null);
-                await _context.SaveChangesAsync();
+                await _sharedContext.SaveChangesAsync();
                 return false;
             }
 
@@ -95,9 +95,9 @@ namespace API.Services.Shared
         /// <returns>A success boolean</returns>
         public async Task<bool> CreateNewUser(SignupDto signupDto)
         {
-            User.CreateNewUser(_context, signupDto);
+            User.CreateNewUser(_sharedContext, signupDto);
 
-            await _context.SaveChangesAsync();
+            await _sharedContext.SaveChangesAsync();
 
             return true;
         }

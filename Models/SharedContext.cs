@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Models;
 
-public class Context : DbContext
+public class SharedContext : DbContext
 {
-    public Context(DbContextOptions<Context> options) : base(options)
+    public SharedContext(DbContextOptions<SharedContext> options) : base(options)
     {
 
     }

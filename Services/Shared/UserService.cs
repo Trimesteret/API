@@ -8,18 +8,18 @@ namespace API.Services.Shared;
 
 public class UserService : IUserService
 {
-    private readonly Context _context;
+    private readonly SharedContext _sharedContext;
     private readonly IAuthService _authService;
 
-    public UserService(Context dbContext, IAuthService authService)
+    public UserService(SharedContext dbSharedContext, IAuthService authService)
     {
-        _context = dbContext;
+        _sharedContext = dbSharedContext;
         _authService = authService;
     }
 
     public async Task<List<User>> GetAllUsers()
     {
-        return await _context.Users.ToListAsync();
+        return await _sharedContext.Users.ToListAsync();
     }
 
     public async Task<User> GetSelf()
@@ -38,7 +38,7 @@ public class UserService : IUserService
 
         requestingUser.ChangeUserStandardProperties(user.FirstName, user.LastName, user.Phone, user.Email, user.Password);
 
-        await _context.SaveChangesAsync();
+        await _sharedContext.SaveChangesAsync();
         return requestingUser;
     }
 }

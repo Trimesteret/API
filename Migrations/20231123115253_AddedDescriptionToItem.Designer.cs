@@ -3,16 +3,19 @@ using System;
 using API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
 namespace API.Migrations
 {
-    [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(SharedContext))]
+    [Migration("20231123115253_AddedDescriptionToItem")]
+    partial class AddedDescriptionToItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,26 +33,21 @@ namespace API.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("Phone")
-                        .HasColumnType("int");
+                    b.Property<string>("Phone")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Token")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime?>("TokenExpiration")
@@ -70,23 +68,23 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Ean")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime?>("ExpirationDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<int?>("OrderId")
@@ -99,6 +97,9 @@ namespace API.Migrations
                         .HasColumnType("int");
 
                     b.Property<int?>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Type")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -151,9 +152,6 @@ namespace API.Migrations
                 {
                     b.HasBaseType("API.Models.Authentication.User");
 
-                    b.Property<int?>("PhoneNumber")
-                        .HasColumnType("int");
-
                     b.HasDiscriminator().HasValue("Customer");
                 });
 
@@ -175,9 +173,6 @@ namespace API.Migrations
                 {
                     b.HasBaseType("API.Models.Items.Item");
 
-                    b.Property<string>("LiquorType")
-                        .HasColumnType("longtext");
-
                     b.HasDiscriminator().HasValue("Liquor");
                 });
 
@@ -197,6 +192,9 @@ namespace API.Migrations
                     b.Property<string>("Region")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("ServingTemperature")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("SuitableFor")
                         .HasColumnType("longtext");
 
@@ -205,9 +203,6 @@ namespace API.Migrations
 
                     b.Property<double?>("Volume")
                         .HasColumnType("double");
-
-                    b.Property<string>("WineType")
-                        .HasColumnType("longtext");
 
                     b.Property<string>("Winery")
                         .HasColumnType("longtext");
@@ -222,7 +217,7 @@ namespace API.Migrations
                 {
                     b.HasBaseType("API.Models.Orders.Order");
 
-                    b.Property<int>("CustomerId")
+                    b.Property<int?>("CustomerId")
                         .HasColumnType("int");
 
                     b.HasIndex("CustomerId");
@@ -252,9 +247,7 @@ namespace API.Migrations
                 {
                     b.HasOne("API.Models.Authentication.Customer", "Customer")
                         .WithMany("CustomerPurchaseOrders")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CustomerId");
 
                     b.Navigation("Customer");
                 });

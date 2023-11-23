@@ -11,7 +11,7 @@ public class Wine : Item
     public string Winery { get; protected set; }
     public string TastingNotes { get; protected set; }
     public string SuitableFor { get; protected set; }
-    public string WineType { get; protected set; }
+    public string ServingTemperature { get; protected set; }
 
     public Wine(string name, string ean, int quantity, float price, string imageUrl, DateTime? expirationDate)
     {

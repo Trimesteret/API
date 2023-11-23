@@ -4,7 +4,7 @@ public class Employee : User
 {
     public Employee(){}
 
-    public Employee(string firstName, string lastName, int phone, string email, string password)
+    public Employee(string firstName, string lastName, string phone, string email, string password)
     {
         FirstName = firstName;
         LastName = lastName;
@@ -30,7 +30,7 @@ public class Employee : User
         return "Employee";
     }
 
-    protected void ChangeEmployee(string firstName, string lastName, int phone, string email, string password, int? phoneNumber)
+    protected void ChangeEmployee(string firstName, string lastName, string phone, string email, string password, int? phoneNumber)
     {
         FirstName = firstName;
         LastName = lastName;
