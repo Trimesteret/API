@@ -1,10 +1,11 @@
 using API.DataTransferObjects;
+using API.Models.Authentication;
 
 namespace API.Services.Shared;
 
 public interface IAuthenticationService
 {
-    Task<bool> CreateNewUser(SignupDto signupDto);
+    Task<Customer> SignupNewCustomer(SignupDto signupDto);
 
     Task<AuthPas> Login(LoginDto loginDto);
 

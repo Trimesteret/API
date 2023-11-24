@@ -7,13 +7,14 @@ public class Customer : User
 {
     public List<CustomerPurchaseOrder> CustomerPurchaseOrders { get; protected set; }
 
-    public Customer(string firstName, string lastName, string phone, string email, string password)
+    public Customer(string firstName, string lastName, string phone, string email, string password, Byte[] salt)
     {
         FirstName = firstName;
         LastName = lastName;
         Phone = phone;
         Email = email;
         Password = password;
+        Salt = salt;
         Token = "";
         CustomerPurchaseOrders = new List<CustomerPurchaseOrder>();
     }
