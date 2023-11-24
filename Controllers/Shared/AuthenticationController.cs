@@ -33,7 +33,16 @@ namespace API.Controllers.Shared
         [HttpPost("Signup")]
         public async Task<ActionResult<AuthPas>> Signup(SignupDto signupDto)
         {
-            return Ok(await _authenticationService.CreateNewUser(signupDto));
+            try
+            {
+                await _authenticationService.SignupNewCustomer(signupDto);
+                return Ok(true);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPost("LogOut")]

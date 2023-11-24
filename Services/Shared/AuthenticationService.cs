@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using API.DataTransferObjects;
 using API.Models;
 using API.Models.Authentication;
@@ -9,6 +11,9 @@ namespace API.Services.Shared
     {
         private readonly SharedContext _sharedContext;
         private readonly ITokenService _tokenService;
+
+        const int KeySize = 64;
+        const int Iterations = 350000;
 
         public AuthenticationService(SharedContext dbSharedContext, ITokenService tokenService)
         {
@@ -24,9 +29,9 @@ namespace API.Services.Shared
         /// <exception cref="Exception"></exception>
         public async Task<AuthPas> Login(LoginDto loginDto)
         {
-            var dbUser = await _sharedContext.Users.FirstOrDefaultAsync(u => u.Email == loginDto.Email && u.Password == loginDto.Password);
+            var dbUser = await _sharedContext.Users.FirstOrDefaultAsync(u => u.Email == loginDto.Email);
 
-            if (dbUser == null)
+            if(dbUser == null || HashPassword(loginDto.Password, dbUser.Salt) != dbUser.Password)
             {
                 throw new Exception("Incorrect email or password");
             }
@@ -38,6 +43,23 @@ namespace API.Services.Shared
             await _sharedContext.SaveChangesAsync();
 
             return dbUser.GetTokenAuthPas();
+        }
+
+        /// <summary>
+        /// https://code-maze.com/csharp-hashing-salting-passwords-best-practices/
+        /// </summary>
+        /// <param name="password"></param>
+        /// <param name="salt"></param>
+        /// <returns></returns>
+        private static string HashPassword(string password, byte[] salt)
+        {
+            var hash = Rfc2898DeriveBytes.Pbkdf2(
+                Encoding.UTF8.GetBytes(password),
+                salt,
+                Iterations,
+                HashAlgorithmName.SHA512,
+                KeySize);
+            return Convert.ToHexString(hash);
         }
 
         /// <summary>
@@ -93,13 +115,33 @@ namespace API.Services.Shared
         /// </summary>
         /// <param name="signupDto">The sign up data</param>
         /// <returns>A success boolean</returns>
-        public async Task<bool> CreateNewUser(SignupDto signupDto)
+        public async Task<Customer> SignupNewCustomer(SignupDto signupDto)
         {
-            User.CreateNewUser(_sharedContext, signupDto);
+            signupDto.Email = signupDto.Email.ToLower();
+
+            if (signupDto.Password != signupDto.RepeatPassword || signupDto.Password.Length < 6)
+            {
+                throw new Exception("Passwords do not match");
+            }
+
+            var salt = RandomNumberGenerator.GetBytes(KeySize);
+
+            signupDto.Password = HashPassword(signupDto.Password, salt);
+
+            var dbUser = await _sharedContext.Users.FirstOrDefaultAsync(u => u.Email == signupDto.Email);
+
+            if (dbUser != null)
+            {
+                throw new Exception("Email already exists");
+            }
+
+            var customer = new Customer(signupDto.FirstName, signupDto.LastName, signupDto.Phone, signupDto.Email, signupDto.Password, salt);
+
+            await _sharedContext.Customers.AddAsync(customer);
 
             await _sharedContext.SaveChangesAsync();
 
-            return true;
+            return customer;
         }
     }
 }

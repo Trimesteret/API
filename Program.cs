@@ -31,14 +31,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = "ApiAppIssuer",         // Replace with your issuer
-            ValidAudience = "ApiAppAudience",     // Replace with your audience
-            IssuerSigningKey = new SymmetricSecurityKey("b0493a0d-f88e-4b0b-94eb-665f7207c92c"u8.ToArray()), // Replace with your secret key
+            ValidIssuer = "ApiAppIssuer",
+            ValidAudience = "ApiAppAudience",
+            IssuerSigningKey = new SymmetricSecurityKey("b0493a0d-f88e-4b0b-94eb-665f7207c92c"u8.ToArray()),
         };
     });
+
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("RequireAdminRole", policy =>
+    options.AddPolicy("require-employee-role", policy =>
+        policy.RequireRole("Admin", "Employee"));
+    options.AddPolicy("require-admin-role", policy =>
         policy.RequireRole("Admin"));
 });
 
@@ -46,7 +49,7 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddDbContext<SharedContext>(opt =>
 {
-    opt.UseMySql("server=localhost;port=3306;database=EVENTILOPE;user=THOMAS;password=password;",
+    opt.UseMySql("server=localhost;port=3306;database=BuDBolfi;user=THOMAS;password=password;",
         new MySqlServerVersion(new Version(8, 0, 26))); // Specify the MySQL server version here
 });
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
