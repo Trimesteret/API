@@ -18,7 +18,7 @@ namespace API.Controllers.Shared
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "require-admin-role")]
         public async Task<ActionResult<List<User>>> GetUsers()
         {
             return await _userService.GetAllUsers();

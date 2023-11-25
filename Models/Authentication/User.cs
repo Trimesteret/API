@@ -11,32 +11,9 @@ public abstract class User
     public string Phone { get; protected set; }
     public string Email { get; protected set; }
     public string Password { get; protected set; }
+    public Byte[] Salt { get; protected set; }
     public string Token { get; protected set; }
     public DateTime? TokenExpiration { get; protected set; }
-
-    public static User CreateNewUser(SharedContext sharedContext,SignupDto signupDto)
-    {
-        switch (signupDto.DesiredRole)
-        {
-            case Roles.Customer:
-                Customer newCustomer = new Customer(signupDto.FirstName, signupDto.LastName, signupDto.Phone,
-                    signupDto.Email, signupDto.Password);
-                sharedContext.Customers.Add(newCustomer);
-                return newCustomer;
-            case Roles.Employee:
-                Employee newEmployee = new Employee(signupDto.FirstName, signupDto.LastName, signupDto.Phone,
-                    signupDto.Email, signupDto.Password);
-                sharedContext.Employees.Add(newEmployee);
-                return newEmployee;
-            case Roles.Admin:
-                Admin newAdmin = new Admin(signupDto.FirstName, signupDto.LastName, signupDto.Phone, signupDto.Email,
-                    signupDto.Password);
-                sharedContext.Admins.Add(newAdmin);
-                return newAdmin;
-            default:
-                throw new Exception("Invalid role");
-        }
-    }
 
     public void SetToken(string token, DateTime? tokenExpiration)
     {
