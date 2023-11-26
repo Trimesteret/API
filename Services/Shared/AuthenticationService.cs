@@ -112,7 +112,7 @@ namespace API.Services.Shared
         }
 
         /// <summary>
-        ///
+        /// Verifies a user by a given token and role
         /// </summary>
         /// <param name="token"></param>
         /// <param name="role"></param>
