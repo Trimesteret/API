@@ -45,8 +45,8 @@ public class Admin : Employee
         Console.WriteLine(user.GetType());
     }
 
-    public Item CreateItem(string name, string ean, int quantity, float price, string imageUrl)
-    {
-        return new DefaultItem(name, ean, quantity, price, imageUrl);
-    }
+    // public Item CreateItem(string name, string ean, int quantity, float price, string imageUrl)
+    // {
+    //     return new DefaultItem(name, ean, quantity, price, imageUrl);
+    // }
 }

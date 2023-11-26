@@ -13,13 +13,13 @@ public class Wine : Item
     public string SuitableFor { get; protected set; }
     public string ServingTemperature { get; protected set; }
 
-    public Wine(string name, string ean, int quantity, float price, string imageUrl, DateTime? expirationDate)
+    public Wine(string name, string ean, int quantity, double price, DateTime? expirationDate)
     {
         this.Name = name;
         this.Ean = ean;
         this.Quantity = quantity;
         this.Price = price;
-        this.ImageUrl = imageUrl;
+        // this.ImageUrl = imageUrl;
         this.ExpirationDate = expirationDate;
     }
 }
