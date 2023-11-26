@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using API.DataTransferObjects;
+using API.Enums;
 using API.Models;
 using API.Models.Authentication;
 using Microsoft.EntityFrameworkCore;
@@ -88,12 +89,12 @@ namespace API.Services.Shared
         /// <summary>
         /// Verifies a user by a given token
         /// </summary>
-        /// <param name="authPas">The pas with token to verify</param>
+        /// <param name="token">The token to verify</param>
         /// <returns>Success boolean</returns>
         /// <exception cref="Exception"></exception>
-        public async Task<bool> VerifyToken(AuthPas authPas)
+        public async Task<bool> VerifyToken(string token)
         {
-            var dbUser = await _sharedContext.Users.FirstOrDefaultAsync(u => u.Token == authPas.Token);
+            var dbUser = await _sharedContext.Users.FirstOrDefaultAsync(u => u.Token == token);
 
             if (dbUser == null)
             {
@@ -108,6 +109,30 @@ namespace API.Services.Shared
             }
 
             return true;
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="role"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async Task<Roles> VerifyRole(string token, Roles role)
+        {
+            var dbUser = await _sharedContext.Users.FirstOrDefaultAsync(u => u.Token == token);
+
+            if (dbUser == null)
+            {
+                throw new Exception("Failed trying to verify incorrect token");
+            }
+
+            if((int) dbUser.GetClassRoleEnum() <= (int) role)
+            {
+                throw new Exception("Incorrect role");
+            }
+
+            return dbUser.GetClassRoleEnum();
         }
 
         /// <summary>

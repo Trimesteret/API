@@ -23,7 +23,7 @@ public abstract class User
 
     public AuthPas GetTokenAuthPas()
     {
-        return new AuthPas(Token, TokenExpiration);
+        return new AuthPas(Token, TokenExpiration, GetClassRoleEnum());
     }
 
     public void ChangeUserStandardProperties(string firstName, string lastName, string phone, string email, string password)
@@ -37,5 +37,5 @@ public abstract class User
         TokenExpiration = null;
     }
 
-    public abstract string GetClassName();
+    public abstract Roles GetClassRoleEnum();
 }

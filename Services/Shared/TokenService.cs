@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using API.Models.Authentication;
+using Microsoft.OpenApi.Extensions;
 
 
 namespace API.Services.Shared;
@@ -27,7 +28,7 @@ public class TokenService : ITokenService
             Subject = new ClaimsIdentity(new Claim[]
             {
                 new (ClaimTypes.Email, user.Email),
-                new (ClaimTypes.Role, user.GetClassName()),
+                new (ClaimTypes.Role, user.GetClassRoleEnum().ToString()),
             }),
             Expires = DateTime.UtcNow.AddHours(24),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
