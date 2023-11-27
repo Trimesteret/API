@@ -1,3 +1,4 @@
+using API.Enums;
 using API.Models.Items;
 
 namespace API.Models.Authentication;
@@ -25,9 +26,9 @@ public class Admin : Employee
     }
 
     override
-    public string GetClassName()
+    public Roles GetClassRoleEnum()
     {
-        return "Admin";
+        return Roles.Admin;
     }
 
     protected void ChangeAdmin(string firstName, string lastName, string phone, string email, string password, int? phoneNumber)

@@ -1,5 +1,7 @@
 using API.DataTransferObjects;
+using API.Enums;
 using API.Services.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers.Shared
@@ -59,12 +61,26 @@ namespace API.Controllers.Shared
             }
         }
 
-        [HttpPost("Verify")]
-        public async Task<ActionResult<Boolean>> VerifyToken([FromBody] AuthPas authPas)
+        [HttpGet("Verify")]
+        public async Task<ActionResult<Boolean>> VerifyToken([FromQuery] string token)
         {
             try
             {
-                return Ok(await _authenticationService.VerifyToken(authPas));
+                return Ok(await _authenticationService.VerifyToken(token));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Ok(false);
+            }
+        }
+
+        [HttpGet("VerifyRole")]
+        public async Task<ActionResult<Roles>> VerifyRole([FromQuery] string token, [FromQuery] Roles role)
+        {
+            try
+            {
+                return Ok(await _authenticationService.VerifyRole(token, role));
             }
             catch (Exception e)
             {
