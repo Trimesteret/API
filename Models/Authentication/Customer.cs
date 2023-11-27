@@ -1,3 +1,4 @@
+using API.Enums;
 using API.Models.Items;
 using API.Models.Orders;
 
@@ -20,9 +21,9 @@ public class Customer : User
     }
 
     override
-    public string GetClassName()
+    public Roles GetClassRoleEnum()
     {
-        return "Customer";
+        return Roles.Customer;
     }
 
     protected void ChangeCustomer(string firstName, string lastName, string phone, string email, string password)
