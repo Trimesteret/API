@@ -36,7 +36,7 @@ namespace API.Controllers.Shared
             return await _itemService.GetItemById(id);
         }
         
-        [HttpPost]
+        [HttpPost("Item")]
         public async Task<ActionResult<Item>> PostItem([FromQuery] int id, [FromQuery] string name, [FromQuery] string ean,
                                                                                        [FromQuery] string description, [FromQuery] double price, [FromQuery] int quantity, 
                                                                                        [FromQuery] int year, [FromQuery] int volume, [FromQuery] double alcohol, 
