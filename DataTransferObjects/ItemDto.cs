@@ -5,7 +5,7 @@ namespace API.DataTransferObjects;
 
 public class ItemDto
 {
-    public Int32 ? Id { get; set; }
+    public Int32 Id { get; set; }
     public string? ItemName { get; set; }
     public string? Ean { get; set; }
     public string? ItemDescription { get; set; }
@@ -20,5 +20,5 @@ public class ItemDto
     public DateTime? ExpirationDate { get; set; }
     public WineType? WineType { get; set; }
     public ItemType? Type { get; set; }
-    
+    public string? ImageUrl { get; set; }
 }

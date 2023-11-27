@@ -1,3 +1,5 @@
+using System.Transactions;
+
 namespace API.Models.Items;
 
 public class Wine : Item
@@ -13,12 +15,14 @@ public class Wine : Item
     public string SuitableFor { get; protected set; }
     public string ServingTemperature { get; protected set; }
 
-    public Wine(string name, string ean, int quantity, double price, DateTime? expirationDate)
+    public Wine(int id, string name, string ean, int quantity, double price, string description, DateTime? expirationDate)
     {
+        this.Id = id;
         this.Name = name;
         this.Ean = ean;
         this.Quantity = quantity;
         this.Price = price;
+        this.Description = description;
         // this.ImageUrl = imageUrl;
         this.ExpirationDate = expirationDate;
     }

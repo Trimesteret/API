@@ -36,7 +36,7 @@ public class ItemService : IItemService
         switch (itemDto.Type)
         {
             case ItemType.Wine:
-                itemEntity = new Wine(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.ItemPrice,
+                itemEntity = new Wine(itemDto.Id, itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.ItemPrice, itemDto.ItemDescription,
                     itemDto.ExpirationDate);
                 break;
             case ItemType.Liquor:
@@ -49,7 +49,7 @@ public class ItemService : IItemService
                 throw new Exception("Item not created");
         }
     
-        _sharedContext.Items.Add(itemEntity);
+        await _sharedContext.Items.AddAsync(itemEntity);
     
         await _sharedContext.SaveChangesAsync();
 
