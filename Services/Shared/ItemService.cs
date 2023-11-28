@@ -30,14 +30,13 @@ public class ItemService : IItemService
         return await _sharedContext.Items.FirstOrDefaultAsync(i => i.Id == id);
     }
     
-    public async Task<Item> PostItem(ItemDto itemDto)
+    public async Task<Item> CreateItem(ItemDto itemDto)
     {
         Item itemEntity;
-        switch (itemDto.Type)
+        switch (itemDto.ItemType)
         {
             case ItemType.Wine:
-                itemEntity = new Wine(itemDto.Id, itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.ItemPrice, itemDto.ItemDescription,
-                    itemDto.ExpirationDate);
+                itemEntity = new Wine(itemDto.Id, itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.ItemPrice, itemDto.ItemDescription);
                 break;
             case ItemType.Liquor:
                 itemEntity = new Liquor(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.ItemPrice);
@@ -46,7 +45,7 @@ public class ItemService : IItemService
                 itemEntity = new DefaultItem(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.ItemPrice);
                 break;
             default:
-                throw new Exception("Item not created");
+                throw new NotImplementedException("Item not created");
         }
     
         await _sharedContext.Items.AddAsync(itemEntity);

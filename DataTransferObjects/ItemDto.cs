@@ -17,8 +17,7 @@ public class ItemDto
     public string? Country { get; set; }
     public string? Grapesort { get; set; }
     public string? Suitables { get; set; }
-    public DateTime? ExpirationDate { get; set; }
     public WineType? WineType { get; set; }
-    public ItemType? Type { get; set; }
+    public ItemType? ItemType { get; set; }
     public string? ImageUrl { get; set; }
 }

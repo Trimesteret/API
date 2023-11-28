@@ -15,7 +15,7 @@ public class Wine : Item
     public string SuitableFor { get; protected set; }
     public string ServingTemperature { get; protected set; }
 
-    public Wine(int id, string name, string ean, int quantity, double price, string description, DateTime? expirationDate)
+    public Wine(int id, string name, string ean, int quantity, double price, string description)
     {
         this.Id = id;
         this.Name = name;
@@ -24,6 +24,5 @@ public class Wine : Item
         this.Price = price;
         this.Description = description;
         // this.ImageUrl = imageUrl;
-        this.ExpirationDate = expirationDate;
     }
 }

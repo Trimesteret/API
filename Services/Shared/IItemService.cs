@@ -12,5 +12,5 @@ public interface IItemService
 
     public Task<int> GetItemCount(string? search, SortByPrice? sortByPrice, WineType? wineType);
     
-    public Task<Item> PostItem(ItemDto itemDto);
+    public Task<Item> CreateItem(ItemDto itemDto);
 }
