@@ -2,7 +2,7 @@ using API.DataTransferObjects;
 using API.Enums;
 using API.Models.Items;
 using API.Services.Shared;
-using Microsoft.AspNetCore.Http.HttpResults;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers.Shared
@@ -35,7 +35,7 @@ namespace API.Controllers.Shared
         {
             return await _itemService.GetItemById(id);
         }
-        
+
         [HttpPost]
         public async Task<ActionResult<Item>> PostItem([FromBody] ItemDto item)
         {

@@ -2,7 +2,7 @@ namespace API.Enums;
 
 public enum ItemType
 {
-    Wine,
-    Liquor,
-    DefaultItem,
+    Wine = 0,
+    Liquor = 1,
+    DefaultItem = 2,
 }
