@@ -14,6 +14,7 @@ public abstract class User
     public Byte[] Salt { get; protected set; }
     public string Token { get; protected set; }
     public DateTime? TokenExpiration { get; protected set; }
+    public Role Role { get; protected set; }
 
     public void SetToken(string token, DateTime? tokenExpiration)
     {
@@ -23,7 +24,7 @@ public abstract class User
 
     public AuthPas GetTokenAuthPas()
     {
-        return new AuthPas(Token, TokenExpiration, GetClassRoleEnum());
+        return new AuthPas(Token, TokenExpiration, Role);
     }
 
     public void ChangeUserStandardProperties(string firstName, string lastName, string phone, string email)
@@ -35,6 +36,4 @@ public abstract class User
         Token = "";
         TokenExpiration = null;
     }
-
-    public abstract Role GetClassRoleEnum();
 }

@@ -61,5 +61,20 @@ namespace API.Controllers.Shared
             }
             return Ok();
         }
+
+        [HttpDelete("{id}")]
+        [Authorize(Policy = "require-admin-role")]
+        public async Task<bool> DeleteUser(int id)
+        {
+            try
+            {
+                return await _userService.DeleteUser(id);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return false;
+            }
+        }
     }
 }

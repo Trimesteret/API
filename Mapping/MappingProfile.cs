@@ -6,8 +6,7 @@ public class MappingProfile: Profile
 {
     public MappingProfile()
     {
-        CreateMap<Models.Authentication.User, DataTransferObjects.UserStandardDto>()
-            .ForMember(userStandardDto => userStandardDto.Role, user => user.MapFrom(user => user.GetClassRoleEnum()));
+        CreateMap<Models.Authentication.User, DataTransferObjects.UserStandardDto>();
         CreateMap<DataTransferObjects.UserStandardDto, Models.Authentication.User>();
     }
 }

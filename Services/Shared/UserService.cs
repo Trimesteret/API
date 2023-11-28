@@ -3,7 +3,6 @@ using API.Enums;
 using API.Models;
 using API.Models.Authentication;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Services.Shared;
@@ -70,30 +69,40 @@ public class UserService : IUserService
         existingUser.ChangeUserStandardProperties(userStandardDto.FirstName, userStandardDto.LastName, userStandardDto.Phone,
             userStandardDto.Email);
 
-        if (userStandardDto.Role == existingUser.GetClassRoleEnum())
+        Console.WriteLine(userStandardDto.Role == existingUser.Role);
+        if (userStandardDto.Role == existingUser.Role)
         {
             await _sharedContext.SaveChangesAsync();
             return _mapper.Map<UserStandardDto>(existingUser);
         }
 
+        _sharedContext.Users.Remove(existingUser);
+        await _sharedContext.SaveChangesAsync();
+
+
         switch (userStandardDto.Role)
         {
             case Role.Admin:
-                existingUser = new Admin(existingUser);
-                break;
+                Admin admin = new Admin(existingUser);
+                await _sharedContext.Users.AddAsync(admin);
+                await _sharedContext.SaveChangesAsync();
+                return _mapper.Map<UserStandardDto>(admin);
+
             case Role.Employee:
-                existingUser = new Employee(existingUser);
-                break;
+                Employee employee = new Employee(existingUser);
+                await _sharedContext.Employees.AddAsync(employee);
+                await _sharedContext.SaveChangesAsync();
+                return _mapper.Map<UserStandardDto>(employee);
+
             case Role.Customer:
-                existingUser = new Customer(existingUser);
-                break;
+                Customer customer = new Customer(existingUser);
+                await _sharedContext.Customers.AddAsync(customer);
+                await _sharedContext.SaveChangesAsync();
+                return _mapper.Map<UserStandardDto>(customer);
+
             default:
                 throw new ArgumentOutOfRangeException();
         }
-
-        await _sharedContext.SaveChangesAsync();
-
-        return _mapper.Map<UserStandardDto>(existingUser);
     }
 
     /// <summary>
@@ -109,5 +118,23 @@ public class UserService : IUserService
 
         await _sharedContext.SaveChangesAsync();
         return requestingUser;
+    }
+
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<bool> DeleteUser(int id)
+    {
+        var existingUser = _sharedContext.Users.FirstOrDefault(user => user.Id == id);
+        if (existingUser == null)
+        {
+            throw new Exception("Could not find user with id: " + id);
+        }
+        _sharedContext.Users.Remove(existingUser);
+        await _sharedContext.SaveChangesAsync();
+        return true;
     }
 }

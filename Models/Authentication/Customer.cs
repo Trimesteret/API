@@ -18,10 +18,12 @@ public class Customer : User
         Salt = salt;
         Token = "";
         CustomerPurchaseOrders = new List<CustomerPurchaseOrder>();
+        Role = Role.Customer;
     }
 
     public Customer(User user)
     {
+        Id = user.Id;
         FirstName = user.FirstName;
         LastName = user.LastName;
         Phone = user.Phone;
@@ -30,12 +32,7 @@ public class Customer : User
         Salt = user.Salt;
         Token = user.Token;
         CustomerPurchaseOrders = new List<CustomerPurchaseOrder>();
-    }
-
-override
-    public Role GetClassRoleEnum()
-    {
-        return Role.Customer;
+        Role = Role.Customer;
     }
 
     protected void ChangeCustomer(string firstName, string lastName, string phone, string email, string password)
@@ -46,6 +43,7 @@ override
         Email = email;
         Password = password;
         Token = "";
+        Role = Role.Customer;
     }
 
     public CustomerPurchaseOrder PlaceCustomerPurchaseOrder(List<Item> items, string comment)

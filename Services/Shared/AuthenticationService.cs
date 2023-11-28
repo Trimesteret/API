@@ -127,12 +127,12 @@ namespace API.Services.Shared
                 throw new Exception("Failed trying to verify incorrect token");
             }
 
-            if((int) dbUser.GetClassRoleEnum() <= (int) role)
+            if((int) dbUser.Role <= (int) role)
             {
                 throw new Exception("Incorrect role");
             }
 
-            return dbUser.GetClassRoleEnum();
+            return dbUser.Role;
         }
 
         /// <summary>

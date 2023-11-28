@@ -14,22 +14,20 @@ public class Employee : User
         Email = email;
         Password = password;
         Token = "";
+        Role = Role.Employee;
     }
 
     public Employee(User user)
     {
+        Id = user.Id;
         FirstName = user.FirstName;
         LastName = user.LastName;
         Phone = user.Phone;
         Email = user.Email;
         Password = user.Password;
-        Token = "";
-    }
-
-    override
-    public Role GetClassRoleEnum()
-    {
-        return Role.Employee;
+        Token = user.Token;
+        Salt = user.Salt;
+        Role = Role.Employee;
     }
 
     protected void ChangeEmployee(string firstName, string lastName, string phone, string email, string password, int? phoneNumber)

@@ -15,4 +15,6 @@ public interface IUserService
     public Task<UserStandardDto> EditUser(UserStandardDto userStandardDto);
 
     public Task<User> EditSelf(UserStandardDto user);
+
+    public Task<bool> DeleteUser(int id);
 }
