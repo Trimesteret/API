@@ -118,7 +118,7 @@ namespace API.Services.Shared
         /// <param name="role"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public async Task<Roles> VerifyRole(string token, Roles role)
+        public async Task<Role> VerifyRole(string token, Role role)
         {
             var dbUser = await _sharedContext.Users.FirstOrDefaultAsync(u => u.Token == token);
 

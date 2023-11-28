@@ -1,6 +1,6 @@
 namespace API.Enums;
 
-public enum Roles
+public enum Role
 {
     Guest = 0,
     Customer = 1,

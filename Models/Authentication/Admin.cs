@@ -26,9 +26,9 @@ public class Admin : Employee
     }
 
     override
-    public Roles GetClassRoleEnum()
+    public Role GetClassRoleEnum()
     {
-        return Roles.Admin;
+        return Role.Admin;
     }
 
     protected void ChangeAdmin(string firstName, string lastName, string phone, string email, string password, int? phoneNumber)

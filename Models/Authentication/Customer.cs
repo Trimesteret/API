@@ -20,10 +20,22 @@ public class Customer : User
         CustomerPurchaseOrders = new List<CustomerPurchaseOrder>();
     }
 
-    override
-    public Roles GetClassRoleEnum()
+    public Customer(User user)
     {
-        return Roles.Customer;
+        FirstName = user.FirstName;
+        LastName = user.LastName;
+        Phone = user.Phone;
+        Email = user.Email;
+        Password = user.Password;
+        Salt = user.Salt;
+        Token = user.Token;
+        CustomerPurchaseOrders = new List<CustomerPurchaseOrder>();
+    }
+
+override
+    public Role GetClassRoleEnum()
+    {
+        return Role.Customer;
     }
 
     protected void ChangeCustomer(string firstName, string lastName, string phone, string email, string password)

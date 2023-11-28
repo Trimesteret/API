@@ -26,16 +26,15 @@ public abstract class User
         return new AuthPas(Token, TokenExpiration, GetClassRoleEnum());
     }
 
-    public void ChangeUserStandardProperties(string firstName, string lastName, string phone, string email, string password)
+    public void ChangeUserStandardProperties(string firstName, string lastName, string phone, string email)
     {
         FirstName = firstName;
         LastName = lastName;
         Phone = phone;
         Email = email;
-        Password = password;
         Token = "";
         TokenExpiration = null;
     }
 
-    public abstract Roles GetClassRoleEnum();
+    public abstract Role GetClassRoleEnum();
 }

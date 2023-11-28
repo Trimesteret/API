@@ -14,5 +14,5 @@ public interface IAuthenticationService
 
     Task<bool> VerifyToken(string token);
 
-    Task<Roles> VerifyRole(string token, Roles role);
+    Task<Role> VerifyRole(string token, Role role);
 }
