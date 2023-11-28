@@ -12,7 +12,7 @@ public abstract class Item
     public string ImageUrl { get; protected set; }
     public string Description { get; protected set; }
     public float Mass { get; protected set; }
-    public DateTime? ExpirationDate { get; protected set; }
+    public ItemType ItemType { get; protected set; }
 }
 
 

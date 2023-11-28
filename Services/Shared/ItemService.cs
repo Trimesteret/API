@@ -16,11 +16,11 @@ public class ItemService : IItemService
         _sharedContext = dbSharedContext;
     }
 
-    public async Task<List<Item>> GetItemsBySearch(string search, int amountOfItemsShown, SortByPrice? sortByPrice, WineType? wineType)
+    public async Task<List<Item>> GetItemsBySearch(string search, int amountOfItemsShown, SortByPrice? sortByPrice, ItemType? itemType)
     {
         IQueryable<Item> query = _sharedContext.Items;
 
-        query = AddSearchToQuery(search, sortByPrice, wineType, query);
+        query = AddSearchToQuery(search, sortByPrice, itemType, query);
 
         return await query.Take(amountOfItemsShown).ToListAsync();
     }
@@ -29,38 +29,37 @@ public class ItemService : IItemService
     {
         return await _sharedContext.Items.FirstOrDefaultAsync(i => i.Id == id);
     }
-    
+
     public async Task<Item> CreateItem(ItemDto itemDto)
     {
-        Item itemEntity;
         switch (itemDto.ItemType)
         {
             case ItemType.Wine:
-                itemEntity = new Wine(itemDto.Id, itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.ItemPrice, itemDto.ItemDescription);
-                break;
+                Wine wine = new Wine(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price, itemDto.ItemDescription, itemDto.ItemType, itemDto.WineType);
+                await _sharedContext.Wines.AddAsync(wine);
+                await _sharedContext.SaveChangesAsync();
+                return wine;
             case ItemType.Liquor:
-                itemEntity = new Liquor(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.ItemPrice);
-                break;
+                Liquor liquor = new Liquor(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price, itemDto.ItemDescription, itemDto.ItemType);
+                await _sharedContext.Liquors.AddAsync(liquor);
+                await _sharedContext.SaveChangesAsync();
+                return liquor;
             case ItemType.DefaultItem:
-                itemEntity = new DefaultItem(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.ItemPrice);
-                break;
+                DefaultItem defaultItem = new DefaultItem(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price, itemDto.ItemDescription, itemDto.ItemType);
+                await _sharedContext.DefaultItems.AddAsync(defaultItem);
+                await _sharedContext.SaveChangesAsync();
+                return defaultItem;
             default:
                 throw new NotImplementedException("Item not created");
         }
-    
-        await _sharedContext.Items.AddAsync(itemEntity);
-    
-        await _sharedContext.SaveChangesAsync();
-
-        return itemEntity;
     }
 
 
-    public Task<int> GetItemCount(string? search, SortByPrice? sortByPrice, WineType? wineType)
+    public Task<int> GetItemCount(string? search, SortByPrice? sortByPrice, ItemType? itemType)
     {
         IQueryable<Item> query = _sharedContext.Items;
 
-        query = AddSearchToQuery(search, sortByPrice, wineType, query);
+        query = AddSearchToQuery(search, sortByPrice, itemType, query);
 
         return query.CountAsync();
     }
@@ -73,7 +72,7 @@ public class ItemService : IItemService
     /// <param name="itemType">Item filter</param>
     /// <param name="query">The query to add search, sorting and filter to</param>
     /// <returns></returns>
-    private IQueryable<Item> AddSearchToQuery(string? search, SortByPrice? sortByPrice, WineType? wineType, IQueryable<Item> query)
+    private IQueryable<Item> AddSearchToQuery(string? search, SortByPrice? sortByPrice, ItemType? itemType, IQueryable<Item> query)
     {
 
         if (!string.IsNullOrEmpty(search))
@@ -91,16 +90,16 @@ public class ItemService : IItemService
                 break;
         }
 
-        switch (wineType)
+        switch (itemType)
         {
-            case WineType.RedWine:
-                query = query.Where(item => item.WineType == WineType.RedWine);
+            case ItemType.Wine:
+                query = query.Where(item => item.ItemType == ItemType.Wine);
                 break;
-            case WineType.WhiteWine:
-                query = query.Where(item => item.WineType == WineType.WhiteWine);
+            case ItemType.Liquor:
+                query = query.Where(item => item.ItemType == ItemType.Liquor);
                 break;
-            case WineType.RoseWine:
-                query = query.Where(item => item.WineType == WineType.RoseWine);
+            case ItemType.DefaultItem:
+                query = query.Where(item => item.ItemType == ItemType.DefaultItem);
                 break;
         }
 

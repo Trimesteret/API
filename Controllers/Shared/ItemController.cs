@@ -18,16 +18,16 @@ namespace API.Controllers.Shared
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Item>>> GetItemsBySearch([FromQuery] string search, [FromQuery] int amountOfItemsShown, [FromQuery] SortByPrice? sortByPrice, [FromQuery] WineType? wineType)
+        public async Task<ActionResult<List<Item>>> GetItemsBySearch([FromQuery] string search, [FromQuery] int amountOfItemsShown, [FromQuery] SortByPrice? sortByPrice, [FromQuery] ItemType? itemType)
         {
-            return await _itemService.GetItemsBySearch(search, amountOfItemsShown, sortByPrice, wineType);
+            return await _itemService.GetItemsBySearch(search, amountOfItemsShown, sortByPrice, itemType);
         }
 
 
         [HttpGet("itemCount")]
-        public async Task<ActionResult<int>> GetItemCount([FromQuery] string search, [FromQuery] SortByPrice? sortByPrice, [FromQuery] WineType? wineType)
+        public async Task<ActionResult<int>> GetItemCount([FromQuery] string search, [FromQuery] SortByPrice? sortByPrice, [FromQuery] ItemType? itemType)
         {
-            return await _itemService.GetItemCount(search, sortByPrice, wineType);
+            return await _itemService.GetItemCount(search, sortByPrice, itemType);
         }
 
         [HttpGet("{id}")]

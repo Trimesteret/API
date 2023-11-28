@@ -1,4 +1,5 @@
 using System.Transactions;
+using API.Enums;
 
 namespace API.Models.Items;
 
@@ -14,26 +15,18 @@ public class Wine : Item
     public string TastingNotes { get; protected set; }
     public string SuitableFor { get; protected set; }
     public string ServingTemperature { get; protected set; }
+    public WineType? WineType { get; protected set; }
 
-    public Wine(string name, string ean, int quantity, float price, string imageUrl, string description, float mass, int? year, double? volume, double? alcoholPercentage, string country, string region, string grapeSort, string winery, string tastingNotes, string suitableFor, string servingTemperature)
+    public Wine(){}
+
+    public Wine(string name, string ean, int quantity, float price, string description, ItemType itemType, WineType? wineType)
     {
-        this.Id = id;
         this.Name = name;
         this.Ean = ean;
         this.Quantity = quantity;
         this.Price = price;
-        this.ImageUrl = imageUrl;
         this.Description = description;
-        this.Mass = mass;
-        this.Year = year;
-        this.Volume = volume;
-        this.AlcoholPercentage = alcoholPercentage;
-        this.Country = country;
-        this.Region = region;
-        this.GrapeSort = grapeSort;
-        this.Winery = winery;
-        this.TastingNotes = tastingNotes;
-        this.SuitableFor = suitableFor;
-        this.ServingTemperature = servingTemperature;
+        this.WineType = wineType;
+        this.ItemType = itemType;
     }
 }

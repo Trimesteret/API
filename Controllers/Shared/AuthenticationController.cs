@@ -1,7 +1,6 @@
 using API.DataTransferObjects;
 using API.Enums;
 using API.Services.Shared;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers.Shared

@@ -9,7 +9,7 @@ public class ItemDto
     public string ItemName { get; set; }
     public string Ean { get; set; }
     public string ItemDescription { get; set; }
-    public double ItemPrice { get; set; }
+    public float Price { get; set; }
     public int ItemQuantity { get; set; }
     public int? Year { get; set; }
     public double? Volume { get; set; }
