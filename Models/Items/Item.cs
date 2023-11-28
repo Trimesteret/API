@@ -11,7 +11,8 @@ public abstract class Item
     public double Price { get; protected set; }
     public string ImageUrl { get; protected set; }
     public string Description { get; protected set; }
-    public WineType? WineType { get; protected set; }
+    public float Mass { get; protected set; }
+    public DateTime? ExpirationDate { get; protected set; }
 }
 
 

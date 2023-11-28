@@ -3,6 +3,7 @@ using System;
 using API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(SharedContext))]
-    partial class SharedContextModelSnapshot : ModelSnapshot
+    [Migration("20231123174933_AddedMassToItem")]
+    partial class AddedMassToItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,9 +46,6 @@ namespace API.Migrations
 
                     b.Property<string>("Phone")
                         .HasColumnType("longtext");
-
-                    b.Property<byte[]>("Salt")
-                        .HasColumnType("longblob");
 
                     b.Property<string>("Token")
                         .HasColumnType("longtext");
@@ -78,6 +78,9 @@ namespace API.Migrations
                     b.Property<string>("Ean")
                         .HasColumnType("longtext");
 
+                    b.Property<DateTime?>("ExpirationDate")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("ImageUrl")
                         .HasColumnType("longtext");
 
@@ -90,8 +93,8 @@ namespace API.Migrations
                     b.Property<int?>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("double");
+                    b.Property<float>("Price")
+                        .HasColumnType("float");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -99,7 +102,7 @@ namespace API.Migrations
                     b.Property<int?>("SupplierId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("WineType")
+                    b.Property<int?>("Type")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

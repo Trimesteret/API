@@ -15,14 +15,25 @@ public class Wine : Item
     public string SuitableFor { get; protected set; }
     public string ServingTemperature { get; protected set; }
 
-    public Wine(int id, string name, string ean, int quantity, double price, string description)
+    public Wine(string name, string ean, int quantity, float price, string imageUrl, string description, float mass, int? year, double? volume, double? alcoholPercentage, string country, string region, string grapeSort, string winery, string tastingNotes, string suitableFor, string servingTemperature)
     {
         this.Id = id;
         this.Name = name;
         this.Ean = ean;
         this.Quantity = quantity;
         this.Price = price;
+        this.ImageUrl = imageUrl;
         this.Description = description;
-        // this.ImageUrl = imageUrl;
+        this.Mass = mass;
+        this.Year = year;
+        this.Volume = volume;
+        this.AlcoholPercentage = alcoholPercentage;
+        this.Country = country;
+        this.Region = region;
+        this.GrapeSort = grapeSort;
+        this.Winery = winery;
+        this.TastingNotes = tastingNotes;
+        this.SuitableFor = suitableFor;
+        this.ServingTemperature = servingTemperature;
     }
 }
