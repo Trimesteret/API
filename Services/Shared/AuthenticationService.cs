@@ -115,10 +115,10 @@ namespace API.Services.Shared
         /// Verifies a user by a given token and role
         /// </summary>
         /// <param name="token"></param>
-        /// <param name="role"></param>
+        /// <param name="expectedRole"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public async Task<Role> VerifyRole(string token, Role role)
+        public async Task<Role> VerifyRole(string token, Role expectedRole)
         {
             var dbUser = await _sharedContext.Users.FirstOrDefaultAsync(u => u.Token == token);
 
@@ -127,7 +127,7 @@ namespace API.Services.Shared
                 throw new Exception("Failed trying to verify incorrect token");
             }
 
-            if((int) dbUser.Role <= (int) role)
+            if((int) dbUser.Role <= (int) expectedRole)
             {
                 throw new Exception("Incorrect role");
             }
