@@ -6,7 +6,7 @@ public class Liquor: Item
 {
     public Liquor(){}
 
-    public Liquor(string name, string ean, int quantity, float price, string description, ItemType itemType)
+    public Liquor(string name, string ean, int quantity, double price, string description, ItemType itemType)
     {
         this.Name = name;
         this.Ean = ean;

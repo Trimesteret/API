@@ -6,7 +6,7 @@ public class DefaultItem: Item
 {
     public DefaultItem(){}
 
-    public DefaultItem(string name, string ean, int quantity, float price, string description, ItemType itemType)
+    public DefaultItem(string name, string ean, int quantity, double price, string description, ItemType itemType)
     {
         this.Name = name;
         this.Ean = ean;

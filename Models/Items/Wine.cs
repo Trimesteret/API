@@ -19,7 +19,7 @@ public class Wine : Item
 
     public Wine(){}
 
-    public Wine(string name, string ean, int quantity, float price, string description, ItemType itemType, WineType? wineType)
+    public Wine(string name, string ean, int quantity, double price, string description, ItemType itemType, WineType? wineType)
     {
         this.Name = name;
         this.Ean = ean;
