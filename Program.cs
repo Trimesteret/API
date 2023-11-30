@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-// Add services to the container.
+builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>

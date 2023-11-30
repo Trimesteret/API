@@ -6,11 +6,15 @@ namespace API.Services.Shared;
 
 public interface IUserService
 {
-    public Task<List<User>> GetAllUsers();
+    public Task<List<UserStandardDto>> GetAllUsers();
 
-    public Task<User> GetSelf();
+    public Task<UserStandardDto> GetSelf();
 
-    public Task<ActionResult> EditUser(UserStandardDto user);
+    public Task<UserStandardDto> GetUserById(int id);
+
+    public Task<UserStandardDto> EditUser(UserStandardDto userStandardDto);
 
     public Task<User> EditSelf(UserStandardDto user);
+
+    public Task<bool> DeleteUser(int id);
 }
