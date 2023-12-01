@@ -35,7 +35,7 @@ public class ItemService : IItemService
         switch (itemDto.ItemType)
         {
             case ItemType.Wine:
-                Wine wine = new Wine(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price, itemDto.ItemDescription, itemDto.ItemType, itemDto.WineType);
+                Wine wine = new Wine(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price, itemDto.ItemDescription, itemDto.ItemType, itemDto.WineType, itemDto.Year, itemDto.Volume, itemDto.AlcoholPercentage, itemDto.Country, itemDto.Region, itemDto.GrapeSort, itemDto.Winery, itemDto.TastingNotes, itemDto.SuitableFor);
                 await _sharedContext.Wines.AddAsync(wine);
                 await _sharedContext.SaveChangesAsync();
                 return wine;

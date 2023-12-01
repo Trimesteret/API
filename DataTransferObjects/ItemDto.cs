@@ -15,8 +15,11 @@ public class ItemDto
     public double? Volume { get; set; }
     public double? AlcoholPercentage { get; set; }
     public string Country { get; set; } = null;
-    public string Grapesort { get; set; } = null;
-    public string Suitables { get; set; } = null;
+    public string Region { get; set; } = null;
+    public string GrapeSort { get; set; } = null;
+    public string Winery { get; set; } = null;
+    public string TastingNotes { get; set; } = null;
+    public string SuitableFor { get; set; } = null;
     public WineType? WineType { get; set; }
     public ItemType ItemType { get; set; }
     public string ImageUrl { get; set; } = null;

@@ -14,12 +14,14 @@ public class Wine : Item
     public string Winery { get; protected set; }
     public string TastingNotes { get; protected set; }
     public string SuitableFor { get; protected set; }
-    public string ServingTemperature { get; protected set; }
     public WineType? WineType { get; protected set; }
 
     public Wine(){}
 
-    public Wine(string name, string ean, int quantity, double price, string description, ItemType itemType, WineType? wineType)
+    public Wine(string name, string ean, int quantity, double price, string description, 
+                ItemType itemType, WineType? wineType, int? year, double? volume, 
+                double? alcoholPercentage, string country, string region, string grapeSort, 
+                string winery, string tastingNotes, string suitableFor)
     {
         this.Name = name;
         this.Ean = ean;
@@ -28,5 +30,14 @@ public class Wine : Item
         this.Description = description;
         this.WineType = wineType;
         this.ItemType = itemType;
+        this.Year = year;
+        this.Volume = volume;
+        this.AlcoholPercentage = alcoholPercentage;
+        this.Country = country;
+        this.Region = region;
+        this.GrapeSort = grapeSort;
+        this.Winery = winery;
+        this.TastingNotes = tastingNotes;
+        this.SuitableFor = suitableFor;
     }
 }
