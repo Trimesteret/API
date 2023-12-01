@@ -28,7 +28,7 @@ public class TokenService : ITokenService
             Subject = new ClaimsIdentity(new Claim[]
             {
                 new (ClaimTypes.Email, user.Email),
-                new (ClaimTypes.Role, user.GetClassRoleEnum().ToString()),
+                new (ClaimTypes.Role, user.Role.ToString()),
             }),
             Expires = DateTime.UtcNow.AddHours(24),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

@@ -13,22 +13,20 @@ public class Admin : Employee
         Email = email;
         Password = password;
         Token = "";
+        Role = Role.Admin;
     }
 
     public Admin(User user)
     {
+        Id = user.Id;
         FirstName = user.FirstName;
         LastName = user.LastName;
         Phone = user.Phone;
         Email = user.Email;
         Password = user.Password;
-        Token = "";
-    }
-
-    override
-    public Roles GetClassRoleEnum()
-    {
-        return Roles.Admin;
+        Token = user.Token;
+        Salt = user.Salt;
+        Role = Role.Admin;
     }
 
     protected void ChangeAdmin(string firstName, string lastName, string phone, string email, string password, int? phoneNumber)
@@ -39,6 +37,7 @@ public class Admin : Employee
         Email = email;
         Password = password;
         Token = "";
+        Role = Role.Admin;
     }
 
     public void EditUser(User user, string firstName, string lastName, int phone, string email, string password, int? phoneNumber)

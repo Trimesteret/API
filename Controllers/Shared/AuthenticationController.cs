@@ -75,7 +75,7 @@ namespace API.Controllers.Shared
         }
 
         [HttpGet("VerifyRole")]
-        public async Task<ActionResult<Roles>> VerifyRole([FromQuery] string token, [FromQuery] Roles role)
+        public async Task<ActionResult<Role>> VerifyRole([FromQuery] string token, [FromQuery] Role role)
         {
             try
             {
