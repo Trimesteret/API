@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Security.Cryptography;
 using API.DataTransferObjects;
 using API.Enums;
 using API.Models;
@@ -12,12 +14,16 @@ public class UserService : IUserService
     private readonly SharedContext _sharedContext;
     private readonly IAuthService _authService;
     private readonly IMapper _mapper;
+    private readonly IAuthenticationService _authenticationService;
 
-    public UserService(SharedContext dbSharedContext, IAuthService authService, IMapper mapper)
+    const int KeySize = 64;
+
+    public UserService(SharedContext dbSharedContext, IAuthService authService, IMapper mapper, IAuthenticationService authenticationService)
     {
         _sharedContext = dbSharedContext;
         _authService = authService;
         _mapper = mapper;
+        _authenticationService = authenticationService;
     }
 
     /// <summary>
@@ -104,7 +110,6 @@ public class UserService : IUserService
                 throw new ArgumentOutOfRangeException();
         }
     }
-
     /// <summary>
     /// Edits the currently logged in user
     /// </summary>
@@ -137,4 +142,35 @@ public class UserService : IUserService
         await _sharedContext.SaveChangesAsync();
         return true;
     }
+    public async Task<User> ChangeSelfPassword(LoginDto loginDto)
+    {
+        //get user
+        var dbUser = await _sharedContext.Users.FirstOrDefaultAsync(u => u.Email == loginDto.Email);
+
+        //Returns without changes, if user has not requested any password changes
+        if (loginDto.Password == null)
+        {
+            return dbUser;
+        }
+        //verify current password
+        if (AuthenticationService.HashPassword(loginDto.Password, dbUser.Salt) != dbUser.Password)
+        {
+            throw new Exception("Incorrect password");
+        }
+
+        //check that new passwords are the same
+        if (loginDto.NewPasswordOne != loginDto.NewPasswordTwo)
+        {
+            throw new Exception("Passwords don't match");
+        }
+
+        //save changes to db
+        var salt = RandomNumberGenerator.GetBytes(KeySize);
+        var hashedPassword = AuthenticationService.HashPassword(loginDto.NewPasswordOne, salt);
+        dbUser.ChangeUserPassword(hashedPassword, salt);
+        await _sharedContext.SaveChangesAsync();
+
+        return dbUser;
+    }
 }
+

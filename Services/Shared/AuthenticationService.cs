@@ -52,7 +52,7 @@ namespace API.Services.Shared
         /// <param name="password"></param>
         /// <param name="salt"></param>
         /// <returns></returns>
-        private static string HashPassword(string password, byte[] salt)
+        public static string HashPassword(string password, byte[] salt)
         {
             var hash = Rfc2898DeriveBytes.Pbkdf2(
                 Encoding.UTF8.GetBytes(password),
@@ -84,6 +84,7 @@ namespace API.Services.Shared
 
             return true;
         }
+
 
 
         /// <summary>

@@ -62,6 +62,23 @@ namespace API.Controllers.Shared
             return Ok();
         }
 
+        [HttpPut("password")]
+        [Authorize(Policy = "require-admin-role")]
+        public async Task<ActionResult> ChangeSelfPassword(LoginDto user)
+        {
+            try
+            {
+                await _userService.ChangeSelfPassword(user);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                BadRequest(e.Message);
+                throw;
+            }
+            return Ok();
+        }
+
         [HttpDelete("{id}")]
         [Authorize(Policy = "require-admin-role")]
         public async Task<bool> DeleteUser(int id)

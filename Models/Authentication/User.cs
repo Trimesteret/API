@@ -36,4 +36,11 @@ public abstract class User
         Token = "";
         TokenExpiration = null;
     }
+
+    public void ChangeUserPassword(string password, Byte[] salt)
+    {
+        this.Password = password;
+        this.Salt = salt;
+    }
+
 }
