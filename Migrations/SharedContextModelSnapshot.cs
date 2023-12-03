@@ -219,7 +219,7 @@ namespace API.Migrations
                     b.HasDiscriminator().HasValue("Wine");
                 });
 
-            modelBuilder.Entity("API.Models.Orders.CustomerPurchaseOrder", b =>
+            modelBuilder.Entity("API.Models.Orders.PurchaseOrder", b =>
                 {
                     b.HasBaseType("API.Models.Orders.Order");
 
@@ -228,7 +228,7 @@ namespace API.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.HasDiscriminator().HasValue("CustomerPurchaseOrder");
+                    b.HasDiscriminator().HasValue("PurchaseOrder");
                 });
 
             modelBuilder.Entity("API.Models.Authentication.Admin", b =>
@@ -249,7 +249,7 @@ namespace API.Migrations
                         .HasForeignKey("SupplierId");
                 });
 
-            modelBuilder.Entity("API.Models.Orders.CustomerPurchaseOrder", b =>
+            modelBuilder.Entity("API.Models.Orders.PurchaseOrder", b =>
                 {
                     b.HasOne("API.Models.Authentication.Customer", "Customer")
                         .WithMany("CustomerPurchaseOrders")
