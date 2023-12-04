@@ -46,4 +46,27 @@ public class Wine : Item
         this.TastingNotes = tastingNotes;
         this.SuitableFor = suitableFor;
     }
+    
+    public void ChangeWineProperties(string name, string ean, int quantity, double price, string description, 
+        ItemType itemType, WineType? wineType, int? year, double? volume, 
+        double? alcoholPercentage, string country, string region, string grapeSort, 
+        string winery, string tastingNotes, string suitableFor)
+    {
+        Name = name;
+        Ean = ean;
+        Quantity = quantity;
+        Price = price;
+        Description = description;
+        WineType = wineType;
+        ItemType = itemType;
+        Year = year;
+        Volume = volume;
+        AlcoholPercentage = alcoholPercentage;
+        Country = country;
+        Region = region;
+        GrapeSort = grapeSort;
+        Winery = winery;
+        TastingNotes = tastingNotes;
+        SuitableFor = suitableFor;
+    }
 }
