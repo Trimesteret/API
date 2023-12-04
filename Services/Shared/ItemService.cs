@@ -55,7 +55,7 @@ public class ItemService : IItemService
     }
 
 
-    public Task<int> GetItemCount(SortByPrice? sortByPrice, ItemType? itemType, string search = ""))
+    public Task<int> GetItemCount(SortByPrice? sortByPrice, ItemType? itemType, string search = "")
     {
         IQueryable<Item> query = _sharedContext.Items;
 
