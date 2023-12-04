@@ -9,5 +9,5 @@ public interface IItemService
 
     public Task<Item> GetItemById(int id);
 
-    public Task<int> GetItemCount(string? search, SortByPrice? sortByPrice, ItemType? itemType);
+    public Task<int> GetItemCount(SortByPrice? sortByPrice, ItemType? itemType, string search = "");
 }

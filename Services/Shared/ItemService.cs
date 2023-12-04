@@ -18,7 +18,7 @@ public class ItemService : IItemService
     {
         IQueryable<Item> query = _sharedContext.Items;
 
-        query = AddSearchToQuery(search, sortByPrice, itemType, query);
+        query = AddSearchToQuery(sortByPrice, itemType, query, search);
 
         return await query.Take(amountOfItemsShown).ToListAsync();
     }
@@ -28,11 +28,11 @@ public class ItemService : IItemService
         return await _sharedContext.Items.FirstOrDefaultAsync(i => i.Id == id);
     }
 
-    public Task<int> GetItemCount(string? search, SortByPrice? sortByPrice, ItemType? itemType)
+    public Task<int> GetItemCount(SortByPrice? sortByPrice, ItemType? itemType, string search = "")
     {
         IQueryable<Item> query = _sharedContext.Items;
 
-        query = AddSearchToQuery(search, sortByPrice, itemType, query);
+        query = AddSearchToQuery(sortByPrice, itemType, query, search);
 
         return query.CountAsync();
     }
@@ -45,22 +45,11 @@ public class ItemService : IItemService
     /// <param name="itemType">Item filter</param>
     /// <param name="query">The query to add search, sorting and filter to</param>
     /// <returns></returns>
-    private IQueryable<Item> AddSearchToQuery(string? search, SortByPrice? sortByPrice, ItemType? itemType, IQueryable<Item> query)
+    private IQueryable<Item> AddSearchToQuery(SortByPrice? sortByPrice, ItemType? itemType, IQueryable<Item> query, string search = "")
     {
-
         if (!string.IsNullOrEmpty(search))
         {
             query = query.Where(item => item.Name.ToLower().Contains(search.ToLower()) || item.Price.ToString().Contains(search));
-        }
-
-        switch (sortByPrice)
-        {
-            case SortByPrice.Ascending:
-                query = query.OrderBy(item => item.Price);
-                break;
-            case SortByPrice.Descending:
-                query = query.OrderByDescending(item => item.Price);
-                break;
         }
 
         switch (itemType)
@@ -73,6 +62,16 @@ public class ItemService : IItemService
                 break;
             case ItemType.RoseWine:
                 query = query.Where(item => item.Type == ItemType.RoseWine);
+                break;
+        }
+
+        switch (sortByPrice)
+        {
+            case SortByPrice.Ascending:
+                query = query.OrderBy(item => item.Price);
+                break;
+            case SortByPrice.Descending:
+                query = query.OrderByDescending(item => item.Price);
                 break;
         }
 

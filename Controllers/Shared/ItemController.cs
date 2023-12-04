@@ -25,7 +25,7 @@ namespace API.Controllers.Shared
         [HttpGet("itemCount")]
         public async Task<ActionResult<int>> GetItemCount([FromQuery] string search, [FromQuery] SortByPrice? sortByPrice, [FromQuery] ItemType? itemType)
         {
-            return await _itemService.GetItemCount(search, sortByPrice, itemType);
+            return await _itemService.GetItemCount(sortByPrice, itemType, search);
         }
 
         [HttpGet("{id}")]

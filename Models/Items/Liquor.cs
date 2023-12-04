@@ -2,6 +2,14 @@ namespace API.Models.Items;
 
 public class Liquor: Item
 {
+    /**
+     * Parameterless constructor for EF Core
+     */
+    public Liquor()
+    {
+
+    }
+
     public Liquor(string name, string ean, int quantity, float price, string imageUrl, string description, float mass)
     {
         this.Name = name;
