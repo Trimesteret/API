@@ -17,20 +17,6 @@ namespace API.Controllers.Shared
             _authorizationService = authService;
         }
 
-        [HttpGet("/purchaseOrder")]
-        public async Task<PurchaseOrder> GetPurchaseOrder()
-        {
-            var user = await _authorizationService.GetActiveUser();
-            if (user.Role != Role.Customer && user.Role != Role.Guest)
-            {
-                return null;
-            }
-
-            var guest = user as Guest;
-
-            return guest.GetOpenPurchaseOrder();
-        }
-
     }
 
 }
