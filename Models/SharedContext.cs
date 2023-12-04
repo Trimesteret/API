@@ -18,7 +18,7 @@ public class SharedContext : DbContext
     public DbSet<Customer> Customers { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Liquor> Liquors { get; set; }
-    public DbSet<DefaultItem> Chocolates { get; set; }
+    public DbSet<DefaultItem> DefaultItems { get; set; }
     public DbSet<Item> Items { get; set; }
     public DbSet<Wine> Wines { get; set; }
     public DbSet<Supplier> Suppliers { get; set; }
