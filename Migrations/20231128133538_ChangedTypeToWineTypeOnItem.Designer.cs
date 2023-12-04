@@ -3,6 +3,7 @@ using System;
 using API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(SharedContext))]
-    partial class SharedContextModelSnapshot : ModelSnapshot
+    [Migration("20231128133538_ChangedTypeToWineTypeOnItem")]
+    partial class ChangedTypeToWineTypeOnItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,9 +46,6 @@ namespace API.Migrations
 
                     b.Property<string>("Phone")
                         .HasColumnType("longtext");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("int");
 
                     b.Property<byte[]>("Salt")
                         .HasColumnType("longblob");
@@ -84,12 +84,6 @@ namespace API.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("ItemType")
-                        .HasColumnType("int");
-
-                    b.Property<float>("Mass")
-                        .HasColumnType("float");
-
                     b.Property<string>("Name")
                         .HasColumnType("longtext");
 
@@ -103,6 +97,9 @@ namespace API.Migrations
                         .HasColumnType("int");
 
                     b.Property<int?>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("WineType")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -195,6 +192,9 @@ namespace API.Migrations
                     b.Property<string>("Region")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("ServingTemperature")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("SuitableFor")
                         .HasColumnType("longtext");
 
@@ -203,9 +203,6 @@ namespace API.Migrations
 
                     b.Property<double?>("Volume")
                         .HasColumnType("double");
-
-                    b.Property<int?>("WineType")
-                        .HasColumnType("int");
 
                     b.Property<string>("Winery")
                         .HasColumnType("longtext");
