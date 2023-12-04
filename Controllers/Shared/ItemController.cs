@@ -50,5 +50,20 @@ namespace API.Controllers.Shared
                 return BadRequest(e.Message);
             }
         }
+        
+        [HttpPut]
+        public async Task<ActionResult<Item>> PutItem([FromBody] ItemDto item)
+        {
+            try
+            {
+                await _itemService.EditItem(item);
+                return Ok(true);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest(e.Message);
+            }
+        }
     }
 }

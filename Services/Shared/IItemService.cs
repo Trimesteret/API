@@ -13,4 +13,6 @@ public interface IItemService
     public Task<int> GetItemCount(string? search, SortByPrice? sortByPrice, ItemType? itemType);
 
     public Task<Item> CreateItem(ItemDto itemDto);
+
+    public Task<Item> EditItem(ItemDto itemDto);
 }

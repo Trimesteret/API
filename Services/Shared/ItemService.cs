@@ -105,4 +105,35 @@ public class ItemService : IItemService
 
         return query;
     }
+    
+    public async Task<Item> EditItem(ItemDto itemDto)
+    {
+        var itemToEdit = await _sharedContext.Items.FirstOrDefaultAsync(itemToEdit => itemToEdit.Id == itemDto.Id);
+        
+        if (itemToEdit == null)
+        {
+            throw new Exception("Could not find item with id: " + itemDto.Id);
+        }
+        
+        switch (itemDto.ItemType)
+        {
+            case ItemType.Wine:
+                Wine wine = (Wine)itemToEdit;
+                wine.ChangeWineProperties(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price, itemDto.ItemDescription, itemDto.ItemType, itemDto.WineType, itemDto.Year, itemDto.Volume, itemDto.AlcoholPercentage, itemDto.Country, itemDto.Region, itemDto.GrapeSort, itemDto.Winery, itemDto.TastingNotes, itemDto.SuitableFor);
+                await _sharedContext.SaveChangesAsync();
+                return wine;
+            case ItemType.Liquor:
+                Liquor liquor = (Liquor)itemToEdit;
+                liquor.ChangeLiquorProperties(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price, itemDto.ItemDescription, itemDto.ItemType);
+                await _sharedContext.SaveChangesAsync();
+                return liquor;
+            case ItemType.DefaultItem:
+                DefaultItem defaultItem = (DefaultItem)itemToEdit;
+                defaultItem.ChangeDefaultItemProperties(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price, itemDto.ItemDescription, itemDto.ItemType);
+                await _sharedContext.SaveChangesAsync();
+                return defaultItem;
+            default:
+                throw new NotImplementedException("Item not edited");
+        }
+    }
 }
