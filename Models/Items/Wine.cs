@@ -16,7 +16,13 @@ public class Wine : Item
     public string SuitableFor { get; protected set; }
     public WineType? WineType { get; protected set; }
 
-    public Wine(){}
+    /**
+     * Parameterless constructor for EF Core
+     */
+    public Wine()
+    {
+
+    }
 
     public Wine(string name, string ean, int quantity, double price, string description, 
                 ItemType itemType, WineType? wineType, int? year, double? volume, 

@@ -1,13 +1,10 @@
 using API.Enums;
-using API.Models.Items;
 using API.Models.Orders;
 
 namespace API.Models.Authentication;
 
-public class Customer : User
+public class Customer : Guest
 {
-    public List<CustomerPurchaseOrder> CustomerPurchaseOrders { get; protected set; }
-
     public Customer(string firstName, string lastName, string phone, string email, string password, Byte[] salt)
     {
         FirstName = firstName;
@@ -17,7 +14,7 @@ public class Customer : User
         Password = password;
         Salt = salt;
         Token = "";
-        CustomerPurchaseOrders = new List<CustomerPurchaseOrder>();
+        PurchaseOrders = new List<PurchaseOrder>();
         Role = Role.Customer;
     }
 
@@ -31,7 +28,7 @@ public class Customer : User
         Password = user.Password;
         Salt = user.Salt;
         Token = user.Token;
-        CustomerPurchaseOrders = new List<CustomerPurchaseOrder>();
+        PurchaseOrders = new List<PurchaseOrder>();
         Role = Role.Customer;
     }
 
@@ -44,12 +41,5 @@ public class Customer : User
         Password = password;
         Token = "";
         Role = Role.Customer;
-    }
-
-    public CustomerPurchaseOrder PlaceCustomerPurchaseOrder(List<Item> items, string comment)
-    {
-        var customerPurchaseOrder = new CustomerPurchaseOrder(this, items, comment);
-        this.CustomerPurchaseOrders.Add(customerPurchaseOrder);
-        return customerPurchaseOrder;
     }
 }

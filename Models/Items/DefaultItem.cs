@@ -4,7 +4,13 @@ namespace API.Models.Items;
 
 public class DefaultItem: Item
 {
-    public DefaultItem(){}
+    /**
+     * Parameterless constructor for EF Core
+     */
+    public DefaultItem()
+    {
+
+    }
 
     public DefaultItem(string name, string ean, int quantity, double price, string description, ItemType itemType)
     {
