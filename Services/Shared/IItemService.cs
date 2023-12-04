@@ -15,4 +15,6 @@ public interface IItemService
     public Task<Item> CreateItem(ItemDto itemDto);
 
     public Task<Item> EditItem(ItemDto itemDto);
+
+    public Task<List<Item>> GetAllItems();
 }

@@ -18,6 +18,12 @@ namespace API.Controllers.Shared
         }
 
         [HttpGet]
+        public async Task<ActionResult<List<Item>>> GetAllItems()
+        {
+            return await _itemService.GetAllItems();
+        }
+
+        [HttpGet("search")]
         public async Task<ActionResult<List<Item>>> GetItemsBySearch([FromQuery] string search, [FromQuery] int amountOfItemsShown, [FromQuery] SortByPrice? sortByPrice, [FromQuery] ItemType? itemType)
         {
             return await _itemService.GetItemsBySearch(search, amountOfItemsShown, sortByPrice, itemType);
@@ -50,7 +56,7 @@ namespace API.Controllers.Shared
                 return BadRequest(e.Message);
             }
         }
-        
+
         [HttpPut]
         public async Task<ActionResult<Item>> PutItem([FromBody] ItemDto item)
         {

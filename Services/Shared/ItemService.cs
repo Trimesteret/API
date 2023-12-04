@@ -2,7 +2,6 @@ using API.DataTransferObjects;
 using API.Enums;
 using API.Models;
 using API.Models.Items;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Services.Shared;
@@ -104,16 +103,16 @@ public class ItemService : IItemService
 
         return query;
     }
-    
+
     public async Task<Item> EditItem(ItemDto itemDto)
     {
         var itemToEdit = await _sharedContext.Items.FirstOrDefaultAsync(itemToEdit => itemToEdit.Id == itemDto.Id);
-        
+
         if (itemToEdit == null)
         {
             throw new Exception("Could not find item with id: " + itemDto.Id);
         }
-        
+
         switch (itemDto.ItemType)
         {
             case ItemType.Wine:
@@ -134,5 +133,10 @@ public class ItemService : IItemService
             default:
                 throw new NotImplementedException("Item not edited");
         }
+    }
+
+    public async Task<List<Item>> GetAllItems()
+    {
+        return await _sharedContext.Items.ToListAsync();
     }
 }
