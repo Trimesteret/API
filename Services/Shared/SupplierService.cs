@@ -18,18 +18,13 @@ public class SupplierService : ISupplierService
         _sharedContext = dbSharedContext;
     }
     
-    public async Task<Supplier> CreateItem(SupplierDto supplierDto)
+    public async Task<Supplier> CreateSupplier(SupplierDto supplierDto)
     {
         Supplier supplier = new Supplier(supplierDto.Name, supplierDto.Items);
         await _sharedContext.Suppliers.AddAsync(supplier);
         await _sharedContext.SaveChangesAsync();
         return supplier;
-           
-    }
 
-    public Task<Supplier> CreateSupplier(SupplierDto supplierDto)
-    {
-        throw new NotImplementedException();
     }
 
     public async Task<List<Supplier>> GetAllSuppliers()

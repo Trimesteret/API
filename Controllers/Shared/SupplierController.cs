@@ -18,11 +18,11 @@ namespace API.Controllers.Shared
 
 
         // POST: api/Supplier
-        [HttpPost("CreateSupplier")]
+        [HttpPost]
+        
         public async Task<ActionResult<Supplier>> PostSupplier([FromBody]SupplierDto supplier)
         {
-            try
-            {
+            try {
                 await _supplierService.CreateSupplier(supplier);
                 return Ok(true);
             }
