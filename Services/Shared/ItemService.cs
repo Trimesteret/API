@@ -55,7 +55,8 @@ public class ItemService : IItemService
         switch (itemDto.ItemType)
         {
             case ItemType.Wine:
-                Wine wine = activeAdminUser.CreateWine(itemDto);
+                var suitableFor = await _sharedContext.CustomEnums.Where(cEnum => itemDto.SuitableForEnumIds.Contains(cEnum.Id)).ToListAsync();
+                Wine wine = activeAdminUser.CreateWine(itemDto, suitableFor);
                 await _sharedContext.Wines.AddAsync(wine);
                 await _sharedContext.SaveChangesAsync();
                 return wine;
@@ -156,7 +157,11 @@ public class ItemService : IItemService
         {
             case ItemType.Wine:
                 Wine wine = (Wine)itemToEdit;
-                wine.ChangeWineProperties(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price, itemDto.ItemDescription, itemDto.WineType, itemDto.Year, itemDto.Volume, itemDto.AlcoholPercentage, itemDto.Country, itemDto.Region, itemDto.GrapeSort, itemDto.Winery, itemDto.TastingNotes, itemDto.SuitableFor);
+                var suitableFor = await _sharedContext.CustomEnums.Where(cEnum => itemDto.SuitableForEnumIds.Contains(cEnum.Id)).ToListAsync();
+                wine.ChangeWineProperties(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price,
+                    itemDto.ItemDescription, itemDto.WineType, itemDto.Year, itemDto.Volume, itemDto.AlcoholPercentage,
+                    itemDto.Country, itemDto.Region, itemDto.GrapeSort, itemDto.Winery, itemDto.TastingNotes,
+                    suitableFor);
                 await _sharedContext.SaveChangesAsync();
                 return wine;
             case ItemType.Liquor:

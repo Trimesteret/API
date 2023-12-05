@@ -1,3 +1,4 @@
+using API.Enums;
 using API.Models.Authentication;
 using API.Models.Items;
 using API.Models.Orders;
@@ -13,6 +14,11 @@ public class SharedContext : DbContext
 
     }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.EnableSensitiveDataLogging();
+    }
+
     public DbSet<Employee> Employees { get; set; }
     public DbSet<Admin> Admins { get; set; }
     public DbSet<Customer> Customers { get; set; }
@@ -23,4 +29,5 @@ public class SharedContext : DbContext
     public DbSet<Wine> Wines { get; set; }
     public DbSet<Supplier> Suppliers { get; set; }
     public DbSet<Order> Order { get; set; }
+    public DbSet<CustomEnum> CustomEnums { get; set; }
 }

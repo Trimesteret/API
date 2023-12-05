@@ -1,4 +1,3 @@
-using System.Transactions;
 using API.Enums;
 
 namespace API.Models.Items;
@@ -13,7 +12,7 @@ public class Wine : Item
     public string GrapeSort { get; protected set; }
     public string Winery { get; protected set; }
     public string TastingNotes { get; protected set; }
-    public List<SuitableFor> SuitableFor { get; protected set; }
+    public List<CustomEnum>? SuitableFor { get; protected set; }
     public WineType? WineType { get; protected set; }
 
     /**
@@ -27,7 +26,7 @@ public class Wine : Item
     public Wine(string name, string ean, int quantity, double price, string description,
                 WineType? wineType, int? year, double? volume,
                 double? alcoholPercentage, string country, string region, string grapeSort,
-                string winery, string tastingNotes, List<SuitableFor> suitableFor)
+                string winery, string tastingNotes, List<CustomEnum> suitableFor)
     {
         this.Name = name;
         this.Ean = ean;
@@ -49,22 +48,22 @@ public class Wine : Item
 
     public void ChangeWineProperties(string name, string ean, int quantity, double price, string description,
         WineType? wineType, int? year, double? volume, double? alcoholPercentage, string country, string region,
-        string grapeSort, string winery, string tastingNotes, List<SuitableFor> suitableFor)
+        string grapeSort, string winery, string tastingNotes, List<CustomEnum> suitableFor)
     {
-        Name = name;
-        Ean = ean;
-        Quantity = quantity;
-        Price = price;
-        Description = description;
-        WineType = wineType;
-        Year = year;
-        Volume = volume;
-        AlcoholPercentage = alcoholPercentage;
-        Country = country;
-        Region = region;
-        GrapeSort = grapeSort;
-        Winery = winery;
-        TastingNotes = tastingNotes;
-        SuitableFor = suitableFor;
+        this.Name = name;
+        this.Ean = ean;
+        this.Quantity = quantity;
+        this.Price = price;
+        this.Description = description;
+        this.WineType = wineType;
+        this.Year = year;
+        this.Volume = volume;
+        this.AlcoholPercentage = alcoholPercentage;
+        this.Country = country;
+        this.Region = region;
+        this.GrapeSort = grapeSort;
+        this.Winery = winery;
+        this.TastingNotes = tastingNotes;
+        this.SuitableFor.AddRange(suitableFor);
     }
 }

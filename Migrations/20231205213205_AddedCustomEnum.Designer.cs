@@ -3,6 +3,7 @@ using System;
 using API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(SharedContext))]
-    partial class SharedContextModelSnapshot : ModelSnapshot
+    [Migration("20231205213205_AddedCustomEnum")]
+    partial class AddedCustomEnum
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,7 +28,7 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("EnumType")
+                    b.Property<int?>("EnumTypeId")
                         .HasColumnType("int");
 
                     b.Property<string>("Key")
@@ -39,9 +42,25 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EnumTypeId");
+
                     b.HasIndex("WineId");
 
                     b.ToTable("CustomEnums");
+                });
+
+            modelBuilder.Entity("API.Enums.EnumType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("EnumName")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EnumType");
                 });
 
             modelBuilder.Entity("API.Models.Authentication.User", b =>
@@ -302,9 +321,15 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Enums.CustomEnum", b =>
                 {
+                    b.HasOne("API.Enums.EnumType", "EnumType")
+                        .WithMany()
+                        .HasForeignKey("EnumTypeId");
+
                     b.HasOne("API.Models.Items.Wine", null)
                         .WithMany("SuitableFor")
                         .HasForeignKey("WineId");
+
+                    b.Navigation("EnumType");
                 });
 
             modelBuilder.Entity("API.Models.Items.Item", b =>
