@@ -63,7 +63,6 @@ namespace API.Controllers.Shared
         }
 
         [HttpPut("password")]
-        [Authorize(Policy = "require-admin-role")]
         public async Task<ActionResult> ChangeSelfPassword(LoginDto user)
         {
             try
@@ -74,7 +73,6 @@ namespace API.Controllers.Shared
             {
                 Console.WriteLine(e.Message);
                 BadRequest(e.Message);
-                throw;
             }
             return Ok();
         }

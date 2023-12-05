@@ -126,11 +126,11 @@ public class UserService : IUserService
     }
 
     /// <summary>
-    ///
+    /// Deletes a user given an ID
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
+    /// <param name="id">ID of the user</param>
+    /// <returns>boolean</returns>
+    /// <exception cref="Exception">Could not find user with id</exception>
     public async Task<bool> DeleteUser(int id)
     {
         var existingUser = _sharedContext.Users.FirstOrDefault(user => user.Id == id);
@@ -142,32 +142,38 @@ public class UserService : IUserService
         await _sharedContext.SaveChangesAsync();
         return true;
     }
+
+    /// <summary>
+    /// the user can change their own password
+    /// </summary>
+    /// <param name="user"></param>
+    /// <returns>the edited user</returns>
+    /// <exception cref="Exception"></exception>
     public async Task<User> ChangeSelfPassword(LoginDto loginDto)
     {
-        //get user
         var dbUser = await _sharedContext.Users.FirstOrDefaultAsync(u => u.Email == loginDto.Email);
 
-        //Returns without changes, if user has not requested any password changes
         if (loginDto.Password == null)
         {
             return dbUser;
         }
-        //verify current password
+
         if (AuthenticationService.HashPassword(loginDto.Password, dbUser.Salt) != dbUser.Password)
         {
             throw new Exception("Incorrect password");
         }
 
-        //check that new passwords are the same
+
         if (loginDto.NewPasswordOne != loginDto.NewPasswordTwo)
         {
             throw new Exception("Passwords don't match");
         }
 
-        //save changes to db
-        var salt = RandomNumberGenerator.GetBytes(KeySize);
+        var salt = AuthenticationService.GenerateSalt();
+
         var hashedPassword = AuthenticationService.HashPassword(loginDto.NewPasswordOne, salt);
-        dbUser.ChangeUserPassword(hashedPassword, salt);
+
+        dbUser.ChangePassword(hashedPassword, salt);
         await _sharedContext.SaveChangesAsync();
 
         return dbUser;
