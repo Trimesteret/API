@@ -1,8 +1,8 @@
-using API.Enums;
-using API.Models.Authentication;
+using API.DataTransferObjects;
 using API.Models.Orders;
 using API.Services.Shared;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers.Shared
 {
@@ -10,13 +10,18 @@ namespace API.Controllers.Shared
     [ApiController]
     public class OrderController
     {
-        IAuthService _authorizationService;
-
-        public OrderController(IAuthService authService)
+        private readonly IOrderService _orderService;
+        public OrderController(IOrderService orderService)
         {
-            _authorizationService = authService;
+            _orderService = orderService;
         }
 
-    }
+        [HttpGet]
+        [Authorize(Policy = "require-admin-role")]
 
+        public async Task<ActionResult<List<Order>>> GetOrders()
+        {
+            return await _orderService.GetAllOrders();
+        }
+    }
 }
