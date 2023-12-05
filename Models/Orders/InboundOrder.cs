@@ -4,5 +4,5 @@ namespace API.Models.Orders;
 
 public class InboundOrder: Order
 {
-    public Supplier Supplier { get; set; }
+    //public Supplier Supplier { get; set; }
 }
