@@ -13,7 +13,7 @@ public class Wine : Item
     public string GrapeSort { get; protected set; }
     public string Winery { get; protected set; }
     public string TastingNotes { get; protected set; }
-    public string SuitableFor { get; protected set; }
+    public List<SuitableFor> SuitableFor { get; protected set; }
     public WineType? WineType { get; protected set; }
 
     /**
@@ -24,10 +24,10 @@ public class Wine : Item
 
     }
 
-    public Wine(string name, string ean, int quantity, double price, string description, 
-                ItemType itemType, WineType? wineType, int? year, double? volume, 
-                double? alcoholPercentage, string country, string region, string grapeSort, 
-                string winery, string tastingNotes, string suitableFor)
+    public Wine(string name, string ean, int quantity, double price, string description,
+                WineType? wineType, int? year, double? volume,
+                double? alcoholPercentage, string country, string region, string grapeSort,
+                string winery, string tastingNotes, List<SuitableFor> suitableFor)
     {
         this.Name = name;
         this.Ean = ean;
@@ -35,7 +35,7 @@ public class Wine : Item
         this.Price = price;
         this.Description = description;
         this.WineType = wineType;
-        this.ItemType = itemType;
+        this.ItemType = ItemType.Wine;
         this.Year = year;
         this.Volume = volume;
         this.AlcoholPercentage = alcoholPercentage;
@@ -46,11 +46,10 @@ public class Wine : Item
         this.TastingNotes = tastingNotes;
         this.SuitableFor = suitableFor;
     }
-    
-    public void ChangeWineProperties(string name, string ean, int quantity, double price, string description, 
-        ItemType itemType, WineType? wineType, int? year, double? volume, 
-        double? alcoholPercentage, string country, string region, string grapeSort, 
-        string winery, string tastingNotes, string suitableFor)
+
+    public void ChangeWineProperties(string name, string ean, int quantity, double price, string description,
+        WineType? wineType, int? year, double? volume, double? alcoholPercentage, string country, string region,
+        string grapeSort, string winery, string tastingNotes, List<SuitableFor> suitableFor)
     {
         Name = name;
         Ean = ean;
@@ -58,7 +57,6 @@ public class Wine : Item
         Price = price;
         Description = description;
         WineType = wineType;
-        ItemType = itemType;
         Year = year;
         Volume = volume;
         AlcoholPercentage = alcoholPercentage;

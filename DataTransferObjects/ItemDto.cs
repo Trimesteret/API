@@ -19,8 +19,7 @@ public class ItemDto
     public string GrapeSort { get; set; } = null;
     public string Winery { get; set; } = null;
     public string TastingNotes { get; set; } = null;
-    public string SuitableFor { get; set; } = null;
+    public List<SuitableFor> SuitableFor { get; set; } = null;
     public WineType? WineType { get; set; }
     public ItemType ItemType { get; set; }
-    public string ImageUrl { get; set; } = null;
 }

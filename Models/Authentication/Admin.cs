@@ -1,3 +1,4 @@
+using API.DataTransferObjects;
 using API.Enums;
 using API.Models.Items;
 
@@ -40,8 +41,22 @@ public class Admin : Employee
         Role = Role.Admin;
     }
 
-    public void EditUser(User user, string firstName, string lastName, int phone, string email, string password, int? phoneNumber)
+    public Wine CreateWine(ItemDto itemDto)
     {
-        Console.WriteLine(user.GetType());
+        Wine wine = new Wine(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price, itemDto.ItemDescription, itemDto.WineType, itemDto.Year, itemDto.Volume, itemDto.AlcoholPercentage, itemDto.Country, itemDto.Region, itemDto.GrapeSort, itemDto.Winery, itemDto.TastingNotes, itemDto.SuitableFor);
+        return wine;
     }
+
+    public Liquor CreateLiquor(ItemDto itemDto)
+    {
+        Liquor liquor = new Liquor(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price, itemDto.ItemDescription);
+        return liquor;
+    }
+
+    public DefaultItem CreateDefaultItem(ItemDto itemDto)
+    {
+        DefaultItem defaultItem = new DefaultItem(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price, itemDto.ItemDescription);
+        return defaultItem;
+    }
+
 }
