@@ -16,7 +16,7 @@ public interface IUserService
 
     public Task<User> EditSelf(UserStandardDto user);
 
-    public Task<User> ChangeSelfPassword(LoginDto user);
+    public Task ChangeSelfPassword(LoginDto user);
 
     public Task<bool> DeleteUser(int id);
 }

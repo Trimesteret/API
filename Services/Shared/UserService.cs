@@ -149,34 +149,26 @@ public class UserService : IUserService
     /// <param name="user"></param>
     /// <returns>the edited user</returns>
     /// <exception cref="Exception"></exception>
-    public async Task<User> ChangeSelfPassword(LoginDto loginDto)
+    public async Task ChangeSelfPassword(LoginDto loginDto)
     {
-        var dbUser = await _sharedContext.Users.FirstOrDefaultAsync(u => u.Email == loginDto.Email);
+        var activeUser = await this._authService.GetActiveUser();
 
-        if (loginDto.Password == null)
+        if(loginDto.NewPasswordOne != loginDto.NewPasswordTwo || loginDto.NewPasswordOne == null || loginDto.NewPasswordOne.Length < 7)
         {
-            return dbUser;
+            throw new Exception("Incorrect new password");
         }
 
-        if (AuthenticationService.HashPassword(loginDto.Password, dbUser.Salt) != dbUser.Password)
+        if (AuthenticationService.HashPassword(loginDto.Password, activeUser.Salt) != activeUser.Password)
         {
             throw new Exception("Incorrect password");
-        }
-
-
-        if (loginDto.NewPasswordOne != loginDto.NewPasswordTwo)
-        {
-            throw new Exception("Passwords don't match");
         }
 
         var salt = AuthenticationService.GenerateSalt();
 
         var hashedPassword = AuthenticationService.HashPassword(loginDto.NewPasswordOne, salt);
 
-        dbUser.ChangePassword(hashedPassword, salt);
+        activeUser.ChangePassword(hashedPassword, salt);
         await _sharedContext.SaveChangesAsync();
-
-        return dbUser;
     }
 }
 
