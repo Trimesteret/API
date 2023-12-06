@@ -1,7 +1,9 @@
 using API.DataTransferObjects;
 using API.Enums;
 using API.Models;
+using API.Models.Authentication;
 using API.Models.Items;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Services.Shared;
@@ -9,13 +11,18 @@ namespace API.Services.Shared;
 public class ItemService : IItemService
 {
     private readonly SharedContext _sharedContext;
+    private readonly IAuthService _authService;
+    private readonly IMapper _mapper;
 
-    public ItemService(SharedContext dbSharedContext)
+    public ItemService(SharedContext dbSharedContext, IAuthService authService, IMapper mapper)
     {
         _sharedContext = dbSharedContext;
+        _authService = authService;
+        _mapper = mapper;
     }
 
-    public async Task<List<Item>> GetItemsBySearch(string search, int amountOfItemsShown, SortByPrice? sortByPrice, ItemType? itemType)
+    public async Task<List<Item>> GetItemsBySearch(string search, int amountOfItemsShown, SortByPrice? sortByPrice,
+        ItemType? itemType)
     {
         IQueryable<Item> query = _sharedContext.Items;
 
@@ -24,30 +31,72 @@ public class ItemService : IItemService
         return await query.Take(amountOfItemsShown).ToListAsync();
     }
 
-    public async Task<Item> GetItemById(int id)
+    public async Task<ItemDto> GetItemById(int id)
     {
-        return await _sharedContext.Items.FirstOrDefaultAsync(i => i.Id == id);
+        var item = await _sharedContext.Items.FirstOrDefaultAsync(item => item.Id == id);
+
+        if (item == null)
+        {
+            throw new Exception("Item could not be found");
+        }
+
+        var itemDto = _mapper.Map<ItemDto>(item);
+
+        Wine wine = item as Wine;
+        if (wine == null)
+        {
+            return itemDto;
+        }
+
+        itemDto.SuitableForEnumIds = await wine.GetSuitableForAsIntList(_sharedContext);
+
+        return itemDto;
     }
 
-    public async Task<Item> CreateItem(ItemDto itemDto)
+    /// <summary>
+    /// Creates a new item given an itemDto
+    /// </summary>
+    /// <param name="itemDto"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<ItemDto> CreateItem(ItemDto itemDto)
     {
+        var activeUser = await _authService.GetActiveUser();
+
+        if (activeUser.Role < Role.Admin)
+        {
+            throw new Exception("You do not have permission to create items");
+        }
+
+        if (activeUser is not Admin activeAdminUser)
+        {
+            throw new Exception("You do not have permission to create items");
+        }
+
+        Console.WriteLine(itemDto.ItemType);
         switch (itemDto.ItemType)
         {
             case ItemType.Wine:
-                Wine wine = new Wine(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price, itemDto.ItemDescription, itemDto.ItemType, itemDto.WineType, itemDto.Year, itemDto.Volume, itemDto.AlcoholPercentage, itemDto.Country, itemDto.Region, itemDto.GrapeSort, itemDto.Winery, itemDto.TastingNotes, itemDto.SuitableFor);
+                Wine wine = activeAdminUser.CreateWine(itemDto);
                 await _sharedContext.Wines.AddAsync(wine);
+                await wine.SetSuitableFor(_sharedContext, itemDto.SuitableForEnumIds);
                 await _sharedContext.SaveChangesAsync();
-                return wine;
+                var createdItemDto = _mapper.Map<ItemDto>(wine);
+                createdItemDto.SuitableForEnumIds = await wine.GetSuitableForAsIntList(_sharedContext);
+                return createdItemDto;
+
             case ItemType.Liquor:
-                Liquor liquor = new Liquor(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price, itemDto.ItemDescription, itemDto.ItemType);
+                Liquor liquor = activeAdminUser.CreateLiquor(itemDto);
                 await _sharedContext.Liquors.AddAsync(liquor);
                 await _sharedContext.SaveChangesAsync();
-                return liquor;
+                return _mapper.Map<ItemDto>(liquor);
+
             case ItemType.DefaultItem:
-                DefaultItem defaultItem = new DefaultItem(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price, itemDto.ItemDescription, itemDto.ItemType);
+                DefaultItem defaultItem = activeAdminUser.CreateDefaultItem(itemDto);
                 await _sharedContext.DefaultItems.AddAsync(defaultItem);
                 await _sharedContext.SaveChangesAsync();
-                return defaultItem;
+                return _mapper.Map<ItemDto>(defaultItem);
             default:
                 throw new NotImplementedException("Item not created");
         }
@@ -71,11 +120,13 @@ public class ItemService : IItemService
     /// <param name="itemType">Item filter</param>
     /// <param name="query">The query to add search, sorting and filter to</param>
     /// <returns></returns>
-    private IQueryable<Item> AddSearchToQuery(SortByPrice? sortByPrice, ItemType? itemType, IQueryable<Item> query, string search = "")
+    private IQueryable<Item> AddSearchToQuery(SortByPrice? sortByPrice, ItemType? itemType, IQueryable<Item> query,
+        string search = "")
     {
         if (!string.IsNullOrEmpty(search))
         {
-            query = query.Where(item => item.Name.ToLower().Contains(search.ToLower()) || item.Price.ToString().Contains(search));
+            query = query.Where(item =>
+                item.Name.ToLower().Contains(search.ToLower()) || item.Price.ToString().Contains(search));
         }
 
         switch (itemType)
@@ -104,7 +155,14 @@ public class ItemService : IItemService
         return query;
     }
 
-    public async Task<Item> EditItem(ItemDto itemDto)
+    /// <summary>
+    /// Edits an item given the properties in the itemDto
+    /// </summary>
+    /// <param name="itemDto"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<ItemDto> EditItem(ItemDto itemDto)
     {
         var itemToEdit = await _sharedContext.Items.FirstOrDefaultAsync(itemToEdit => itemToEdit.Id == itemDto.Id);
 
@@ -113,26 +171,50 @@ public class ItemService : IItemService
             throw new Exception("Could not find item with id: " + itemDto.Id);
         }
 
-        switch (itemDto.ItemType)
+        var activeUser = await _authService.GetActiveUser();
+
+        if (activeUser.Role < Role.Admin)
         {
-            case ItemType.Wine:
-                Wine wine = (Wine)itemToEdit;
-                wine.ChangeWineProperties(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price, itemDto.ItemDescription, itemDto.ItemType, itemDto.WineType, itemDto.Year, itemDto.Volume, itemDto.AlcoholPercentage, itemDto.Country, itemDto.Region, itemDto.GrapeSort, itemDto.Winery, itemDto.TastingNotes, itemDto.SuitableFor);
-                await _sharedContext.SaveChangesAsync();
-                return wine;
-            case ItemType.Liquor:
-                Liquor liquor = (Liquor)itemToEdit;
-                liquor.ChangeLiquorProperties(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price, itemDto.ItemDescription, itemDto.ItemType);
-                await _sharedContext.SaveChangesAsync();
-                return liquor;
-            case ItemType.DefaultItem:
-                DefaultItem defaultItem = (DefaultItem)itemToEdit;
-                defaultItem.ChangeDefaultItemProperties(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price, itemDto.ItemDescription, itemDto.ItemType);
-                await _sharedContext.SaveChangesAsync();
-                return defaultItem;
+            throw new Exception("You do not have permission to create items");
+        }
+
+        if (activeUser is not Admin activeAdminUser)
+        {
+            throw new Exception("You do not have permission to create items");
+        }
+
+        switch (itemToEdit)
+        {
+            case Wine wine:
+                wine.ChangeWineProperties(itemDto.Name, itemDto.Ean, itemDto.Quantity, itemDto.Price,
+                    itemDto.Description, itemDto.WineType, itemDto.Year, itemDto.Volume, itemDto.AlcoholPercentage,
+                    itemDto.Country, itemDto.Region, itemDto.GrapeSort, itemDto.Winery, itemDto.TastingNotes);
+
+                await wine.SetSuitableFor(_sharedContext, itemDto.SuitableForEnumIds);
+                break;
+            case Liquor liquor:
+                liquor.ChangeLiquorProperties(itemDto.Name, itemDto.Ean, itemDto.Quantity, itemDto.Price,
+                    itemDto.Description);
+                break;
+
+            case DefaultItem defaultItem:
+                defaultItem.ChangeDefaultItemProperties(itemDto.Name, itemDto.Ean, itemDto.Quantity, itemDto.Price,
+                    itemDto.Description);
+                break;
+
             default:
                 throw new NotImplementedException("Item not edited");
         }
+
+        await _sharedContext.SaveChangesAsync();
+
+        var editedItemDto = _mapper.Map<ItemDto>(itemToEdit);
+        if (itemToEdit is Wine edit)
+        {
+            editedItemDto.SuitableForEnumIds = await edit.GetSuitableForAsIntList(_sharedContext);
+        }
+
+        return editedItemDto;
     }
 
     public async Task<List<Item>> GetAllItems()

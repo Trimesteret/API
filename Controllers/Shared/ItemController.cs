@@ -37,18 +37,17 @@ namespace API.Controllers.Shared
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Item>> GetItemById(int id)
+        public async Task<ActionResult<ItemDto>> GetItemById(int id)
         {
             return await _itemService.GetItemById(id);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Item>> PostItem([FromBody] ItemDto item)
+        public async Task<ActionResult<ItemDto>> PostItem([FromBody] ItemDto item)
         {
             try
             {
-                await _itemService.CreateItem(item);
-                return Ok(true);
+                return await _itemService.CreateItem(item);
             }
             catch (Exception e)
             {
@@ -58,12 +57,11 @@ namespace API.Controllers.Shared
         }
 
         [HttpPut]
-        public async Task<ActionResult<Item>> PutItem([FromBody] ItemDto item)
+        public async Task<ActionResult<ItemDto>> PutItem([FromBody] ItemDto item)
         {
             try
             {
-                await _itemService.EditItem(item);
-                return Ok(true);
+                return await _itemService.EditItem(item);
             }
             catch (Exception e)
             {

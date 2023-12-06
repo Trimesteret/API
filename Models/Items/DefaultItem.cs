@@ -12,23 +12,22 @@ public class DefaultItem: Item
 
     }
 
-    public DefaultItem(string name, string ean, int quantity, double price, string description, ItemType itemType)
+    public DefaultItem(string name, string ean, int quantity, double price, string description)
     {
         this.Name = name;
         this.Ean = ean;
         this.Quantity = quantity;
         this.Price = price;
         this.Description = description;
-        this.ItemType = itemType;
+        this.ItemType = ItemType.DefaultItem;
     }
 
-    public void ChangeDefaultItemProperties(string name, string ean, int quantity, double price, string description, ItemType itemType)
+    public void ChangeDefaultItemProperties(string name, string ean, int quantity, double price, string description)
     {
         Name = name;
         Ean = ean;
         Quantity = quantity;
         Price = price;
         Description = description;
-        ItemType = itemType;
     }
 }
