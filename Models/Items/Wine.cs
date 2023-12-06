@@ -12,7 +12,7 @@ public class Wine : Item
     public string GrapeSort { get; protected set; }
     public string Winery { get; protected set; }
     public string TastingNotes { get; protected set; }
-    public List<CustomEnum>? SuitableFor { get; protected set; }
+    public List<ItemEnumRelation>? SuitableFor { get; set; }
     public WineType? WineType { get; protected set; }
 
     /**
@@ -26,7 +26,7 @@ public class Wine : Item
     public Wine(string name, string ean, int quantity, double price, string description,
                 WineType? wineType, int? year, double? volume,
                 double? alcoholPercentage, string country, string region, string grapeSort,
-                string winery, string tastingNotes, List<CustomEnum> suitableFor)
+                string winery, string tastingNotes)
     {
         this.Name = name;
         this.Ean = ean;
@@ -43,12 +43,16 @@ public class Wine : Item
         this.GrapeSort = grapeSort;
         this.Winery = winery;
         this.TastingNotes = tastingNotes;
+    }
+
+    public void SetSuitableFor(List<ItemEnumRelation>? suitableFor)
+    {
         this.SuitableFor = suitableFor;
     }
 
     public void ChangeWineProperties(string name, string ean, int quantity, double price, string description,
         WineType? wineType, int? year, double? volume, double? alcoholPercentage, string country, string region,
-        string grapeSort, string winery, string tastingNotes, List<CustomEnum> suitableFor)
+        string grapeSort, string winery, string tastingNotes)
     {
         this.Name = name;
         this.Ean = ean;
@@ -64,6 +68,5 @@ public class Wine : Item
         this.GrapeSort = grapeSort;
         this.Winery = winery;
         this.TastingNotes = tastingNotes;
-        this.SuitableFor.AddRange(suitableFor);
     }
 }

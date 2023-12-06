@@ -1,3 +1,5 @@
+using API.DataTransferObjects;
+using API.Models.Items;
 using AutoMapper;
 
 namespace API.Mapping;
@@ -8,5 +10,13 @@ public class MappingProfile: Profile
     {
         CreateMap<Models.Authentication.User, DataTransferObjects.UserStandardDto>();
         CreateMap<DataTransferObjects.UserStandardDto, Models.Authentication.User>();
+        CreateMap<ItemDto, Item>();
+        CreateMap<Item, ItemDto>();
+        CreateMap<ItemDto, Liquor>();
+        CreateMap<Liquor, ItemDto>();
+        CreateMap<ItemDto, DefaultItem>();
+        CreateMap<DefaultItem, ItemDto>();
+        CreateMap<ItemDto, Wine>();
+        CreateMap<Wine, ItemDto>();
     }
 }
