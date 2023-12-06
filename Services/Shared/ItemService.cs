@@ -186,7 +186,7 @@ public class ItemService : IItemService
         switch (itemToEdit)
         {
             case Wine wine:
-                wine.ChangeWineProperties(itemDto.Name, itemDto.Ean, itemDto.Quantity, itemDto.Price,
+                wine.ChangeWineProperties(itemDto.Name, itemDto.Ean, itemDto.Quantity, itemDto.ImageUrl, itemDto.Price,
                     itemDto.Description, itemDto.WineType, itemDto.Year, itemDto.Volume, itemDto.AlcoholPercentage,
                     itemDto.Country, itemDto.Region, itemDto.GrapeSort, itemDto.Winery, itemDto.TastingNotes);
 
@@ -194,12 +194,12 @@ public class ItemService : IItemService
                 break;
             case Liquor liquor:
                 liquor.ChangeLiquorProperties(itemDto.Name, itemDto.Ean, itemDto.Quantity, itemDto.Price,
-                    itemDto.Description);
+                    itemDto.Description, itemDto.ImageUrl);
                 break;
 
             case DefaultItem defaultItem:
                 defaultItem.ChangeDefaultItemProperties(itemDto.Name, itemDto.Ean, itemDto.Quantity, itemDto.Price,
-                    itemDto.Description);
+                    itemDto.Description, itemDto.ImageUrl);
                 break;
 
             default:

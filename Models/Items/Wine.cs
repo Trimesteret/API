@@ -24,7 +24,7 @@ public class Wine : Item
 
     }
 
-    public Wine(string name, string ean, int quantity, double price, string description,
+    public Wine(string name, string ean, int quantity, string imageUrl, double price, string description,
                 WineType? wineType, int? year, double? volume,
                 double? alcoholPercentage, string country, string region, string grapeSort,
                 string winery, string tastingNotes)
@@ -32,6 +32,7 @@ public class Wine : Item
         this.Name = name;
         this.Ean = ean;
         this.Quantity = quantity;
+        this.ImageUrl = imageUrl;
         this.Price = price;
         this.Description = description;
         this.WineType = wineType;
@@ -46,13 +47,14 @@ public class Wine : Item
         this.TastingNotes = tastingNotes;
     }
 
-    public void ChangeWineProperties(string name, string ean, int quantity, double price, string description,
+    public void ChangeWineProperties(string name, string ean, int quantity, string imageUrl, double price, string description,
         WineType? wineType, int? year, double? volume, double? alcoholPercentage, string country, string region,
         string grapeSort, string winery, string tastingNotes)
     {
         this.Name = name;
         this.Ean = ean;
         this.Quantity = quantity;
+        this.ImageUrl = imageUrl;
         this.Price = price;
         this.Description = description;
         this.WineType = wineType;

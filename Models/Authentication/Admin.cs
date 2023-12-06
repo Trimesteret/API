@@ -43,19 +43,19 @@ public class Admin : Employee
 
     public Wine CreateWine(ItemDto itemDto)
     {
-        Wine wine = new Wine(itemDto.Name, itemDto.Ean, itemDto.Quantity, itemDto.Price, itemDto.Description, itemDto.WineType, itemDto.Year, itemDto.Volume, itemDto.AlcoholPercentage, itemDto.Country, itemDto.Region, itemDto.GrapeSort, itemDto.Winery, itemDto.TastingNotes);
+        Wine wine = new Wine(itemDto.Name, itemDto.Ean, itemDto.Quantity, itemDto.ImageUrl, itemDto.Price, itemDto.Description, itemDto.WineType, itemDto.Year, itemDto.Volume, itemDto.AlcoholPercentage, itemDto.Country, itemDto.Region, itemDto.GrapeSort, itemDto.Winery, itemDto.TastingNotes);
         return wine;
     }
 
     public Liquor CreateLiquor(ItemDto itemDto)
     {
-        Liquor liquor = new Liquor(itemDto.Name, itemDto.Ean, itemDto.Quantity, itemDto.Price, itemDto.Description);
+        Liquor liquor = new Liquor(itemDto.Name, itemDto.Ean, itemDto.Quantity, itemDto.Price, itemDto.Description, itemDto.ImageUrl);
         return liquor;
     }
 
     public DefaultItem CreateDefaultItem(ItemDto itemDto)
     {
-        DefaultItem defaultItem = new DefaultItem(itemDto.Name, itemDto.Ean, itemDto.Quantity, itemDto.Price, itemDto.Description);
+        DefaultItem defaultItem = new DefaultItem(itemDto.Name, itemDto.Ean, itemDto.Quantity, itemDto.Price, itemDto.Description, itemDto.ImageUrl);
         return defaultItem;
     }
 
