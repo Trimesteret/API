@@ -6,5 +6,5 @@ public enum PurchaseOrderState
     Payed = 1,
     Sent = 2,
     Closed = 3,
-    Canelled = 4
+    Cancelled = 4
 }

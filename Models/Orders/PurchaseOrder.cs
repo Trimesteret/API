@@ -6,11 +6,9 @@ namespace API.Models.Orders;
 
 public class PurchaseOrder: Order
 {
-    public PurchaseOrderState PurchaseOrderState { get; protected set; } = PurchaseOrderState.Open;
+    //public PurchaseOrderState PurchaseOrderState { get; protected set; } = PurchaseOrderState.Open;
     public Customer Customer { get; protected set; }
     public Guest Guest { get; protected set; }
-
-    public double TotalPrice { get; protected set; }
 
     /**
      * Parameterless constructor for EF Core
