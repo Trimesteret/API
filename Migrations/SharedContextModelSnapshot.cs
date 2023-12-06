@@ -61,7 +61,7 @@ namespace API.Migrations
                     b.Property<string>("SuitableFor")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("SupplierId")
+                    b.Property<int?>("SupplierId")
                         .HasColumnType("int");
 
                     b.Property<string>("TastingNotes")
@@ -167,9 +167,6 @@ namespace API.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("ReservedQuantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SupplierId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -371,9 +368,7 @@ namespace API.Migrations
                 {
                     b.HasOne("API.Models.Suppliers.Supplier", null)
                         .WithMany("Items")
-                        .HasForeignKey("SupplierId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SupplierId");
                 });
 
             modelBuilder.Entity("API.Models.Orders.OrderLine", b =>

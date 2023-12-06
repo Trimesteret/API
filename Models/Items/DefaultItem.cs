@@ -22,10 +22,9 @@ public class DefaultItem: Item
         this.ItemType = itemType;
     }
 
-    public void ChangeDefaultItemProperties(string name, int supplierId, string ean, int quantity, double price, string description, ItemType itemType)
+    public void ChangeDefaultItemProperties(string name, string ean, int quantity, double price, string description, ItemType itemType)
     {
         Name = name;
-        SupplierId = supplierId;
         Ean = ean;
         Quantity = quantity;
         Price = price;

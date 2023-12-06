@@ -22,10 +22,9 @@ public class Liquor: Item
         this.Description = description;
         this.ItemType = itemType;
     }
-    public void ChangeLiquorProperties(string name, int supplierId, string ean, int quantity, double price, string description, ItemType itemType)
+    public void ChangeLiquorProperties(string name, string ean, int quantity, double price, string description, ItemType itemType)
     {
         Name = name;
-        SupplierId = supplierId;
         Ean = ean;
         Quantity = quantity;
         Price = price;

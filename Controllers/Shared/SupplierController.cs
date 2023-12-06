@@ -1,4 +1,5 @@
 using API.DataTransferObjects;
+using API.Models.Items;
 using Microsoft.AspNetCore.Mvc;
 using API.Models.Suppliers;
 using API.Services.Shared;
@@ -15,7 +16,18 @@ namespace API.Controllers.Shared
         {
             _supplierService = supplierService;
         }
-
+        
+        [HttpGet("Associated/{id}")]
+        public async Task<ActionResult<List<Item>>> GetAssociated(int id)
+        {
+            return await _supplierService.GetAssociated(id);
+        }
+        
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Supplier>> GetSupplierById(int id)
+        {
+            return await _supplierService.GetSupplierById(id);
+        }
 
         // POST: api/Supplier
         [HttpPost]

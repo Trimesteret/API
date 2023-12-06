@@ -6,7 +6,6 @@ namespace API.DataTransferObjects;
 public class ItemDto
 {
     public Int32 Id { get; set; }
-    public Int32 SupplierId { get; set; }
     public string ItemName { get; set; }
     public string Ean { get; set; }
     public string ItemDescription { get; set; }
