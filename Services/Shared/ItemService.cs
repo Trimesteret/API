@@ -21,7 +21,7 @@ public class ItemService : IItemService
         _mapper = mapper;
     }
 
-    public async Task<List<Item>> GetItemsBySearch(string search, int amountOfItemsShown, SortByPrice? sortByPrice,
+    public async Task<List<Item>> GetItemsBySearch(string? search, int amountOfItemsShown, SortByPrice? sortByPrice,
         ItemType? itemType)
     {
         IQueryable<Item> query = _sharedContext.Items;
@@ -121,7 +121,7 @@ public class ItemService : IItemService
     /// <param name="query">The query to add search, sorting and filter to</param>
     /// <returns></returns>
     private IQueryable<Item> AddSearchToQuery(SortByPrice? sortByPrice, ItemType? itemType, IQueryable<Item> query,
-        string search = "")
+        string? search)
     {
         if (!string.IsNullOrEmpty(search))
         {
