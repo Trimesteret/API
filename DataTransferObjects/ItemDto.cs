@@ -19,7 +19,6 @@ public class ItemDto
     public string Winery { get; set; } = null;
     public string TastingNotes { get; set; } = null;
     public List<int>? SuitableForEnumIds { get; set; }
-    public List<CustomEnum>? SuitableForEnums { get; set; }
     public WineType? WineType { get; set; }
     public ItemType ItemType { get; set; }
 }

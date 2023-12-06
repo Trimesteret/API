@@ -47,18 +47,6 @@ public class Admin : Employee
         return wine;
     }
 
-    public void SetSuitableForOnWine(Wine wine, List<int> suitableForEnumIds)
-    {
-        List<ItemEnumRelation> itemEnumRelations = new List<ItemEnumRelation>();
-
-        foreach (var cEnum in suitableForEnumIds)
-        {
-            itemEnumRelations.Add(new ItemEnumRelation(wine, cEnum));
-        }
-
-        wine.SetSuitableFor(itemEnumRelations);
-    }
-
     public Liquor CreateLiquor(ItemDto itemDto)
     {
         Liquor liquor = new Liquor(itemDto.Name, itemDto.Ean, itemDto.Quantity, itemDto.Price, itemDto.Description);

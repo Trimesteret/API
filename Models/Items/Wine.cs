@@ -1,4 +1,5 @@
 using API.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Models.Items;
 
@@ -45,11 +46,6 @@ public class Wine : Item
         this.TastingNotes = tastingNotes;
     }
 
-    public void SetSuitableFor(List<ItemEnumRelation>? suitableFor)
-    {
-        this.SuitableFor = suitableFor;
-    }
-
     public void ChangeWineProperties(string name, string ean, int quantity, double price, string description,
         WineType? wineType, int? year, double? volume, double? alcoholPercentage, string country, string region,
         string grapeSort, string winery, string tastingNotes)
@@ -68,5 +64,46 @@ public class Wine : Item
         this.GrapeSort = grapeSort;
         this.Winery = winery;
         this.TastingNotes = tastingNotes;
+    }
+
+    public async Task<List<CustomEnum>> GetSuitableForAsCustomEnum(SharedContext context)
+    {
+        return await context.CustomEnums
+            .Where(ce => context.ItemEnumRelations.Any(ier => ier.ItemId == this.Id && ier.CustomEnumId == ce.Id))
+            .ToListAsync();
+    }
+
+    public async Task<List<int>> GetSuitableForAsIntList(SharedContext context)
+    {
+        return await context.CustomEnums
+            .Where(ce => context.ItemEnumRelations.Any(ier => ier.ItemId == this.Id && ier.CustomEnumId == ce.Id))
+            .Select(ce => ce.Id)
+            .ToListAsync();
+    }
+
+    public async Task SetSuitableFor(SharedContext context, List<int>? suitableForEnumIds)
+    {
+        await this.ClearSuitableFor(context);
+
+        this.SuitableFor = suitableForEnumIds?.Select(id => new ItemEnumRelation()
+        {
+            ItemId = this.Id,
+            Item = this,
+            CustomEnumId = id,
+            CustomEnum = context.CustomEnums.FirstOrDefault(e => e.Id == id)
+        }).ToList();
+    }
+
+    public async Task ClearSuitableFor(SharedContext context)
+    {
+        var itemEnumRelationOnItem =
+            await context.ItemEnumRelations.Where(ier => ier.ItemId == this.Id).ToListAsync();
+
+        foreach (var itemEnumRelation in itemEnumRelationOnItem)
+        {
+            context.Remove(itemEnumRelation);
+        }
+
+        await context.SaveChangesAsync();
     }
 }

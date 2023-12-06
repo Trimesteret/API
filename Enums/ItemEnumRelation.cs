@@ -10,7 +10,7 @@ public class ItemEnumRelation
     public Item Item { get; set; }
 
     public int CustomEnumId { get; set; }
-    public CustomEnum CustomEnum { get; set; }
+    public CustomEnum? CustomEnum { get; set; }
 
     /**
      * Empty constructor for EF Core
@@ -20,11 +20,10 @@ public class ItemEnumRelation
 
     }
 
-    public ItemEnumRelation(Item item, CustomEnum cEnum)
+    public ItemEnumRelation(Item item, int cEnumId)
     {
         this.Item = item;
-        this.CustomEnum = cEnum;
         this.ItemId = item.Id;
-        this.CustomEnumId = cEnum.Id;
+        this.CustomEnumId = cEnumId;
     }
 }
