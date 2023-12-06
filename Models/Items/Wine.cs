@@ -1,6 +1,5 @@
-using System.Transactions;
-using API.DataTransferObjects;
 using API.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Models.Items;
 
@@ -14,7 +13,7 @@ public class Wine : Item
     public string GrapeSort { get; protected set; }
     public string Winery { get; protected set; }
     public string TastingNotes { get; protected set; }
-    public string SuitableFor { get; protected set; }
+    public List<ItemEnumRelation>? SuitableFor { get; set; }
     public WineType? WineType { get; protected set; }
 
     /**
@@ -25,10 +24,10 @@ public class Wine : Item
 
     }
 
-    public Wine(string name, string ean, int quantity, double price, string description, 
-                ItemType itemType, WineType? wineType, int? year, double? volume, 
-                double? alcoholPercentage, string country, string region, string grapeSort, 
-                string winery, string tastingNotes, string suitableFor)
+    public Wine(string name, string ean, int quantity, double price, string description,
+                WineType? wineType, int? year, double? volume,
+                double? alcoholPercentage, string country, string region, string grapeSort,
+                string winery, string tastingNotes)
     {
         this.Name = name;
         this.Ean = ean;
@@ -36,7 +35,7 @@ public class Wine : Item
         this.Price = price;
         this.Description = description;
         this.WineType = wineType;
-        this.ItemType = itemType;
+        this.ItemType = ItemType.Wine;
         this.Year = year;
         this.Volume = volume;
         this.AlcoholPercentage = alcoholPercentage;
@@ -45,29 +44,66 @@ public class Wine : Item
         this.GrapeSort = grapeSort;
         this.Winery = winery;
         this.TastingNotes = tastingNotes;
-        this.SuitableFor = suitableFor;
     }
-    
-    public void ChangeWineProperties(string name, string ean, int quantity, double price, string description, 
-        ItemType itemType, WineType? wineType, int? year, double? volume, 
-        double? alcoholPercentage, string country, string region, string grapeSort, 
-        string winery, string tastingNotes, string suitableFor)
+
+    public void ChangeWineProperties(string name, string ean, int quantity, double price, string description,
+        WineType? wineType, int? year, double? volume, double? alcoholPercentage, string country, string region,
+        string grapeSort, string winery, string tastingNotes)
     {
-        Name = name;
-        Ean = ean;
-        Quantity = quantity;
-        Price = price;
-        Description = description;
-        WineType = wineType;
-        ItemType = itemType;
-        Year = year;
-        Volume = volume;
-        AlcoholPercentage = alcoholPercentage;
-        Country = country;
-        Region = region;
-        GrapeSort = grapeSort;
-        Winery = winery;
-        TastingNotes = tastingNotes;
-        SuitableFor = suitableFor;
+        this.Name = name;
+        this.Ean = ean;
+        this.Quantity = quantity;
+        this.Price = price;
+        this.Description = description;
+        this.WineType = wineType;
+        this.Year = year;
+        this.Volume = volume;
+        this.AlcoholPercentage = alcoholPercentage;
+        this.Country = country;
+        this.Region = region;
+        this.GrapeSort = grapeSort;
+        this.Winery = winery;
+        this.TastingNotes = tastingNotes;
+    }
+
+    public async Task<List<CustomEnum>> GetSuitableForAsCustomEnum(SharedContext context)
+    {
+        return await context.CustomEnums
+            .Where(ce => context.ItemEnumRelations.Any(ier => ier.ItemId == this.Id && ier.CustomEnumId == ce.Id))
+            .ToListAsync();
+    }
+
+    public async Task<List<int>> GetSuitableForAsIntList(SharedContext context)
+    {
+        return await context.CustomEnums
+            .Where(ce => context.ItemEnumRelations.Any(ier => ier.ItemId == this.Id && ier.CustomEnumId == ce.Id))
+            .Select(ce => ce.Id)
+            .ToListAsync();
+    }
+
+    public async Task SetSuitableFor(SharedContext context, List<int>? suitableForEnumIds)
+    {
+        await this.ClearSuitableFor(context);
+
+        this.SuitableFor = suitableForEnumIds?.Select(id => new ItemEnumRelation()
+        {
+            ItemId = this.Id,
+            Item = this,
+            CustomEnumId = id,
+            CustomEnum = context.CustomEnums.FirstOrDefault(e => e.Id == id)
+        }).ToList();
+    }
+
+    public async Task ClearSuitableFor(SharedContext context)
+    {
+        var itemEnumRelationOnItem =
+            await context.ItemEnumRelations.Where(ier => ier.ItemId == this.Id).ToListAsync();
+
+        foreach (var itemEnumRelation in itemEnumRelationOnItem)
+        {
+            context.Remove(itemEnumRelation);
+        }
+
+        await context.SaveChangesAsync();
     }
 }

@@ -52,7 +52,7 @@ namespace API.Services.Shared
         /// <param name="password"></param>
         /// <param name="salt"></param>
         /// <returns></returns>
-        private static string HashPassword(string password, byte[] salt)
+        public static string HashPassword(string password, byte[] salt)
         {
             var hash = Rfc2898DeriveBytes.Pbkdf2(
                 Encoding.UTF8.GetBytes(password),
@@ -84,6 +84,7 @@ namespace API.Services.Shared
 
             return true;
         }
+
 
 
         /// <summary>
@@ -149,7 +150,7 @@ namespace API.Services.Shared
                 throw new Exception("Passwords do not match");
             }
 
-            var salt = RandomNumberGenerator.GetBytes(KeySize);
+            var salt = GenerateSalt();
 
             signupDto.Password = HashPassword(signupDto.Password, salt);
 
@@ -167,6 +168,12 @@ namespace API.Services.Shared
             await _sharedContext.SaveChangesAsync();
 
             return customer;
+        }
+
+        public static byte[] GenerateSalt()
+        {
+            var salt = RandomNumberGenerator.GetBytes(KeySize);
+            return salt;
         }
     }
 }

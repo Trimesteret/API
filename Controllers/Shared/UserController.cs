@@ -52,14 +52,28 @@ namespace API.Controllers.Shared
             try
             {
                 await _userService.EditSelf(user);
+                return Ok();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                BadRequest(e.Message);
-                throw;
+                return BadRequest(e.Message);
             }
-            return Ok();
+        }
+
+        [HttpPut("password")]
+        public async Task<ActionResult> ChangeSelfPassword(LoginDto user)
+        {
+            try
+            {
+                await _userService.ChangeSelfPassword(user);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpDelete("{id}")]
