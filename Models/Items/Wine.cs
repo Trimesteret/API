@@ -1,3 +1,6 @@
+using System.Transactions;
+using API.Enums;
+
 namespace API.Models.Items;
 
 public class Wine : Item
@@ -11,17 +14,28 @@ public class Wine : Item
     public string Winery { get; protected set; }
     public string TastingNotes { get; protected set; }
     public string SuitableFor { get; protected set; }
-    public string ServingTemperature { get; protected set; }
+    public WineType? WineType { get; protected set; }
 
-    public Wine(string name, string ean, int quantity, float price, string imageUrl, string description, float mass, int? year, double? volume, double? alcoholPercentage, string country, string region, string grapeSort, string winery, string tastingNotes, string suitableFor, string servingTemperature)
+    /**
+     * Parameterless constructor for EF Core
+     */
+    public Wine()
+    {
+
+    }
+
+    public Wine(string name, string ean, int quantity, double price, string description, 
+                ItemType itemType, WineType? wineType, int? year, double? volume, 
+                double? alcoholPercentage, string country, string region, string grapeSort, 
+                string winery, string tastingNotes, string suitableFor)
     {
         this.Name = name;
         this.Ean = ean;
         this.Quantity = quantity;
         this.Price = price;
-        this.ImageUrl = imageUrl;
         this.Description = description;
-        this.Mass = mass;
+        this.WineType = wineType;
+        this.ItemType = itemType;
         this.Year = year;
         this.Volume = volume;
         this.AlcoholPercentage = alcoholPercentage;
@@ -31,6 +45,28 @@ public class Wine : Item
         this.Winery = winery;
         this.TastingNotes = tastingNotes;
         this.SuitableFor = suitableFor;
-        this.ServingTemperature = servingTemperature;
+    }
+    
+    public void ChangeWineProperties(string name, string ean, int quantity, double price, string description, 
+        ItemType itemType, WineType? wineType, int? year, double? volume, 
+        double? alcoholPercentage, string country, string region, string grapeSort, 
+        string winery, string tastingNotes, string suitableFor)
+    {
+        Name = name;
+        Ean = ean;
+        Quantity = quantity;
+        Price = price;
+        Description = description;
+        WineType = wineType;
+        ItemType = itemType;
+        Year = year;
+        Volume = volume;
+        AlcoholPercentage = alcoholPercentage;
+        Country = country;
+        Region = region;
+        GrapeSort = grapeSort;
+        Winery = winery;
+        TastingNotes = tastingNotes;
+        SuitableFor = suitableFor;
     }
 }

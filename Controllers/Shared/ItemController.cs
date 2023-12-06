@@ -1,7 +1,9 @@
+using API.DataTransferObjects;
 using API.Enums;
 using API.Models.Items;
 using API.Services.Shared;
-using Microsoft.AspNetCore.Mvc;
+
+    using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers.Shared
 {
@@ -16,6 +18,12 @@ namespace API.Controllers.Shared
         }
 
         [HttpGet]
+        public async Task<ActionResult<List<Item>>> GetAllItems()
+        {
+            return await _itemService.GetAllItems();
+        }
+
+        [HttpGet("search")]
         public async Task<ActionResult<List<Item>>> GetItemsBySearch([FromQuery] string search, [FromQuery] int amountOfItemsShown, [FromQuery] SortByPrice? sortByPrice, [FromQuery] ItemType? itemType)
         {
             return await _itemService.GetItemsBySearch(search, amountOfItemsShown, sortByPrice, itemType);
@@ -25,13 +33,43 @@ namespace API.Controllers.Shared
         [HttpGet("itemCount")]
         public async Task<ActionResult<int>> GetItemCount([FromQuery] string search, [FromQuery] SortByPrice? sortByPrice, [FromQuery] ItemType? itemType)
         {
-            return await _itemService.GetItemCount(search, sortByPrice, itemType);
+            return await _itemService.GetItemCount(sortByPrice, itemType, search);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Item>> GetItemById(int id)
         {
             return await _itemService.GetItemById(id);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Item>> PostItem([FromBody] ItemDto item)
+        {
+            try
+            {
+                await _itemService.CreateItem(item);
+                return Ok(true);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<Item>> PutItem([FromBody] ItemDto item)
+        {
+            try
+            {
+                await _itemService.EditItem(item);
+                return Ok(true);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest(e.Message);
+            }
         }
     }
 }
