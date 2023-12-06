@@ -23,4 +23,5 @@ public class SharedContext : DbContext
     public DbSet<Wine> Wines { get; set; }
     public DbSet<Supplier> Suppliers { get; set; }
     public DbSet<Order> Order { get; set; }
+    public DbSet<ItemAssociation> ItemAssociations { get; set; }
 }

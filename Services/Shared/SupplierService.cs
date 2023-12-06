@@ -22,58 +22,85 @@ public class SupplierService : ISupplierService
     
     public async Task<Supplier> CreateSupplier(SupplierDto supplierDto)
     {
-        
-        Supplier supplier = new Supplier(supplierDto.Name);
-        
-        await _sharedContext.Suppliers.AddAsync(supplier);
+        Supplier newSupplier = new Supplier(supplierDto.Name);
+        await _sharedContext.Suppliers.AddAsync(newSupplier);
         await _sharedContext.SaveChangesAsync();
-        
         
         if(supplierDto.Items != null)
         {
-            foreach (var itemDto in supplierDto.Items)
+            Supplier supplier = await _sharedContext.Suppliers.FirstOrDefaultAsync(supplier => supplier.Name == supplierDto.Name);
+            foreach (ItemDto item in supplierDto.Items)
             {
-
-                await EditItemList(itemDto);
-                // await _itemService.EditItem(item);
-                // await _sharedContext.SaveChangesAsync();
+                await AssociateItems(supplier, item);
             }
         }
-        
-        return supplier;
-
+        return newSupplier;
     }
 
-    public async Task<Item> EditItemList(ItemDto itemDto)
+    public async Task<ItemAssociation> AssociateItems(Supplier supplier, ItemDto itemDto)
     {
-        var itemToEdit = await _sharedContext.Items.FirstOrDefaultAsync(itemToEdit => itemToEdit.Id == itemDto.Id);
+        Item item = ItemConstructor(itemDto);
+        var itemAssociation = new ItemAssociation(item, supplier);
+        await _sharedContext.ItemAssociations.AddAsync(itemAssociation);
+        await _sharedContext.SaveChangesAsync();
+        return itemAssociation;
+        
+    }
+
+    public Item ItemConstructor(ItemDto itemDto)
+    {
         switch (itemDto.ItemType)
         {
-
             case ItemType.Wine:
-                Wine wine = (Wine)itemToEdit;
-                wine.ChangeWineProperties(itemDto.ItemName, itemDto.SupplierId, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price,
+                Wine wine = new Wine(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price,
                     itemDto.ItemDescription, itemDto.ItemType, itemDto.WineType, itemDto.Year, itemDto.Volume,
                     itemDto.AlcoholPercentage, itemDto.Country, itemDto.Region, itemDto.GrapeSort, itemDto.Winery,
                     itemDto.TastingNotes, itemDto.SuitableFor);
-                await _sharedContext.SaveChangesAsync();
                 return wine;
             case ItemType.Liquor:
-                Liquor liquor = (Liquor)itemToEdit;
-                liquor.ChangeLiquorProperties(itemDto.ItemName, itemDto.SupplierId, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price,
+                Liquor liquor = new Liquor(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price,
                     itemDto.ItemDescription, itemDto.ItemType);
-                await _sharedContext.SaveChangesAsync();
                 return liquor;
             case ItemType.DefaultItem:
-                DefaultItem defaultItem = (DefaultItem)itemToEdit;
-                defaultItem.ChangeDefaultItemProperties(itemDto.ItemName, itemDto.SupplierId, itemDto.Ean, itemDto.ItemQuantity,
+                DefaultItem defaultItem = new DefaultItem(itemDto.ItemName, itemDto.Ean, itemDto.ItemQuantity,
                     itemDto.Price, itemDto.ItemDescription, itemDto.ItemType);
-                await _sharedContext.SaveChangesAsync();
                 return defaultItem;
             default:
-                throw new NotImplementedException("Item not edited");
+                throw new NotImplementedException("Item not created");
         }
     }
+
+    // public async Task<Item> EditItemList(ItemDto itemDto, int supplierId)
+    // {
+    //     var itemToEdit = await _sharedContext.Items.FirstOrDefaultAsync(itemToEdit => itemToEdit.Id == itemDto.Id);
+    //     itemDto.SupplierId = supplierId;
+    //     switch (itemDto.ItemType)
+    //     {
+    //
+    //         case ItemType.Wine:
+    //             Wine wine = (Wine)itemToEdit;
+    //             wine.ChangeWineProperties(itemDto.ItemName, itemDto.SupplierId, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price,
+    //                 itemDto.ItemDescription, itemDto.ItemType, itemDto.WineType, itemDto.Year, itemDto.Volume,
+    //                 itemDto.AlcoholPercentage, itemDto.Country, itemDto.Region, itemDto.GrapeSort, itemDto.Winery,
+    //                 itemDto.TastingNotes, itemDto.SuitableFor);
+    //             await _sharedContext.SaveChangesAsync();
+    //             return wine;
+    //         case ItemType.Liquor:
+    //             Liquor liquor = (Liquor)itemToEdit;
+    //             liquor.ChangeLiquorProperties(itemDto.ItemName, itemDto.SupplierId, itemDto.Ean, itemDto.ItemQuantity, itemDto.Price,
+    //                 itemDto.ItemDescription, itemDto.ItemType);
+    //             await _sharedContext.SaveChangesAsync();
+    //             return liquor;
+    //         case ItemType.DefaultItem:
+    //             DefaultItem defaultItem = (DefaultItem)itemToEdit;
+    //             defaultItem.ChangeDefaultItemProperties(itemDto.ItemName, itemDto.SupplierId, itemDto.Ean, itemDto.ItemQuantity,
+    //                 itemDto.Price, itemDto.ItemDescription, itemDto.ItemType);
+    //             await _sharedContext.SaveChangesAsync();
+    //             return defaultItem;
+    //         default:
+    //             throw new NotImplementedException("Item not edited");
+    //     }
+    // }
 
     public async Task<List<Supplier>> GetAllSuppliers()
     {

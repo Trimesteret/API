@@ -7,5 +7,4 @@ public interface ISupplierService
 {
     public Task<Supplier> CreateSupplier(SupplierDto supplierDto);
     public Task<List<Supplier>> GetAllSuppliers();
-
 }

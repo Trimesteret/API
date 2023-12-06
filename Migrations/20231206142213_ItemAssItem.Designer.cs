@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(SharedContext))]
-    [Migration("20231206083839_ItemConf")]
-    partial class ItemConf
+    [Migration("20231206142213_ItemAssItem")]
+    partial class ItemAssItem
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -64,7 +64,7 @@ namespace API.Migrations
                     b.Property<string>("SuitableFor")
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("SupplierId")
+                    b.Property<int>("SupplierId")
                         .HasColumnType("int");
 
                     b.Property<string>("TastingNotes")
@@ -172,6 +172,9 @@ namespace API.Migrations
                     b.Property<int>("ReservedQuantity")
                         .HasColumnType("int");
 
+                    b.Property<int>("SupplierId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Items");
@@ -228,6 +231,27 @@ namespace API.Migrations
                     b.HasIndex("PurchaseOrderId");
 
                     b.ToTable("OrderLine");
+                });
+
+            modelBuilder.Entity("API.Models.Suppliers.ItemAssociation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItemId");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("ItemAssociations");
                 });
 
             modelBuilder.Entity("API.Models.Suppliers.Supplier", b =>
@@ -350,7 +374,9 @@ namespace API.Migrations
                 {
                     b.HasOne("API.Models.Suppliers.Supplier", null)
                         .WithMany("Items")
-                        .HasForeignKey("SupplierId");
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("API.Models.Orders.OrderLine", b =>
@@ -366,6 +392,25 @@ namespace API.Migrations
                     b.Navigation("Item");
 
                     b.Navigation("PurchaseOrder");
+                });
+
+            modelBuilder.Entity("API.Models.Suppliers.ItemAssociation", b =>
+                {
+                    b.HasOne("API.Models.Items.Item", "ItemRef")
+                        .WithMany()
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Models.Suppliers.Supplier", "SupplierRef")
+                        .WithMany()
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ItemRef");
+
+                    b.Navigation("SupplierRef");
                 });
 
             modelBuilder.Entity("API.Models.Orders.PurchaseOrder", b =>

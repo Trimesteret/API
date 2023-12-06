@@ -230,6 +230,27 @@ namespace API.Migrations
                     b.ToTable("OrderLine");
                 });
 
+            modelBuilder.Entity("API.Models.Suppliers.ItemAssociation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItemId");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("ItemAssociations");
+                });
+
             modelBuilder.Entity("API.Models.Suppliers.Supplier", b =>
                 {
                     b.Property<int>("Id")
@@ -368,6 +389,25 @@ namespace API.Migrations
                     b.Navigation("Item");
 
                     b.Navigation("PurchaseOrder");
+                });
+
+            modelBuilder.Entity("API.Models.Suppliers.ItemAssociation", b =>
+                {
+                    b.HasOne("API.Models.Items.Item", "ItemRef")
+                        .WithMany()
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Models.Suppliers.Supplier", "SupplierRef")
+                        .WithMany()
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ItemRef");
+
+                    b.Navigation("SupplierRef");
                 });
 
             modelBuilder.Entity("API.Models.Orders.PurchaseOrder", b =>

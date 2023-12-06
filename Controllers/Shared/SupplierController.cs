@@ -19,12 +19,11 @@ namespace API.Controllers.Shared
 
         // POST: api/Supplier
         [HttpPost]
-        
         public async Task<ActionResult<Supplier>> PostSupplier([FromBody]SupplierDto supplier)
         {
             try {
                 await _supplierService.CreateSupplier(supplier);
-                return Ok(true);
+                return Ok(supplier);
             }
             catch (Exception e)
             {

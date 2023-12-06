@@ -25,7 +25,4 @@ public class Supplier
         this.Name = name;
         this.Items = items;
     }
-    
-    
-
 }
