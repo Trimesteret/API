@@ -3,6 +3,7 @@ using System;
 using API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(SharedContext))]
-    partial class SharedContextModelSnapshot : ModelSnapshot
+    [Migration("20231205203802_UpdatedValues")]
+    partial class UpdatedValues
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,7 +64,7 @@ namespace API.Migrations
                     b.Property<string>("SuitableFor")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("SupplierId")
+                    b.Property<int?>("SupplierId")
                         .HasColumnType("int");
 
                     b.Property<string>("TastingNotes")
@@ -167,9 +170,6 @@ namespace API.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("ReservedQuantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SupplierId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -350,9 +350,7 @@ namespace API.Migrations
                 {
                     b.HasOne("API.Models.Suppliers.Supplier", null)
                         .WithMany("Items")
-                        .HasForeignKey("SupplierId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SupplierId");
                 });
 
             modelBuilder.Entity("API.Models.Orders.OrderLine", b =>

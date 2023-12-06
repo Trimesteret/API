@@ -5,6 +5,7 @@ namespace API.Models.Items;
 public abstract class Item
 {
     public int Id { get; protected set; }
+    public int SupplierId { get; protected set; }
     public string Name { get; protected set; }
     public string Ean { get; protected set; }
     public int Quantity { get; protected set; }

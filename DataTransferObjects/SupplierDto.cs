@@ -5,5 +5,5 @@ namespace API.DataTransferObjects;
 public class SupplierDto
 {
     public string Name { get; set; }
-    public List<Item>? Items { get; set; }
+    public List<ItemDto>? Items { get; set; }
 }

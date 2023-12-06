@@ -1,4 +1,5 @@
 using System.Transactions;
+using API.DataTransferObjects;
 using API.Enums;
 
 namespace API.Models.Items;
@@ -47,7 +48,7 @@ public class Wine : Item
         this.SuitableFor = suitableFor;
     }
     
-    public void ChangeWineProperties(string name, string ean, int quantity, double price, string description, 
+    public void ChangeWineProperties(string name, int supplierId, string ean, int quantity, double price, string description, 
         ItemType itemType, WineType? wineType, int? year, double? volume, 
         double? alcoholPercentage, string country, string region, string grapeSort, 
         string winery, string tastingNotes, string suitableFor)
