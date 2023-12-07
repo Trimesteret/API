@@ -21,7 +21,7 @@ public class ItemService : IItemService
         _mapper = mapper;
     }
 
-    public async Task<List<Item>> GetItemsBySearch(string search, int amountOfItemsShown, SortByPrice? sortByPrice,
+    public async Task<List<Item>> GetItemsBySearch(string? search, int amountOfItemsShown, SortByPrice? sortByPrice,
         ItemType? itemType)
     {
         IQueryable<Item> query = _sharedContext.Items;

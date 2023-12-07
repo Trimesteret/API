@@ -6,7 +6,7 @@ namespace API.Services.Shared;
 
 public interface IItemService
 {
-    public Task<List<Item>> GetItemsBySearch(string search, int amountOfItemsShown, SortByPrice? sortByPrice, ItemType? itemType);
+    public Task<List<Item>> GetItemsBySearch(string? search, int amountOfItemsShown, SortByPrice? sortByPrice, ItemType? itemType);
 
     public Task<ItemDto> GetItemById(int id);
 
