@@ -7,7 +7,7 @@ public class Supplier
 {
     public int Id { get; set; }
     public string Name { get; set; }
-    public List<ItemDto>? Items { get; set; }
+    public List<ItemAssociation>? Items { get; set; }
     /**
      * Empty constructor for EF core
      */
@@ -20,7 +20,7 @@ public class Supplier
     {
         this.Name = name;
     }
-    public Supplier(string name, List<ItemDto> items)
+    public Supplier(string name, List<ItemAssociation> items)
     {
         this.Name = name;
         this.Items = items;

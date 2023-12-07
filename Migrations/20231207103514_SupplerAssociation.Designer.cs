@@ -3,6 +3,7 @@ using System;
 using API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(SharedContext))]
-    partial class SharedContextModelSnapshot : ModelSnapshot
+    [Migration("20231207103514_SupplerAssociation")]
+    partial class SupplerAssociation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,7 +41,7 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CustomEnums", (string)null);
+                    b.ToTable("CustomEnums");
                 });
 
             modelBuilder.Entity("API.Enums.ItemEnumRelation", b =>
@@ -64,7 +67,7 @@ namespace API.Migrations
 
                     b.HasIndex("WineId");
 
-                    b.ToTable("ItemEnumRelations", (string)null);
+                    b.ToTable("ItemEnumRelations");
                 });
 
             modelBuilder.Entity("API.Models.Authentication.User", b =>
@@ -113,7 +116,7 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("User");
 
@@ -162,7 +165,7 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Items", (string)null);
+                    b.ToTable("Items");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Item");
 
@@ -185,7 +188,7 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Order", (string)null);
+                    b.ToTable("Order");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Order");
 
@@ -216,7 +219,7 @@ namespace API.Migrations
 
                     b.HasIndex("PurchaseOrderId");
 
-                    b.ToTable("OrderLine", (string)null);
+                    b.ToTable("OrderLine");
                 });
 
             modelBuilder.Entity("API.Models.Suppliers.ItemAssociation", b =>
@@ -235,7 +238,7 @@ namespace API.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("ItemAssociations", (string)null);
+                    b.ToTable("ItemAssociations");
                 });
 
             modelBuilder.Entity("API.Models.Suppliers.Supplier", b =>
@@ -250,7 +253,7 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Suppliers", (string)null);
+                    b.ToTable("Suppliers");
                 });
 
             modelBuilder.Entity("API.Models.Authentication.Employee", b =>

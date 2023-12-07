@@ -10,5 +10,5 @@ public interface ISupplierService
     public Task<Supplier> CreateSupplier(SupplierDto supplierDto);
     public Task<List<Supplier>> GetAllSuppliers();
     public Task<Supplier> GetSupplierById(int id);
-    public Task<List<Item>> GetAssociated(int id);
+    public Task<List<ItemAssociation>> GetAssociated(int id);
 }
