@@ -1,9 +1,6 @@
 using API.Models.Suppliers;
 using API.DataTransferObjects;
-using API.Enums;
 using API.Models;
-using API.Models.Items;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Services.Shared;
@@ -11,11 +8,10 @@ namespace API.Services.Shared;
 public class SupplierService : ISupplierService
 {
     private readonly SharedContext _sharedContext;
-
+    
     public SupplierService(SharedContext dbSharedContext)
     {
         _sharedContext = dbSharedContext;
-
     }
     
     public async Task<Supplier> GetSupplierById(int id)
@@ -23,32 +19,40 @@ public class SupplierService : ISupplierService
         Supplier? supplier = await _sharedContext.Suppliers.FirstOrDefaultAsync(i => i.Id == id);
         if (supplier != null)
         {
-            
-            supplier.Items = await GetRelations(supplier.Id);
+            supplier.Items = await GetRelationsList(supplier.Id);
             return supplier;
         }
         return null;
     }
 
-    public async Task<List<ItemRelation>> GetRelations(int id)
+    public async Task<Supplier> EditSupplier(SupplierDto supplierDto)
+    {
+        var existingSupplier =
+            await _sharedContext.Suppliers.FirstOrDefaultAsync(supplier => supplier.Id == supplierDto.Id);
+        await CheckRelations(existingSupplier, supplierDto);
+        existingSupplier.ChangeSupplierProperties(supplierDto.Name, supplierDto?.Items);
+        await _sharedContext.SaveChangesAsync();
+        return existingSupplier;
+    }
+
+    public async Task CheckRelations(Supplier supplier, SupplierDto supplierDto)
+    {
+        List<ItemRelation> relationsList = new List<ItemRelation>();
+        if (supplierDto.Items != null)
+        {
+            foreach (ItemRelation relation in supplierDto.Items)
+            {
+                await RelateItems(supplier, relation);
+            }
+        }
+    }
+
+    public async Task<List<ItemRelation>> GetRelationsList(int id)
     {
         var itemRelations = await _sharedContext.ItemRelations
             .Where(i => i.SupplierId == id)
             .ToListAsync();
-        Console.WriteLine(itemRelations);
-        List<ItemRelation> itemList = new List<ItemRelation>();
-        foreach (var relation in itemRelations)
-        {
-            var item = await _sharedContext.Items
-                .FirstOrDefaultAsync(i => i.Id == relation.ItemId);
-            if (item != null)
-            {
-                ItemRelation add = new ItemRelation();
-                add.ItemId = item.Id;
-                itemList.Add(add);
-            }
-        }
-        return itemList;
+        return itemRelations;
     }
     
     public async Task<Supplier> CreateSupplier(SupplierDto supplierDto)

@@ -32,12 +32,26 @@ namespace API.Controllers.Shared
             }
         }
         
+        [HttpPut]
+        public async Task<ActionResult> EditSupplier([FromBody] SupplierDto supplier)
+        {
+            try
+            {
+                await _supplierService.EditSupplier(supplier);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return BadRequest(e.Message);
+            }
+        }
+        
         // [HttpGet("Associated/{id}")]
         // public async Task<ActionResult<List<Item>>> GetAssociated(int id)
         // {
-        //     return await _supplierService.GetAssociated(id);
+        //     return await _supplierService.GetRelations(id);
         // }
-        
         
 
         // POST: api/Supplier

@@ -25,4 +25,10 @@ public class Supplier
         this.Name = name;
         this.Items = items;
     }
+
+    public void ChangeSupplierProperties(string name, List<ItemRelation>? items)
+    {
+        this.Name = name;
+        this.Items = items;
+    }
 }
