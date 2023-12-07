@@ -8,7 +8,7 @@ public class PurchaseOrder: Order
 {
     public Customer Customer { get; protected set; }
     public Guest Guest { get; protected set; }
-    public double PurchaseOrderTotalPrice { get; protected set; }
+    public double TotalPrice { get; protected set; }
 
     /**
      * Parameterless constructor for EF Core
