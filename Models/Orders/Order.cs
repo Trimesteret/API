@@ -7,8 +7,8 @@ namespace API.Models.Orders;
 
 public abstract class Order
 {
-    public string Comment { get; protected set; }
     public int Id { get; protected set; }
+    public string Comment { get; protected set; }
     public string Discriminator { get; protected set; }
     public PurchaseOrderState PurchaseOrderState { get; protected set; } = PurchaseOrderState.Open;
     public double TotalPrice { get; protected set; }
