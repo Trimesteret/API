@@ -7,5 +7,5 @@ public class SupplierDto
 {
     public int? Id { get; set; }
     public string Name { get; set; }
-    public List<ItemAssociation>? Items { get; set; }
+    public List<ItemRelation>? Items { get; set; }
 }

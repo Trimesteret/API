@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(SharedContext))]
-    [Migration("20231207103514_SupplerAssociation")]
-    partial class SupplerAssociation
+    [Migration("20231207112614_ItemRelations")]
+    partial class ItemRelations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -222,7 +222,7 @@ namespace API.Migrations
                     b.ToTable("OrderLine");
                 });
 
-            modelBuilder.Entity("API.Models.Suppliers.ItemAssociation", b =>
+            modelBuilder.Entity("API.Models.Suppliers.ItemRelation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -238,7 +238,7 @@ namespace API.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("ItemAssociations");
+                    b.ToTable("ItemRelations");
                 });
 
             modelBuilder.Entity("API.Models.Suppliers.Supplier", b =>
@@ -402,15 +402,13 @@ namespace API.Migrations
                     b.Navigation("PurchaseOrder");
                 });
 
-            modelBuilder.Entity("API.Models.Suppliers.ItemAssociation", b =>
+            modelBuilder.Entity("API.Models.Suppliers.ItemRelation", b =>
                 {
-                    b.HasOne("API.Models.Suppliers.Supplier", "Supplier")
+                    b.HasOne("API.Models.Suppliers.Supplier", null)
                         .WithMany("Items")
                         .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("API.Models.Orders.PurchaseOrder", b =>

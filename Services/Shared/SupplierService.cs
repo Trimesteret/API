@@ -24,26 +24,26 @@ public class SupplierService : ISupplierService
         if (supplier != null)
         {
             
-            supplier.Items = await GetAssociated(supplier.Id);
+            supplier.Items = await GetRelations(supplier.Id);
             return supplier;
         }
         return null;
     }
 
-    public async Task<List<ItemAssociation>> GetAssociated(int id)
+    public async Task<List<ItemRelation>> GetRelations(int id)
     {
-        var itemAssociations = await _sharedContext.ItemAssociations
+        var itemRelations = await _sharedContext.ItemRelations
             .Where(i => i.SupplierId == id)
             .ToListAsync();
-        Console.WriteLine(itemAssociations);
-        List<ItemAssociation> itemList = new List<ItemAssociation>();
-        foreach (var association in itemAssociations)
+        Console.WriteLine(itemRelations);
+        List<ItemRelation> itemList = new List<ItemRelation>();
+        foreach (var relation in itemRelations)
         {
             var item = await _sharedContext.Items
-                .FirstOrDefaultAsync(i => i.Id == association.ItemId);
+                .FirstOrDefaultAsync(i => i.Id == relation.ItemId);
             if (item != null)
             {
-                ItemAssociation add = new ItemAssociation();
+                ItemRelation add = new ItemRelation();
                 add.ItemId = item.Id;
                 itemList.Add(add);
             }
@@ -60,15 +60,15 @@ public class SupplierService : ISupplierService
 
         if (supplierDto.Items != null && supplierDto.Items.Any())
         {
-            foreach (ItemAssociation item in supplierDto.Items)
+            foreach (ItemRelation item in supplierDto.Items)
             {
-                await AssociateItems(newSupplier, item);
+                await RelateItems(newSupplier, item);
             }
         }
         
         return newSupplier;
     }
-    public async Task<ItemAssociation> AssociateItems(Supplier supplier, ItemAssociation itemAssociation)
+    public async Task<ItemRelation> RelateItems(Supplier supplier, ItemRelation itemRelation)
     {
         if (supplier.Id == 0)
         {
@@ -79,20 +79,20 @@ public class SupplierService : ISupplierService
             _sharedContext.Entry(supplier).State = EntityState.Unchanged;
         }
         
-        if (itemAssociation.Id == 0)
+        if (itemRelation.Id == 0)
         {
-            _sharedContext.ItemAssociations.Add(itemAssociation); 
+            _sharedContext.ItemRelations.Add(itemRelation); 
         }
         else
         {
-            _sharedContext.Entry(itemAssociation).State = EntityState.Unchanged;
+            _sharedContext.Entry(itemRelation).State = EntityState.Unchanged;
         }
         
-        itemAssociation.SupplierId = supplier.Id;
+        itemRelation.SupplierId = supplier.Id;
         
         await _sharedContext.SaveChangesAsync();
 
-        return itemAssociation;
+        return itemRelation;
     }
 
     public async Task<List<Supplier>> GetAllSuppliers()

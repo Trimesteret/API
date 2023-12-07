@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace API.Migrations
 {
     /// <inheritdoc />
-    public partial class SupplerAssociation : Migration
+    public partial class ItemRelations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,7 +31,7 @@ namespace API.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "ItemAssociations",
+                name: "ItemRelations",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -41,9 +41,9 @@ namespace API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ItemAssociations", x => x.Id);
+                    table.PrimaryKey("PK_ItemRelations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ItemAssociations_Suppliers_SupplierId",
+                        name: "FK_ItemRelations_Suppliers_SupplierId",
                         column: x => x.SupplierId,
                         principalTable: "Suppliers",
                         principalColumn: "Id",
@@ -52,8 +52,8 @@ namespace API.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ItemAssociations_SupplierId",
-                table: "ItemAssociations",
+                name: "IX_ItemRelations_SupplierId",
+                table: "ItemRelations",
                 column: "SupplierId");
         }
 
@@ -61,7 +61,7 @@ namespace API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ItemAssociations");
+                name: "ItemRelations");
 
             migrationBuilder.DropColumn(
                 name: "Name",

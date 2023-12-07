@@ -38,7 +38,7 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CustomEnums", (string)null);
+                    b.ToTable("CustomEnums");
                 });
 
             modelBuilder.Entity("API.Enums.ItemEnumRelation", b =>
@@ -64,7 +64,7 @@ namespace API.Migrations
 
                     b.HasIndex("WineId");
 
-                    b.ToTable("ItemEnumRelations", (string)null);
+                    b.ToTable("ItemEnumRelations");
                 });
 
             modelBuilder.Entity("API.Models.Authentication.User", b =>
@@ -113,7 +113,7 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("User");
 
@@ -162,7 +162,7 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Items", (string)null);
+                    b.ToTable("Items");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Item");
 
@@ -185,7 +185,7 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Order", (string)null);
+                    b.ToTable("Order");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Order");
 
@@ -216,10 +216,10 @@ namespace API.Migrations
 
                     b.HasIndex("PurchaseOrderId");
 
-                    b.ToTable("OrderLine", (string)null);
+                    b.ToTable("OrderLine");
                 });
 
-            modelBuilder.Entity("API.Models.Suppliers.ItemAssociation", b =>
+            modelBuilder.Entity("API.Models.Suppliers.ItemRelation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -235,7 +235,7 @@ namespace API.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("ItemAssociations", (string)null);
+                    b.ToTable("ItemRelations");
                 });
 
             modelBuilder.Entity("API.Models.Suppliers.Supplier", b =>
@@ -250,7 +250,7 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Suppliers", (string)null);
+                    b.ToTable("Suppliers");
                 });
 
             modelBuilder.Entity("API.Models.Authentication.Employee", b =>
@@ -399,15 +399,13 @@ namespace API.Migrations
                     b.Navigation("PurchaseOrder");
                 });
 
-            modelBuilder.Entity("API.Models.Suppliers.ItemAssociation", b =>
+            modelBuilder.Entity("API.Models.Suppliers.ItemRelation", b =>
                 {
-                    b.HasOne("API.Models.Suppliers.Supplier", "Supplier")
+                    b.HasOne("API.Models.Suppliers.Supplier", null)
                         .WithMany("Items")
                         .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("API.Models.Orders.PurchaseOrder", b =>
