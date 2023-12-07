@@ -3,6 +3,7 @@ using System;
 using API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(SharedContext))]
-    partial class SharedContextModelSnapshot : ModelSnapshot
+    [Migration("20231207081745_NullableImageUrl")]
+    partial class NullableImageUrl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,85 +42,6 @@ namespace API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CustomEnums");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            EnumType = 0,
-                            Key = "Poultry",
-                            Value = "Fjerkræ"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            EnumType = 0,
-                            Key = "Seafood",
-                            Value = "Skaldyr"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            EnumType = 0,
-                            Key = "RedMeat",
-                            Value = "Oksekød"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            EnumType = 0,
-                            Key = "Pork",
-                            Value = "Svinekød"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            EnumType = 0,
-                            Key = "SpicyFood",
-                            Value = "Stærk mad"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            EnumType = 0,
-                            Key = "Cheese",
-                            Value = "Ost"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            EnumType = 0,
-                            Key = "Pasta",
-                            Value = "Pasta"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            EnumType = 0,
-                            Key = "Pizza",
-                            Value = "Pizza"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            EnumType = 0,
-                            Key = "Vegetarian",
-                            Value = "Vegetar"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            EnumType = 0,
-                            Key = "Salad",
-                            Value = "Salat"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            EnumType = 0,
-                            Key = "Dessert",
-                            Value = "Dessert"
-                        });
                 });
 
             modelBuilder.Entity("API.Enums.ItemEnumRelation", b =>
