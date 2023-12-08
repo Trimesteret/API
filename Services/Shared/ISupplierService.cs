@@ -7,8 +7,13 @@ namespace API.Services.Shared;
 
 public interface ISupplierService
 {
-    public Task<Supplier> CreateSupplier(SupplierDto supplierDto);
+    public Task<SupplierDto> CreateSupplier(SupplierDto supplierDto);
+
     public Task<List<Supplier>> GetAllSuppliers();
-    public Task<Supplier> GetSupplierById(int id);
-    public Task<Supplier> EditSupplier(SupplierDto supplier);
+
+    public Task<SupplierDto> GetSupplierById(int id);
+
+    public Task<SupplierDto> EditSupplier(SupplierDto supplier);
+
+    public Task DeleteSupplier(int id);
 }

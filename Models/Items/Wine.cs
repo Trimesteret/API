@@ -98,14 +98,7 @@ public class Wine : Item
 
     public async Task ClearSuitableFor(SharedContext context)
     {
-        var itemEnumRelationOnItem =
-            await context.ItemEnumRelations.Where(ier => ier.ItemId == this.Id).ToListAsync();
-
-        foreach (var itemEnumRelation in itemEnumRelationOnItem)
-        {
-            context.Remove(itemEnumRelation);
-        }
-
-        await context.SaveChangesAsync();
+        var itemEnumRelations = await context.ItemEnumRelations.Where(ier => ier.ItemId == this.Id).ToListAsync();
+        context.ItemEnumRelations.RemoveRange(itemEnumRelations);
     }
 }

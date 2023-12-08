@@ -1,8 +1,8 @@
 using API.DataTransferObjects;
-using API.Models.Items;
 using Microsoft.AspNetCore.Mvc;
 using API.Models.Suppliers;
 using API.Services.Shared;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers.Shared
 {
@@ -19,12 +19,12 @@ namespace API.Controllers.Shared
 
 
         [HttpPost]
-        public async Task<ActionResult<Supplier>> PostSupplier([FromBody] SupplierDto supplierDto)
+        [Authorize(Policy = "require-admin-role")]
+        public async Task<ActionResult<SupplierDto>> PostSupplier([FromBody] SupplierDto supplierDto)
         {
             try
             {
-                await _supplierService.CreateSupplier(supplierDto);
-                return Ok(supplierDto);
+                return await _supplierService.CreateSupplier(supplierDto);
             }
             catch (Exception e)
             {
@@ -34,12 +34,12 @@ namespace API.Controllers.Shared
         }
 
         [HttpPut]
-        public async Task<ActionResult> EditSupplier([FromBody] SupplierDto supplier)
+        [Authorize(Policy = "require-admin-role")]
+        public async Task<ActionResult<SupplierDto>> EditSupplier([FromBody] SupplierDto supplier)
         {
             try
             {
-                await _supplierService.EditSupplier(supplier);
-                return Ok();
+                return await _supplierService.EditSupplier(supplier);
             }
             catch (Exception e)
             {
@@ -49,15 +49,42 @@ namespace API.Controllers.Shared
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Supplier>> GetSupplierById(int id)
+        [Authorize(Policy = "require-admin-role")]
+        public async Task<ActionResult<SupplierDto>> GetSupplierById(int id)
         {
-            return await _supplierService.GetSupplierById(id);
+            try
+            {
+                return await _supplierService.GetSupplierById(id);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return BadRequest(e.Message);
+            }
         }
 
-        [HttpGet("AllSuppliers")]
+        [HttpGet]
+        [Authorize(Policy = "require-admin-role")]
         public async Task<ActionResult<List<Supplier>>> GetAllSuppliers()
         {
             return await _supplierService.GetAllSuppliers();
         }
+
+        [HttpDelete("{id}")]
+        [Authorize(Policy = "require-admin-role")]
+        public async Task<ActionResult<Boolean>> DeleteSupplier(int id)
+        {
+            try
+            {
+                await _supplierService.DeleteSupplier(id);
+                return Ok(true);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest(e.Message);
+            }
+        }
+
     }
 }

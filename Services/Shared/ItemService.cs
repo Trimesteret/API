@@ -74,7 +74,6 @@ public class ItemService : IItemService
             throw new Exception("You do not have permission to create items");
         }
 
-        Console.WriteLine(itemDto.ItemType);
         switch (itemDto.ItemType)
         {
             case ItemType.Wine:
@@ -102,7 +101,13 @@ public class ItemService : IItemService
         }
     }
 
-
+    /// <summary>
+    /// Get the amount of items that match the search, sort and filter
+    /// </summary>
+    /// <param name="sortByPrice"></param>
+    /// <param name="itemType"></param>
+    /// <param name="search"></param>
+    /// <returns></returns>
     public Task<int> GetItemCount(SortByPrice? sortByPrice, ItemType? itemType, string search = "")
     {
         IQueryable<Item> query = _sharedContext.Items;
@@ -217,8 +222,38 @@ public class ItemService : IItemService
         return editedItemDto;
     }
 
+    /// <summary>
+    /// Gets all items
+    /// </summary>
+    /// <returns></returns>
     public async Task<List<Item>> GetAllItems()
     {
         return await _sharedContext.Items.ToListAsync();
+    }
+
+    /// <summary>
+    /// Delete an item given an id
+    /// </summary>
+    /// <param name="id">Id of the item to delete</param>
+    /// <exception cref="Exception"></exception>
+    public async Task DeleteItem(int id)
+    {
+        var existingItem = await _sharedContext.Items.FirstOrDefaultAsync(item => item.Id == id);
+
+        if (existingItem == null)
+        {
+            throw new Exception("Item could not be found");
+        }
+
+        var existingWine = existingItem as Wine;
+
+        if(existingWine != null)
+        {
+            await existingWine.ClearSuitableFor(_sharedContext);
+        }
+
+        _sharedContext.Remove(existingItem);
+
+        await _sharedContext.SaveChangesAsync();
     }
 }

@@ -1,5 +1,4 @@
 using API.DataTransferObjects;
-using API.Models.Authentication;
 using API.Services.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -62,6 +61,7 @@ namespace API.Controllers.Shared
         }
 
         [HttpPut("password")]
+        [Authorize]
         public async Task<ActionResult> ChangeSelfPassword(LoginDto user)
         {
             try
