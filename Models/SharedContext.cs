@@ -42,7 +42,7 @@ public class SharedContext : DbContext
     public DbSet<Wine> Wines { get; set; }
     public DbSet<Supplier> Suppliers { get; set; }
     public DbSet<Order> Order { get; set; }
-    public DbSet<ItemRelation> ItemRelations { get; set; }
+    public DbSet<SupplierItemRelation> ItemRelations { get; set; }
     public DbSet<CustomEnum> CustomEnums { get; set; }
     public DbSet<ItemEnumRelation> ItemEnumRelations { get; set; }
 }

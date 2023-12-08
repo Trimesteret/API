@@ -16,13 +16,14 @@ namespace API.Controllers.Shared
         {
             _supplierService = supplierService;
         }
-        
+
 
         [HttpPost]
         public async Task<ActionResult<Supplier>> PostSupplier([FromBody] SupplierDto supplierDto)
         {
-            Console.WriteLine((supplierDto));
-            try { await _supplierService.CreateSupplier(supplierDto);
+            try
+            {
+                await _supplierService.CreateSupplier(supplierDto);
                 return Ok(supplierDto);
             }
             catch (Exception e)
@@ -31,7 +32,7 @@ namespace API.Controllers.Shared
                 return BadRequest(e.Message);
             }
         }
-        
+
         [HttpPut]
         public async Task<ActionResult> EditSupplier([FromBody] SupplierDto supplier)
         {
@@ -46,15 +47,15 @@ namespace API.Controllers.Shared
                 return BadRequest(e.Message);
             }
         }
-        
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Supplier>> GetSupplierById(int id)
         {
             return await _supplierService.GetSupplierById(id);
         }
-        
+
         [HttpGet("AllSuppliers")]
-        public async Task<ActionResult<List<Supplier>>> GetAlleSuppliers()
+        public async Task<ActionResult<List<Supplier>>> GetAllSuppliers()
         {
             return await _supplierService.GetAllSuppliers();
         }

@@ -37,17 +37,17 @@ public class SupplierService : ISupplierService
 
     public async Task CheckRelations(Supplier supplier, SupplierDto supplierDto)
     {
-        List<ItemRelation> relationsList = new List<ItemRelation>();
+        List<SupplierItemRelation> relationsList = new List<SupplierItemRelation>();
         if (supplierDto.Items != null)
         {
-            foreach (ItemRelation relation in supplierDto.Items)
+            foreach (SupplierItemRelation relation in supplierDto.Items)
             {
                 await RelateItems(supplier, relation);
             }
         }
     }
 
-    public async Task<List<ItemRelation>> GetRelationsList(int id)
+    public async Task<List<SupplierItemRelation>> GetRelationsList(int id)
     {
         var itemRelations = await _sharedContext.ItemRelations
             .Where(i => i.SupplierId == id)
@@ -64,7 +64,7 @@ public class SupplierService : ISupplierService
 
         if (supplierDto.Items != null && supplierDto.Items.Any())
         {
-            foreach (ItemRelation item in supplierDto.Items)
+            foreach (SupplierItemRelation item in supplierDto.Items)
             {
                 await RelateItems(newSupplier, item);
             }
@@ -72,7 +72,7 @@ public class SupplierService : ISupplierService
         
         return newSupplier;
     }
-    public async Task<ItemRelation> RelateItems(Supplier supplier, ItemRelation itemRelation)
+    public async Task<SupplierItemRelation> RelateItems(Supplier supplier, SupplierItemRelation supplierItemRelation)
     {
         if (supplier.Id == 0)
         {
@@ -83,20 +83,20 @@ public class SupplierService : ISupplierService
             _sharedContext.Entry(supplier).State = EntityState.Unchanged;
         }
         
-        if (itemRelation.Id == 0)
+        if (supplierItemRelation.Id == 0)
         {
-            _sharedContext.ItemRelations.Add(itemRelation); 
+            _sharedContext.ItemRelations.Add(supplierItemRelation); 
         }
         else
         {
-            _sharedContext.Entry(itemRelation).State = EntityState.Unchanged;
+            _sharedContext.Entry(supplierItemRelation).State = EntityState.Unchanged;
         }
         
-        itemRelation.SupplierId = supplier.Id;
+        supplierItemRelation.SupplierId = supplier.Id;
         
         await _sharedContext.SaveChangesAsync();
 
-        return itemRelation;
+        return supplierItemRelation;
     }
 
     public async Task<List<Supplier>> GetAllSuppliers()

@@ -298,7 +298,7 @@ namespace API.Migrations
                     b.ToTable("OrderLine");
                 });
 
-            modelBuilder.Entity("API.Models.Suppliers.ItemRelation", b =>
+            modelBuilder.Entity("API.Models.Suppliers.SupplierItemRelation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -478,7 +478,7 @@ namespace API.Migrations
                     b.Navigation("PurchaseOrder");
                 });
 
-            modelBuilder.Entity("API.Models.Suppliers.ItemRelation", b =>
+            modelBuilder.Entity("API.Models.Suppliers.SupplierItemRelation", b =>
                 {
                     b.HasOne("API.Models.Suppliers.Supplier", null)
                         .WithMany("Items")

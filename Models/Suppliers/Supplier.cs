@@ -7,26 +7,26 @@ public class Supplier
 {
     public int Id { get; set; }
     public string Name { get; set; }
-    public List<ItemRelation>? Items { get; set; }
+    public List<SupplierItemRelation>? Items { get; set; }
     /**
      * Empty constructor for EF core
      */
     public Supplier()
     {
-        
+
     }
-    
+
     public Supplier(string name)
     {
         this.Name = name;
     }
-    public Supplier(string name, List<ItemRelation> items)
+    public Supplier(string name, List<SupplierItemRelation> items)
     {
         this.Name = name;
         this.Items = items;
     }
 
-    public void ChangeSupplierProperties(string name, List<ItemRelation>? items)
+    public void ChangeSupplierProperties(string name, List<SupplierItemRelation>? items)
     {
         this.Name = name;
         this.Items = items;
