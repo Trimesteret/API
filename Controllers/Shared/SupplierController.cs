@@ -47,15 +47,6 @@ namespace API.Controllers.Shared
             }
         }
         
-        // [HttpGet("Associated/{id}")]
-        // public async Task<ActionResult<List<Item>>> GetAssociated(int id)
-        // {
-        //     return await _supplierService.GetRelations(id);
-        // }
-        
-
-        // POST: api/Supplier
-        
         [HttpGet("{id}")]
         public async Task<ActionResult<Supplier>> GetSupplierById(int id)
         {
