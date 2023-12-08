@@ -5,24 +5,18 @@
 namespace API.Migrations
 {
     /// <inheritdoc />
-    public partial class SaltByteOnUser : Migration
+    public partial class NullableImageUrl : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<byte[]>(
-                name: "Salt",
-                table: "Users",
-                type: "longblob",
-                nullable: true);
+
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "Salt",
-                table: "Users");
+
         }
     }
 }

@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Security.Cryptography;
 using API.DataTransferObjects;
 using API.Enums;
 using API.Models;
@@ -12,12 +14,16 @@ public class UserService : IUserService
     private readonly SharedContext _sharedContext;
     private readonly IAuthService _authService;
     private readonly IMapper _mapper;
+    private readonly IAuthenticationService _authenticationService;
 
-    public UserService(SharedContext dbSharedContext, IAuthService authService, IMapper mapper)
+    const int KeySize = 64;
+
+    public UserService(SharedContext dbSharedContext, IAuthService authService, IMapper mapper, IAuthenticationService authenticationService)
     {
         _sharedContext = dbSharedContext;
         _authService = authService;
         _mapper = mapper;
+        _authenticationService = authenticationService;
     }
 
     /// <summary>
@@ -104,7 +110,6 @@ public class UserService : IUserService
                 throw new ArgumentOutOfRangeException();
         }
     }
-
     /// <summary>
     /// Edits the currently logged in user
     /// </summary>
@@ -121,11 +126,11 @@ public class UserService : IUserService
     }
 
     /// <summary>
-    ///
+    /// Deletes a user given an ID
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
+    /// <param name="id">ID of the user</param>
+    /// <returns>boolean</returns>
+    /// <exception cref="Exception">Could not find user with id</exception>
     public async Task<bool> DeleteUser(int id)
     {
         var existingUser = _sharedContext.Users.FirstOrDefault(user => user.Id == id);
@@ -137,4 +142,33 @@ public class UserService : IUserService
         await _sharedContext.SaveChangesAsync();
         return true;
     }
+
+    /// <summary>
+    /// the user can change their own password
+    /// </summary>
+    /// <param name="user"></param>
+    /// <returns>the edited user</returns>
+    /// <exception cref="Exception"></exception>
+    public async Task ChangeSelfPassword(LoginDto loginDto)
+    {
+        var activeUser = await this._authService.GetActiveUser();
+
+        if(loginDto.NewPasswordOne != loginDto.NewPasswordTwo || loginDto.NewPasswordOne == null || loginDto.NewPasswordOne.Length < 7)
+        {
+            throw new Exception("Incorrect new password");
+        }
+
+        if (AuthenticationService.HashPassword(loginDto.Password, activeUser.Salt) != activeUser.Password)
+        {
+            throw new Exception("Incorrect password");
+        }
+
+        var salt = AuthenticationService.GenerateSalt();
+
+        var hashedPassword = AuthenticationService.HashPassword(loginDto.NewPasswordOne, salt);
+
+        activeUser.ChangePassword(hashedPassword, salt);
+        await _sharedContext.SaveChangesAsync();
+    }
 }
+
