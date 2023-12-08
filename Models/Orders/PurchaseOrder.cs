@@ -6,8 +6,8 @@ namespace API.Models.Orders;
 
 public class PurchaseOrder: Order
 {
-    public Customer Customer { get; protected set; }
-    public Guest Guest { get; protected set; }
+    public Customer? Customer { get; protected set; }
+    public Guest? Guest { get; protected set; }
     public double TotalPrice { get; protected set; }
 
     /**

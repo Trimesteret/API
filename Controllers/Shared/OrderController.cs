@@ -21,6 +21,7 @@ namespace API.Controllers.Shared
 
         public async Task<ActionResult<List<Order>>> GetOrders()
         {
+            var order = await _orderService.GetAllOrders();
             return await _orderService.GetAllOrders();
         }
     }

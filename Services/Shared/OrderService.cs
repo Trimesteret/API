@@ -9,14 +9,10 @@ namespace API.Services.Shared;
 public class OrderService : IOrderService
 {
     private readonly SharedContext _sharedContext;
-    private readonly IMapper _mapper;
-    private readonly IAuthService _authService;
 
-    public OrderService(SharedContext dbSharedContext, IAuthService authService, IMapper mapper)
+    public OrderService(SharedContext dbSharedContext)
     {
         _sharedContext = dbSharedContext;
-        _authService = authService;
-        _mapper = mapper;
     }
     public async Task<List<Order>> GetAllOrders()
     {
