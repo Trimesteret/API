@@ -14,11 +14,11 @@ public class ItemDto
     public int? Year { get; set; }
     public double? Volume { get; set; }
     public double? AlcoholPercentage { get; set; }
-    public string Country { get; set; } = null;
-    public string Region { get; set; } = null;
-    public string GrapeSort { get; set; } = null;
-    public string Winery { get; set; } = null;
-    public string TastingNotes { get; set; } = null;
+    public string? Country { get; set; }
+    public string? Region { get; set; }
+    public string? GrapeSort { get; set; }
+    public string? Winery { get; set; }
+    public string? TastingNotes { get; set; }
     public List<int>? SuitableForEnumIds { get; set; }
     public WineType? WineType { get; set; }
     public ItemType ItemType { get; set; }

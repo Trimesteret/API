@@ -47,6 +47,24 @@ public class Wine : Item
         this.TastingNotes = tastingNotes;
     }
 
+    /// <summary>
+    /// Function for changing the properties of a wine
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="ean"></param>
+    /// <param name="quantity"></param>
+    /// <param name="imageUrl"></param>
+    /// <param name="price"></param>
+    /// <param name="description"></param>
+    /// <param name="wineType"></param>
+    /// <param name="year"></param>
+    /// <param name="volume"></param>
+    /// <param name="alcoholPercentage"></param>
+    /// <param name="country"></param>
+    /// <param name="region"></param>
+    /// <param name="grapeSort"></param>
+    /// <param name="winery"></param>
+    /// <param name="tastingNotes"></param>
     public void ChangeWineProperties(string name, string ean, int quantity, string imageUrl, double price, string description,
         WineType? wineType, int? year, double? volume, double? alcoholPercentage, string country, string region,
         string grapeSort, string winery, string tastingNotes)
@@ -68,6 +86,11 @@ public class Wine : Item
         this.TastingNotes = tastingNotes;
     }
 
+    /// <summary>
+    /// Gets the list of suitable for enums
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
     public async Task<List<CustomEnum>> GetSuitableForAsCustomEnum(SharedContext context)
     {
         return await context.CustomEnums
@@ -75,6 +98,11 @@ public class Wine : Item
             .ToListAsync();
     }
 
+    /// <summary>
+    /// Gets the list of suitable for enums as a list of ints
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
     public async Task<List<int>> GetSuitableForAsIntList(SharedContext context)
     {
         return await context.CustomEnums
@@ -83,6 +111,11 @@ public class Wine : Item
             .ToListAsync();
     }
 
+    /// <summary>
+    /// Sets the list of suitable for enums
+    /// </summary>
+    /// <param name="context"></param>
+    /// <param name="suitableForEnumIds"></param>
     public async Task SetSuitableFor(SharedContext context, List<int>? suitableForEnumIds)
     {
         await this.ClearSuitableFor(context);
@@ -96,16 +129,14 @@ public class Wine : Item
         }).ToList();
     }
 
+    /// <summary>
+    /// Clears the list of suitable for enums and removes them from the database
+    /// </summary>
+    /// <param name="context">The context</param>
     public async Task ClearSuitableFor(SharedContext context)
     {
-        var itemEnumRelationOnItem =
-            await context.ItemEnumRelations.Where(ier => ier.ItemId == this.Id).ToListAsync();
-
-        foreach (var itemEnumRelation in itemEnumRelationOnItem)
-        {
-            context.Remove(itemEnumRelation);
-        }
-
+        var itemEnumRelations = await context.ItemEnumRelations.Where(ier => ier.ItemId == this.Id).ToListAsync();
+        context.ItemEnumRelations.RemoveRange(itemEnumRelations);
         await context.SaveChangesAsync();
     }
 }

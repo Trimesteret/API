@@ -1,5 +1,6 @@
 using API.DataTransferObjects;
 using API.Models.Items;
+using API.Models.Suppliers;
 using AutoMapper;
 
 namespace API.Mapping;
@@ -18,5 +19,7 @@ public class MappingProfile: Profile
         CreateMap<DefaultItem, ItemDto>();
         CreateMap<ItemDto, Wine>();
         CreateMap<Wine, ItemDto>();
+        CreateMap<SupplierDto, Supplier>();
+        CreateMap<Supplier, SupplierDto>();
     }
 }
