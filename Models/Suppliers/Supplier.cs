@@ -15,11 +15,20 @@ public class Supplier
         this.Name = name;
     }
 
+    /// <summary>
+    /// Method for changing the properties of a supplier
+    /// </summary>
+    /// <param name="name"></param>
     public void ChangeSupplierProperties(string name)
     {
         this.Name = name;
     }
 
+    /// <summary>
+    /// Sets items associated with this supplier
+    /// </summary>
+    /// <param name="context">The context</param>
+    /// <param name="associatedItems"></param>
     public async Task SetAssociatedItems(SharedContext context, List<ItemDto>? associatedItems)
     {
         await this.ClearAssociatedItems(context);
@@ -31,6 +40,11 @@ public class Supplier
         }).ToList();
     }
 
+    /// <summary>
+    /// Gets items associated with this supplier
+    /// </summary>
+    /// <param name="context">The context</param>
+    /// <returns></returns>
     public async Task<List<Item>> GetAssociatedItems(SharedContext context)
     {
         return await context.Items
@@ -38,6 +52,11 @@ public class Supplier
             .ToListAsync();
     }
 
+    /// <summary>
+    /// Gets items associated with this supplier as a list of ints
+    /// </summary>
+    /// <param name="context">The context</param>
+    /// <returns></returns>
     public async Task<List<int>> GetAssociatedItemsAsIntList(SharedContext context)
     {
         return await context.Items
@@ -46,10 +65,15 @@ public class Supplier
             .ToListAsync();
     }
 
+    /// <summary>
+    /// Clears the list of associated items and removes them from the database
+    /// </summary>
+    /// <param name="context">The context</param>
     public async Task ClearAssociatedItems(SharedContext context)
     {
         var supplierItemRelations = await context.SupplierItemRelations.Where(sir => sir.SupplierId == this.Id).ToListAsync();
         context.SupplierItemRelations.RemoveRange(supplierItemRelations);
+        await context.SaveChangesAsync();
     }
 
 }

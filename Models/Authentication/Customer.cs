@@ -3,8 +3,10 @@ using API.Models.Orders;
 
 namespace API.Models.Authentication;
 
-public class Customer : Guest
+public class Customer : User
 {
+    public List<PurchaseOrder> PurchaseOrders { get; protected set; }
+
     public Customer(string firstName, string lastName, string phone, string email, string password, Byte[] salt)
     {
         FirstName = firstName;

@@ -43,7 +43,7 @@ namespace API.Controllers.Shared
         }
 
         [HttpPost]
-        [Authorize(Policy = "require-admin-role")]
+        [Authorize(Policy = "require-employee-role")]
         public async Task<ActionResult<ItemDto>> PostItem([FromBody] ItemDto item)
         {
             try
@@ -58,7 +58,7 @@ namespace API.Controllers.Shared
         }
 
         [HttpPut]
-        [Authorize(Policy = "require-admin-role")]
+        [Authorize(Policy = "require-employee-role")]
         public async Task<ActionResult<ItemDto>> PutItem([FromBody] ItemDto item)
         {
             try
@@ -73,7 +73,7 @@ namespace API.Controllers.Shared
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Policy = "require-admin-role")]
+        [Authorize(Policy = "require-employee-role")]
         public async Task<ActionResult<Boolean>> DeleteItem(int id)
         {
             try
