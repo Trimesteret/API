@@ -47,7 +47,7 @@ namespace API.Controllers.Shared
         }
 
         [HttpPost("LogOut")]
-        public async Task<ActionResult<Boolean>> Logout([FromBody] AuthPas authPas)
+        public async Task<ActionResult<bool>> Logout([FromBody] AuthPas authPas)
         {
             try
             {
@@ -61,7 +61,7 @@ namespace API.Controllers.Shared
         }
 
         [HttpGet("Verify")]
-        public async Task<ActionResult<Boolean>> VerifyToken([FromQuery] string token)
+        public async Task<ActionResult<bool>> VerifyToken([FromQuery] string token)
         {
             try
             {

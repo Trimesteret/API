@@ -1,3 +1,4 @@
+using API.DataTransferObjects;
 using API.Enums;
 using API.Services.Shared;
 using Microsoft.AspNetCore.Mvc;
@@ -15,9 +16,50 @@ namespace API.Controllers.Shared
             _enumService = enumService;
         }
 
+        [HttpPost]
+        public async Task<ActionResult<CustomEnum>> PostCustomEnum([FromBody] CustomEnumDto customEnum)
+        {
+            try
+            {
+                return Ok(await _enumService.CreateCustomEnum(customEnum));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest(e.Message);
+            }
+        }
 
-        [HttpGet("{enumType}")]
-        public async Task<ActionResult<CustomEnum[]>> GetSuitableForEnums(EnumType enumType)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<bool>> DeleteCustomEnum(int id)
+        {
+            try
+            {
+                return Ok(await _enumService.DeleteCustomEnum(id));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<CustomEnum>> GetCustomEnumById(int id)
+        {
+            try
+            {
+                return Ok(await _enumService.GetCustomEnumById(id));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return Ok(false);
+            }
+        }
+
+        [HttpGet("all/{enumType}")]
+        public async Task<ActionResult<CustomEnum[]>> GetAllCustomEnumsOfType(EnumType enumType)
         {
             try
             {
