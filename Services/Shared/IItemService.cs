@@ -17,4 +17,6 @@ public interface IItemService
     public Task<ItemDto> EditItem(ItemDto itemDto);
 
     public Task<List<Item>> GetAllItems();
+
+    public Task DeleteItem(int id);
 }

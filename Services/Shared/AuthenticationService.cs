@@ -164,7 +164,7 @@ namespace API.Services.Shared
             var customer = new Customer(signupDto.FirstName, signupDto.LastName, signupDto.Phone, signupDto.Email, signupDto.Password, salt);
 
             await _sharedContext.Customers.AddAsync(customer);
-
+            await _sharedContext.Customers.AddAsync(customer);
             await _sharedContext.SaveChangesAsync();
 
             return customer;
