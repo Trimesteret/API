@@ -2,8 +2,8 @@ using API.DataTransferObjects;
 using API.Enums;
 using API.Models.Items;
 using API.Services.Shared;
-
-    using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers.Shared
 {
@@ -43,6 +43,7 @@ namespace API.Controllers.Shared
         }
 
         [HttpPost]
+        [Authorize(Policy = "require-employee-role")]
         public async Task<ActionResult<ItemDto>> PostItem([FromBody] ItemDto item)
         {
             try
@@ -57,11 +58,28 @@ namespace API.Controllers.Shared
         }
 
         [HttpPut]
+        [Authorize(Policy = "require-employee-role")]
         public async Task<ActionResult<ItemDto>> PutItem([FromBody] ItemDto item)
         {
             try
             {
                 return await _itemService.EditItem(item);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Policy = "require-employee-role")]
+        public async Task<ActionResult<Boolean>> DeleteItem(int id)
+        {
+            try
+            {
+                await _itemService.DeleteItem(id);
+                return Ok(true);
             }
             catch (Exception e)
             {

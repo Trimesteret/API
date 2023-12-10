@@ -9,9 +9,11 @@ public class PurchaseOrder: Order
     public Customer? Customer { get; protected set; }
     public PurchaseOrderState PurchaseOrderState { get; protected set; } = PurchaseOrderState.Open;
 
-    /**
-     * Parameterless constructor for EF Core
-     */
+    public double TotalPrice { get; protected set; }
+
+    /// <summary>
+    /// Parameterless constructor for Entity Framework.
+    /// </summary>
     public PurchaseOrder()
     {
         this.OrderLinesRelations = new List<OrderOrderLineRelation>();

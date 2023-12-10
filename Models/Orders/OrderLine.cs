@@ -11,9 +11,9 @@ public class OrderLine
     public double? ItemPrice { get; protected set; }
     public int Quantity { get; protected set; }
 
-    /**
-     * Parameterless constructor for EF Core
-     */
+    /// <summary>
+    /// Parameterless constructor for Entity Framework.
+    /// </summary>
     public OrderLine()
     {
         this.Item = null!;

@@ -3,6 +3,7 @@ using System;
 using API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(SharedContext))]
-    partial class SharedContextModelSnapshot : ModelSnapshot
+    [Migration("20231207112614_ItemRelations")]
+    partial class ItemRelations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,85 +42,6 @@ namespace API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CustomEnums");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            EnumType = 0,
-                            Key = "Poultry",
-                            Value = "Fjerkræ"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            EnumType = 0,
-                            Key = "Seafood",
-                            Value = "Skaldyr"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            EnumType = 0,
-                            Key = "RedMeat",
-                            Value = "Oksekød"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            EnumType = 0,
-                            Key = "Pork",
-                            Value = "Svinekød"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            EnumType = 0,
-                            Key = "SpicyFood",
-                            Value = "Stærk mad"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            EnumType = 0,
-                            Key = "Cheese",
-                            Value = "Ost"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            EnumType = 0,
-                            Key = "Pasta",
-                            Value = "Pasta"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            EnumType = 0,
-                            Key = "Pizza",
-                            Value = "Pizza"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            EnumType = 0,
-                            Key = "Vegetarian",
-                            Value = "Vegetar"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            EnumType = 0,
-                            Key = "Salad",
-                            Value = "Salat"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            EnumType = 0,
-                            Key = "Dessert",
-                            Value = "Dessert"
-                        });
                 });
 
             modelBuilder.Entity("API.Enums.ItemEnumRelation", b =>
@@ -254,18 +178,13 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("DeliveryDate")
+                    b.Property<string>("Comment")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasColumnType("longtext");
-
-                    b.Property<DateTime?>("OrderDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<double>("TotalPrice")
-                        .HasColumnType("double");
 
                     b.HasKey("Id");
 
@@ -285,11 +204,11 @@ namespace API.Migrations
                     b.Property<int>("ItemId")
                         .HasColumnType("int");
 
-                    b.Property<double?>("ItemPrice")
+                    b.Property<double>("Price")
                         .HasColumnType("double");
 
-                    b.Property<double>("LinePrice")
-                        .HasColumnType("double");
+                    b.Property<int>("PurchaseOrderId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -298,28 +217,28 @@ namespace API.Migrations
 
                     b.HasIndex("ItemId");
 
+                    b.HasIndex("PurchaseOrderId");
+
                     b.ToTable("OrderLine");
                 });
 
-            modelBuilder.Entity("API.Models.Orders.OrderOrderLineRelation", b =>
+            modelBuilder.Entity("API.Models.Suppliers.ItemRelation", b =>
                 {
-                    b.Property<int>("OrderOrderLineRelationId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("OrderId")
+                    b.Property<int>("ItemId")
                         .HasColumnType("int");
 
-                    b.Property<int>("OrderLineId")
+                    b.Property<int>("SupplierId")
                         .HasColumnType("int");
 
-                    b.HasKey("OrderOrderLineRelationId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("SupplierId");
 
-                    b.HasIndex("OrderLineId");
-
-                    b.ToTable("OrderOrderLineRelation");
+                    b.ToTable("ItemRelations");
                 });
 
             modelBuilder.Entity("API.Models.Suppliers.Supplier", b =>
@@ -337,18 +256,18 @@ namespace API.Migrations
                     b.ToTable("Suppliers");
                 });
 
-            modelBuilder.Entity("API.Models.Authentication.Customer", b =>
-                {
-                    b.HasBaseType("API.Models.Authentication.User");
-
-                    b.HasDiscriminator().HasValue("Customer");
-                });
-
             modelBuilder.Entity("API.Models.Authentication.Employee", b =>
                 {
                     b.HasBaseType("API.Models.Authentication.User");
 
                     b.HasDiscriminator().HasValue("Employee");
+                });
+
+            modelBuilder.Entity("API.Models.Authentication.Guest", b =>
+                {
+                    b.HasBaseType("API.Models.Authentication.User");
+
+                    b.HasDiscriminator().HasValue("Guest");
                 });
 
             modelBuilder.Entity("API.Models.Items.DefaultItem", b =>
@@ -404,29 +323,25 @@ namespace API.Migrations
                     b.HasDiscriminator().HasValue("Wine");
                 });
 
-            modelBuilder.Entity("API.Models.Orders.InboundOrder", b =>
-                {
-                    b.HasBaseType("API.Models.Orders.Order");
-
-                    b.Property<int?>("SupplierId")
-                        .HasColumnType("int");
-
-                    b.HasIndex("SupplierId");
-
-                    b.HasDiscriminator().HasValue("InboundOrder");
-                });
-
             modelBuilder.Entity("API.Models.Orders.PurchaseOrder", b =>
                 {
                     b.HasBaseType("API.Models.Orders.Order");
 
-                    b.Property<int?>("CustomerId")
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GuestId")
                         .HasColumnType("int");
 
                     b.Property<int>("PurchaseOrderState")
                         .HasColumnType("int");
 
+                    b.Property<double>("TotalPrice")
+                        .HasColumnType("double");
+
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("GuestId");
 
                     b.HasDiscriminator().HasValue("PurchaseOrder");
                 });
@@ -436,6 +351,13 @@ namespace API.Migrations
                     b.HasBaseType("API.Models.Authentication.Employee");
 
                     b.HasDiscriminator().HasValue("Admin");
+                });
+
+            modelBuilder.Entity("API.Models.Authentication.Customer", b =>
+                {
+                    b.HasBaseType("API.Models.Authentication.Guest");
+
+                    b.HasDiscriminator().HasValue("Customer");
                 });
 
             modelBuilder.Entity("API.Enums.ItemEnumRelation", b =>
@@ -469,38 +391,18 @@ namespace API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("API.Models.Orders.PurchaseOrder", "PurchaseOrder")
+                        .WithMany("OrderLines")
+                        .HasForeignKey("PurchaseOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Item");
+
+                    b.Navigation("PurchaseOrder");
                 });
 
-            modelBuilder.Entity("API.Models.Orders.OrderOrderLineRelation", b =>
-                {
-                    b.HasOne("API.Models.Orders.Order", "Order")
-                        .WithMany("OrderLinesRelations")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("API.Models.Orders.OrderLine", "OrderLine")
-                        .WithMany()
-                        .HasForeignKey("OrderLineId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
-
-                    b.Navigation("OrderLine");
-                });
-
-            modelBuilder.Entity("API.Models.Orders.InboundOrder", b =>
-                {
-                    b.HasOne("API.Models.Suppliers.Supplier", "Supplier")
-                        .WithMany()
-                        .HasForeignKey("SupplierId");
-
-                    b.Navigation("Supplier");
-                });
-
-            modelBuilder.Entity("API.Models.Suppliers.SupplierItemRelation", b =>
+            modelBuilder.Entity("API.Models.Suppliers.ItemRelation", b =>
                 {
                     b.HasOne("API.Models.Suppliers.Supplier", null)
                         .WithMany("Items")
@@ -513,14 +415,19 @@ namespace API.Migrations
                 {
                     b.HasOne("API.Models.Authentication.Customer", "Customer")
                         .WithMany()
-                        .HasForeignKey("CustomerId");
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Models.Authentication.Guest", "Guest")
+                        .WithMany("PurchaseOrders")
+                        .HasForeignKey("GuestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Customer");
-                });
 
-            modelBuilder.Entity("API.Models.Orders.Order", b =>
-                {
-                    b.Navigation("OrderLinesRelations");
+                    b.Navigation("Guest");
                 });
 
             modelBuilder.Entity("API.Models.Suppliers.Supplier", b =>
@@ -528,9 +435,19 @@ namespace API.Migrations
                     b.Navigation("Items");
                 });
 
+            modelBuilder.Entity("API.Models.Authentication.Guest", b =>
+                {
+                    b.Navigation("PurchaseOrders");
+                });
+
             modelBuilder.Entity("API.Models.Items.Wine", b =>
                 {
                     b.Navigation("SuitableFor");
+                });
+
+            modelBuilder.Entity("API.Models.Orders.PurchaseOrder", b =>
+                {
+                    b.Navigation("OrderLines");
                 });
 #pragma warning restore 612, 618
         }

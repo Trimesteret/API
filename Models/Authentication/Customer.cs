@@ -5,7 +5,7 @@ namespace API.Models.Authentication;
 
 public class Customer : User
 {
-    List<PurchaseOrder> PurchaseOrders { get; set; }
+    public List<PurchaseOrder> PurchaseOrders { get; protected set; }
 
     public Customer(string firstName, string lastName, string phone, string email, string password, Byte[] salt)
     {
