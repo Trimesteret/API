@@ -12,9 +12,9 @@ public class ItemEnumRelation
     public int CustomEnumId { get; set; }
     public CustomEnum? CustomEnum { get; set; }
 
-    /**
-     * Empty constructor for EF Core
-     */
+    /// <summary>
+    /// Parameterless constructor for Entity Framework.
+    /// </summary>
     public ItemEnumRelation()
     {
         this.Item = null!;

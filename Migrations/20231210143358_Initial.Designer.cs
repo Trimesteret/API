@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(SharedContext))]
-    [Migration("20231210091255_Initial")]
+    [Migration("20231210143358_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -242,12 +242,7 @@ namespace API.Migrations
                     b.Property<int>("ReservedQuantity")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SupplierId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("SupplierId");
 
                     b.ToTable("Items");
 
@@ -256,14 +251,47 @@ namespace API.Migrations
                     b.UseTphMappingStrategy();
                 });
 
+            modelBuilder.Entity("API.Models.Orders.Address", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("AddressLine")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Door")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Floor")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ZipCode")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Address");
+                });
+
             modelBuilder.Entity("API.Models.Orders.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("DeliveryDate")
-                        .HasColumnType("longtext");
+                    b.Property<DateTime?>("DeliveryDate")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
@@ -327,7 +355,7 @@ namespace API.Migrations
 
                     b.HasIndex("OrderLineId");
 
-                    b.ToTable("OrderOrderLineRelation");
+                    b.ToTable("OrderOrderLineRelations");
                 });
 
             modelBuilder.Entity("API.Models.Suppliers.Supplier", b =>
@@ -336,9 +364,32 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.HasKey("Id");
 
                     b.ToTable("Suppliers");
+                });
+
+            modelBuilder.Entity("API.Models.Suppliers.SupplierItemRelation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("SupplierItemRelations");
                 });
 
             modelBuilder.Entity("API.Models.Authentication.Customer", b =>
@@ -412,6 +463,9 @@ namespace API.Migrations
                 {
                     b.HasBaseType("API.Models.Orders.Order");
 
+                    b.Property<int>("InboundOrderState")
+                        .HasColumnType("int");
+
                     b.Property<int?>("SupplierId")
                         .HasColumnType("int");
 
@@ -427,10 +481,15 @@ namespace API.Migrations
                     b.Property<int?>("CustomerId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("DeliveryAddressId")
+                        .HasColumnType("int");
+
                     b.Property<int>("PurchaseOrderState")
                         .HasColumnType("int");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("DeliveryAddressId");
 
                     b.HasDiscriminator().HasValue("PurchaseOrder");
                 });
@@ -465,13 +524,6 @@ namespace API.Migrations
                     b.Navigation("Item");
                 });
 
-            modelBuilder.Entity("API.Models.Items.Item", b =>
-                {
-                    b.HasOne("API.Models.Suppliers.Supplier", null)
-                        .WithMany("Items")
-                        .HasForeignKey("SupplierId");
-                });
-
             modelBuilder.Entity("API.Models.Orders.OrderLine", b =>
                 {
                     b.HasOne("API.Models.Items.Item", "Item")
@@ -502,6 +554,15 @@ namespace API.Migrations
                     b.Navigation("OrderLine");
                 });
 
+            modelBuilder.Entity("API.Models.Suppliers.SupplierItemRelation", b =>
+                {
+                    b.HasOne("API.Models.Suppliers.Supplier", null)
+                        .WithMany("SupplierItemRelations")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("API.Models.Orders.InboundOrder", b =>
                 {
                     b.HasOne("API.Models.Suppliers.Supplier", "Supplier")
@@ -514,10 +575,16 @@ namespace API.Migrations
             modelBuilder.Entity("API.Models.Orders.PurchaseOrder", b =>
                 {
                     b.HasOne("API.Models.Authentication.Customer", "Customer")
-                        .WithMany()
+                        .WithMany("PurchaseOrders")
                         .HasForeignKey("CustomerId");
 
+                    b.HasOne("API.Models.Orders.Address", "DeliveryAddress")
+                        .WithMany()
+                        .HasForeignKey("DeliveryAddressId");
+
                     b.Navigation("Customer");
+
+                    b.Navigation("DeliveryAddress");
                 });
 
             modelBuilder.Entity("API.Models.Orders.Order", b =>
@@ -527,7 +594,12 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.Suppliers.Supplier", b =>
                 {
-                    b.Navigation("Items");
+                    b.Navigation("SupplierItemRelations");
+                });
+
+            modelBuilder.Entity("API.Models.Authentication.Customer", b =>
+                {
+                    b.Navigation("PurchaseOrders");
                 });
 
             modelBuilder.Entity("API.Models.Items.Wine", b =>

@@ -16,9 +16,9 @@ public class Wine : Item
     public List<ItemEnumRelation>? SuitableFor { get; set; }
     public WineType? WineType { get; protected set; }
 
-    /**
-     * Parameterless constructor for EF Core
-     */
+    /// <summary>
+    /// Parameterless constructor for Entity Framework.
+    /// </summary>
     public Wine()
     {
 

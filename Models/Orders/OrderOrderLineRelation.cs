@@ -2,13 +2,13 @@ namespace API.Models.Orders;
 
 public class OrderOrderLineRelation
 {
-    public int OrderOrderLineRelationId { get; protected set; }
+    public int OrderOrderLineRelationId { get; set; }
 
-    public int OrderId { get; protected set; }
-    public Order Order { get; protected set; }
+    public int OrderId { get; set; }
+    public Order Order { get; set; }
 
-    public int OrderLineId { get; protected set; }
-    public OrderLine? OrderLine { get; protected set; }
+    public int OrderLineId { get; set; }
+    public OrderLine? OrderLine { get; set; }
 
     /// <summary>
     /// Parameterless constructor for EF Core

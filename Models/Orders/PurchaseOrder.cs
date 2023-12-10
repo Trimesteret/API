@@ -6,8 +6,9 @@ namespace API.Models.Orders;
 
 public class PurchaseOrder: Order
 {
+    public Address? DeliveryAddress { get; protected set; }
     public Customer? Customer { get; protected set; }
-    public PurchaseOrderState PurchaseOrderState { get; protected set; } = PurchaseOrderState.Open;
+    public PurchaseOrderState PurchaseOrderState { get; protected set; }
 
     public double TotalPrice { get; protected set; }
 
@@ -19,10 +20,19 @@ public class PurchaseOrder: Order
         this.OrderLinesRelations = new List<OrderOrderLineRelation>();
     }
 
-    public PurchaseOrder(Customer customer)
+    public PurchaseOrder(DateTime? orderDate, DateTime? deliveryDate, Address? deliveryAddress, PurchaseOrderState purchaseOrderState)
+    {
+        this.OrderDate = orderDate;
+        this.DeliveryDate = deliveryDate;
+        this.DeliveryAddress = deliveryAddress;
+        this.OrderLinesRelations = new List<OrderOrderLineRelation>();
+        this.TotalPrice = 0;
+        this.PurchaseOrderState = purchaseOrderState;
+    }
+
+    public void SetCustomer(Customer customer)
     {
         this.Customer = customer;
-        this.OrderLinesRelations = new List<OrderOrderLineRelation>();
     }
 
     public void AddOrderLineToPurchaseOrder(OrderLineDto orderLineDto)

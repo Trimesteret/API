@@ -4,9 +4,9 @@ namespace API.Models.Items;
 
 public class Liquor: Item
 {
-    /**
-     * Parameterless constructor for EF Core
-     */
+    /// <summary>
+    /// Parameterless constructor for Entity Framework.
+    /// </summary>
     public Liquor()
     {
 

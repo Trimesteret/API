@@ -47,4 +47,5 @@ public class SharedContext : DbContext
     public DbSet<SupplierItemRelation> SupplierItemRelations { get; set; }
     public DbSet<CustomEnum> CustomEnums { get; set; }
     public DbSet<ItemEnumRelation> ItemEnumRelations { get; set; }
+    public DbSet<OrderOrderLineRelation> OrderOrderLineRelations { get; set; }
 }
