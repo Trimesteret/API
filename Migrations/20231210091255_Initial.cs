@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace API.Migrations
 {
     /// <inheritdoc />
@@ -130,30 +132,29 @@ namespace API.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Comment = table.Column<string>(type: "longtext", nullable: false)
+                    TotalPrice = table.Column<double>(type: "double", nullable: false),
+                    DeliveryDate = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    OrderDate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     Discriminator = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    PurchaseOrderState = table.Column<int>(type: "int", nullable: true),
+                    SupplierId = table.Column<int>(type: "int", nullable: true),
                     CustomerId = table.Column<int>(type: "int", nullable: true),
-                    GuestId = table.Column<int>(type: "int", nullable: true),
-                    TotalPrice = table.Column<double>(type: "double", nullable: true)
+                    PurchaseOrderState = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Order", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Order_Suppliers_SupplierId",
+                        column: x => x.SupplierId,
+                        principalTable: "Suppliers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_Order_Users_CustomerId",
                         column: x => x.CustomerId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Order_Users_GuestId",
-                        column: x => x.GuestId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -161,7 +162,7 @@ namespace API.Migrations
                 name: "ItemEnumRelations",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    ItemEnumRelationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     ItemId = table.Column<int>(type: "int", nullable: false),
                     CustomEnumId = table.Column<int>(type: "int", nullable: false),
@@ -169,7 +170,7 @@ namespace API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ItemEnumRelations", x => x.Id);
+                    table.PrimaryKey("PK_ItemEnumRelations", x => x.ItemEnumRelationId);
                     table.ForeignKey(
                         name: "FK_ItemEnumRelations_CustomEnums_CustomEnumId",
                         column: x => x.CustomEnumId,
@@ -197,9 +198,9 @@ namespace API.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     ItemId = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<double>(type: "double", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    PurchaseOrderId = table.Column<int>(type: "int", nullable: false)
+                    LinePrice = table.Column<double>(type: "double", nullable: false),
+                    ItemPrice = table.Column<double>(type: "double", nullable: true),
+                    Quantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -210,14 +211,53 @@ namespace API.Migrations
                         principalTable: "Items",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "OrderOrderLineRelation",
+                columns: table => new
+                {
+                    OrderOrderLineRelationId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    OrderId = table.Column<int>(type: "int", nullable: false),
+                    OrderLineId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderOrderLineRelation", x => x.OrderOrderLineRelationId);
                     table.ForeignKey(
-                        name: "FK_OrderLine_Order_PurchaseOrderId",
-                        column: x => x.PurchaseOrderId,
+                        name: "FK_OrderOrderLineRelation_OrderLine_OrderLineId",
+                        column: x => x.OrderLineId,
+                        principalTable: "OrderLine",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderOrderLineRelation_Order_OrderId",
+                        column: x => x.OrderId,
                         principalTable: "Order",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.InsertData(
+                table: "CustomEnums",
+                columns: new[] { "Id", "EnumType", "Key", "Value" },
+                values: new object[,]
+                {
+                    { 1, 0, "Poultry", "Fjerkræ" },
+                    { 2, 0, "Seafood", "Skaldyr" },
+                    { 3, 0, "RedMeat", "Oksekød" },
+                    { 4, 0, "Pork", "Svinekød" },
+                    { 5, 0, "SpicyFood", "Stærk mad" },
+                    { 6, 0, "Cheese", "Ost" },
+                    { 7, 0, "Pasta", "Pasta" },
+                    { 8, 0, "Pizza", "Pizza" },
+                    { 9, 0, "Vegetarian", "Vegetar" },
+                    { 10, 0, "Salad", "Salat" },
+                    { 11, 0, "Dessert", "Dessert" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_ItemEnumRelations_CustomEnumId",
@@ -245,9 +285,9 @@ namespace API.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Order_GuestId",
+                name: "IX_Order_SupplierId",
                 table: "Order",
-                column: "GuestId");
+                column: "SupplierId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderLine_ItemId",
@@ -255,9 +295,14 @@ namespace API.Migrations
                 column: "ItemId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderLine_PurchaseOrderId",
-                table: "OrderLine",
-                column: "PurchaseOrderId");
+                name: "IX_OrderOrderLineRelation_OrderId",
+                table: "OrderOrderLineRelation",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderOrderLineRelation_OrderLineId",
+                table: "OrderOrderLineRelation",
+                column: "OrderLineId");
         }
 
         /// <inheritdoc />
@@ -267,22 +312,25 @@ namespace API.Migrations
                 name: "ItemEnumRelations");
 
             migrationBuilder.DropTable(
-                name: "OrderLine");
+                name: "OrderOrderLineRelation");
 
             migrationBuilder.DropTable(
                 name: "CustomEnums");
 
             migrationBuilder.DropTable(
-                name: "Items");
+                name: "OrderLine");
 
             migrationBuilder.DropTable(
                 name: "Order");
 
             migrationBuilder.DropTable(
-                name: "Suppliers");
+                name: "Items");
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Suppliers");
         }
     }
 }

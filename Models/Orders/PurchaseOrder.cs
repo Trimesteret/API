@@ -7,34 +7,27 @@ namespace API.Models.Orders;
 public class PurchaseOrder: Order
 {
     public Customer? Customer { get; protected set; }
-    public Guest? Guest { get; protected set; }
-    public double TotalPrice { get; protected set; }
+    public PurchaseOrderState PurchaseOrderState { get; protected set; } = PurchaseOrderState.Open;
 
     /**
      * Parameterless constructor for EF Core
      */
     public PurchaseOrder()
     {
-        this.Customer = null;
-        this.Guest = null;
+        this.OrderLinesRelations = new List<OrderOrderLineRelation>();
     }
 
     public PurchaseOrder(Customer customer)
     {
         this.Customer = customer;
-        this.Guest = null;
-    }
-
-    public PurchaseOrder(Guest guest)
-    {
-        this.Guest = guest;
-        this.Customer = null;
+        this.OrderLinesRelations = new List<OrderOrderLineRelation>();
     }
 
     public void AddOrderLineToPurchaseOrder(OrderLineDto orderLineDto)
     {
-        var orderLine = new OrderLine(orderLineDto.Item, orderLineDto.Quantity, this);
-        this.OrderLines.Add(orderLine);
-        this.TotalPrice += orderLine.Price;
+        var orderLine = new OrderLine(orderLineDto.Item, orderLineDto.Quantity);
+        var orderOrderLineRelation = new OrderOrderLineRelation(this, orderLine);
+        this.OrderLinesRelations.Add(orderOrderLineRelation);
+        this.TotalPrice += orderLine.LinePrice;
     }
 }

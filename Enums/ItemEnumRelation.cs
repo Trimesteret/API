@@ -17,7 +17,7 @@ public class ItemEnumRelation
      */
     public ItemEnumRelation()
     {
-
+        this.Item = null!;
     }
 
     public ItemEnumRelation(Item item, int cEnumId)
