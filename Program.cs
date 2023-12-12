@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using API.Models;
-using API.Services;
+using API.Services.Shared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-// Add services to the container.
+builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>
@@ -31,24 +31,35 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = "ApiAppIssuer",         // Replace with your issuer
-            ValidAudience = "ApiAppAudience",     // Replace with your audience
-            IssuerSigningKey = new SymmetricSecurityKey("b0493a0d-f88e-4b0b-94eb-665f7207c92c"u8.ToArray()), // Replace with your secret key
+            ValidIssuer = "ApiAppIssuer",
+            ValidAudience = "ApiAppAudience",
+            IssuerSigningKey = new SymmetricSecurityKey("b0493a0d-f88e-4b0b-94eb-665f7207c92c"u8.ToArray()),
         };
     });
+
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("RequireAdminRole", policy =>
+    options.AddPolicy("require-employee-role", policy =>
+        policy.RequireRole("Admin", "Employee"));
+    options.AddPolicy("require-admin-role", policy =>
         policy.RequireRole("Admin"));
-    // Add more policies as needed
 });
 
-builder.Services.AddDbContext<DBContext>(opt =>
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddDbContext<SharedContext>(opt =>
 {
-    opt.UseMySql("server=localhost;port=3306;database=EVENTILOPE;user=THOMAS;password=password;",
+    opt.UseMySql("server=localhost;port=3306;database=BuDBolfi;user=THOMAS;password=password;",
         new MySqlServerVersion(new Version(8, 0, 26))); // Specify the MySQL server version here
 });
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IItemService, ItemService>();
+builder.Services.AddScoped<ISupplierService, SupplierService>();
+builder.Services.AddScoped<IEnumService, EnumService>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -56,6 +67,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<SharedContext>();
+
+    context.Database.Migrate();
+}
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
