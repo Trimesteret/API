@@ -58,5 +58,4 @@ public class Admin : Employee
         DefaultItem defaultItem = new DefaultItem(itemDto.Name, itemDto.Ean, itemDto.Quantity, itemDto.Price, itemDto.Description, itemDto.ImageUrl);
         return defaultItem;
     }
-
 }

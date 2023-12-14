@@ -18,5 +18,7 @@ public interface IItemService
 
     public Task<List<Item>> GetAllItems();
 
+    public Task<List<Item>> GetSupplierRelatedItems(int supplierId);
+
     public Task DeleteItem(int id);
 }

@@ -37,15 +37,8 @@ namespace API.Controllers.Shared
             return await _userService.GetSelf();
         }
 
-        [HttpPut]
-        [Authorize(Policy = "require-admin-role")]
-        public async Task<ActionResult<UserStandardDto>> EditUser([FromBody] UserStandardDto user)
-        {
-            return await _userService.EditUser(user);
-        }
-
         [HttpPut("edit")]
-        [Authorize(Policy = "require-admin-role")]
+        [Authorize]
         public async Task<ActionResult> EditSelf(UserStandardDto user)
         {
             try
@@ -59,6 +52,7 @@ namespace API.Controllers.Shared
                 return BadRequest(e.Message);
             }
         }
+
 
         [HttpPut("password")]
         [Authorize]
@@ -74,6 +68,13 @@ namespace API.Controllers.Shared
                 Console.WriteLine(e.Message);
                 return BadRequest(e.Message);
             }
+        }
+
+        [HttpPut]
+        [Authorize(Policy = "require-admin-role")]
+        public async Task<ActionResult<UserStandardDto>> EditUser([FromBody] UserStandardDto user)
+        {
+            return await _userService.EditUser(user);
         }
 
         [HttpDelete("{id}")]

@@ -144,10 +144,10 @@ public class UserService : IUserService
     }
 
     /// <summary>
-    /// the user can change their own password
+    /// Changes the password of the currently logged in user
     /// </summary>
-    /// <param name="user"></param>
-    /// <returns>the edited user</returns>
+    /// <param name="loginDto"></param>
+    /// <returns></returns>
     /// <exception cref="Exception"></exception>
     public async Task ChangeSelfPassword(LoginDto loginDto)
     {

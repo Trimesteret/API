@@ -68,16 +68,12 @@ public class SupplierService : ISupplierService
     public async Task DeleteSupplier(int id)
     {
         var existingSupplier = await _sharedContext.Suppliers.FirstOrDefaultAsync(supplier => supplier.Id == id);
-
         if (existingSupplier == null)
         {
             throw new Exception("Supplier could not be found");
         }
-
         await existingSupplier.ClearAssociatedItems(_sharedContext);
-
         _sharedContext.Suppliers.Remove(existingSupplier);
-
         await _sharedContext.SaveChangesAsync();
     }
 
@@ -89,10 +85,8 @@ public class SupplierService : ISupplierService
     public async Task<SupplierDto> CreateSupplier(SupplierDto supplierDto)
     {
         Supplier supplier = new Supplier(supplierDto.Name);
-
         _sharedContext.Suppliers.Add(supplier);
         await _sharedContext.SaveChangesAsync();
-
         return _mapper.Map<SupplierDto>(supplier);
     }
 

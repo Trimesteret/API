@@ -23,6 +23,12 @@ namespace API.Controllers.Shared
             return await _itemService.GetAllItems();
         }
 
+        [HttpGet("supplier/{supplierId}")]
+        public async Task<ActionResult<List<Item>>> GetSupplierRelatedItems(int supplierId)
+        {
+            return await _itemService.GetSupplierRelatedItems(supplierId);
+        }
+
         [HttpGet("search")]
         public async Task<ActionResult<List<Item>>> GetItemsBySearch([FromQuery] string? search, [FromQuery] int amountOfItemsShown, [FromQuery] SortByPrice? sortByPrice, [FromQuery] ItemType? itemType)
         {

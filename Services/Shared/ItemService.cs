@@ -232,6 +232,24 @@ public class ItemService : IItemService
     }
 
     /// <summary>
+    /// Gets all items related to a supplier
+    /// </summary>
+    /// <param name="supplierId">The id of the supplier</param>
+    /// <returns></returns>
+    /// <exception cref="Exception">If the supplier is not found</exception>
+    public async Task<List<Item>> GetSupplierRelatedItems(int supplierId)
+    {
+        var supplier = await _sharedContext.Suppliers.FirstOrDefaultAsync(supplier => supplier.Id == supplierId);
+
+        if (supplier == null)
+        {
+            throw new Exception("Supplier not found");
+        }
+
+        return await supplier.GetAssociatedItems(_sharedContext);
+    }
+
+    /// <summary>
     /// Delete an item given an id
     /// </summary>
     /// <param name="id">Id of the item to delete</param>
