@@ -9,6 +9,6 @@ public class InboundOrderDto
     public double TotalPrice { get; set; }
     public DateTime? DeliveryDate { get; set; }
     public DateTime? OrderDate { get; set; }
-    public List<OrderLine> OrderLines { get; set; }
+    public List<OrderLineDto> OrderLines { get; set; }
     public InboundOrderState InboundOrderState { get; set; }
 }

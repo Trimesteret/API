@@ -6,7 +6,7 @@ public class Address
     public string AddressLine { get; set; }
     public string? Floor { get; set; }
     public string? Door { get; set; }
-    public string ZipCode { get; set; }
+    public string PostalCode { get; set; }
     public string City { get; set; }
     public string Country { get; set; }
 
@@ -15,9 +15,6 @@ public class Address
     /// </summary>
     public Address()
     {
-        this.AddressLine = "";
-        this.ZipCode = "";
-        this.City = "";
-        this.Country = "";
+
     }
 }

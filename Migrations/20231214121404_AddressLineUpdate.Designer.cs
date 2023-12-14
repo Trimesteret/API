@@ -3,6 +3,7 @@ using System;
 using API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(SharedContext))]
-    partial class SharedContextModelSnapshot : ModelSnapshot
+    [Migration("20231214121404_AddressLineUpdate")]
+    partial class AddressLineUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -272,7 +275,7 @@ namespace API.Migrations
                     b.Property<string>("Floor")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("PostalCode")
+                    b.Property<string>("ZipCode")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -324,9 +327,6 @@ namespace API.Migrations
                     b.Property<double>("LinePrice")
                         .HasColumnType("double");
 
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -334,9 +334,28 @@ namespace API.Migrations
 
                     b.HasIndex("ItemId");
 
+                    b.ToTable("OrderLine");
+                });
+
+            modelBuilder.Entity("API.Models.Orders.OrderOrderLineRelation", b =>
+                {
+                    b.Property<int>("OrderOrderLineRelationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderLineId")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrderOrderLineRelationId");
+
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderLines");
+                    b.HasIndex("OrderLineId");
+
+                    b.ToTable("OrderOrderLineRelations");
                 });
 
             modelBuilder.Entity("API.Models.Suppliers.Supplier", b =>
@@ -513,11 +532,26 @@ namespace API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API.Models.Orders.Order", null)
-                        .WithMany("OrderLines")
-                        .HasForeignKey("OrderId");
-
                     b.Navigation("Item");
+                });
+
+            modelBuilder.Entity("API.Models.Orders.OrderOrderLineRelation", b =>
+                {
+                    b.HasOne("API.Models.Orders.Order", "Order")
+                        .WithMany("OrderLinesRelations")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Models.Orders.OrderLine", "OrderLine")
+                        .WithMany()
+                        .HasForeignKey("OrderLineId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("OrderLine");
                 });
 
             modelBuilder.Entity("API.Models.Suppliers.SupplierItemRelation", b =>
@@ -555,7 +589,7 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.Orders.Order", b =>
                 {
-                    b.Navigation("OrderLines");
+                    b.Navigation("OrderLinesRelations");
                 });
 
             modelBuilder.Entity("API.Models.Suppliers.Supplier", b =>

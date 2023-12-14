@@ -46,7 +46,6 @@ public class OrderService : IOrderService
         }
 
         var inboundOrderDto = _mapper.Map<InboundOrderDto>(inboundOrder);
-        inboundOrderDto.OrderLines = await inboundOrder.GetOrderLines(_sharedContext);
 
         return inboundOrderDto;
     }
@@ -66,12 +65,13 @@ public class OrderService : IOrderService
             throw new Exception("Inbound order not found");
         }
 
-        await inboundOrderToEdit.SetOrderLines(_sharedContext, inboundOrder.OrderLines);
+        var orderLines = _mapper.Map<List<OrderLine>>(inboundOrder.OrderLines);
+
+        inboundOrderToEdit.SetOrderLines(orderLines);
 
         await _sharedContext.SaveChangesAsync();
 
         var inboundOrderDto = _mapper.Map<InboundOrderDto>(inboundOrderToEdit);
-        inboundOrderDto.OrderLines = await inboundOrderToEdit.GetOrderLines(_sharedContext);
         return inboundOrderDto;
     }
 
@@ -90,12 +90,13 @@ public class OrderService : IOrderService
             throw new Exception("Purchase order not found");
         }
 
-        await purchaseOrderToEdit.SetOrderLines(_sharedContext, purchaseOrder.OrderLines);
+        var orderLines = _mapper.Map<List<OrderLine>>(purchaseOrder.OrderLines);
+
+        purchaseOrderToEdit.SetOrderLines(orderLines);
 
         await _sharedContext.SaveChangesAsync();
 
         var purchaseOrderDto = _mapper.Map<PurchaseOrderDto>(purchaseOrderToEdit);
-        purchaseOrderDto.OrderLines = await purchaseOrderToEdit.GetOrderLines(_sharedContext);
         return purchaseOrderDto;
     }
 
@@ -116,8 +117,6 @@ public class OrderService : IOrderService
 
         var purchaseOrderDto = _mapper.Map<PurchaseOrderDto>(purchaseOrder);
 
-        purchaseOrderDto.OrderLines = await purchaseOrder.GetOrderLines(_sharedContext);
-
         return purchaseOrderDto;
     }
 
@@ -136,9 +135,11 @@ public class OrderService : IOrderService
             throw new Exception("Purchase order already exists");
         }
 
-        var purchaseOrderToCreate = new PurchaseOrder(purchaseOrder.OrderDate, purchaseOrder.DeliveryDate, purchaseOrder.DeliveryAddress, purchaseOrder.PurchaseOrderState);
+        var purchaseOrderToCreate = new PurchaseOrder(purchaseOrder.OrderDate, purchaseOrder.DeliveryDate, purchaseOrder.Address, purchaseOrder.PurchaseOrderState);
 
-        await purchaseOrderToCreate.SetOrderLines(_sharedContext, purchaseOrder.OrderLines);
+        var orderLines = _mapper.Map<List<OrderLine>>(purchaseOrder.OrderLines);
+
+        purchaseOrderToCreate.SetOrderLines(orderLines);
 
         var activeUser = await this._authorizationService.GetActiveUser() as Customer;
 
@@ -151,7 +152,6 @@ public class OrderService : IOrderService
         await _sharedContext.SaveChangesAsync();
 
         var purchaseOrderDto = _mapper.Map<PurchaseOrderDto>(purchaseOrderToCreate);
-        purchaseOrderDto.OrderLines = await purchaseOrderToCreate.GetOrderLines(_sharedContext);
         return purchaseOrderDto;
     }
 
@@ -166,13 +166,14 @@ public class OrderService : IOrderService
 
         var inboundOrderToCreate = new InboundOrder(inboundOrder.OrderDate, inboundOrder.DeliveryDate, inboundOrder.InboundOrderState);
 
-        await inboundOrderToCreate.SetOrderLines(_sharedContext, inboundOrder.OrderLines);
+        var orderLines = _mapper.Map<List<OrderLine>>(inboundOrder.OrderLines);
+
+        inboundOrderToCreate.SetOrderLines(orderLines);
 
         _sharedContext.InboundOrders.Add(inboundOrderToCreate);
         await _sharedContext.SaveChangesAsync();
 
         var purchaseOrderDto = _mapper.Map<InboundOrderDto>(inboundOrderToCreate);
-        purchaseOrderDto.OrderLines = await inboundOrderToCreate.GetOrderLines(_sharedContext);
         return purchaseOrderDto;
     }
 }

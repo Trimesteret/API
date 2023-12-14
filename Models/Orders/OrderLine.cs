@@ -1,3 +1,4 @@
+using API.DataTransferObjects;
 using API.Models.Items;
 
 namespace API.Models.Orders;
@@ -5,7 +6,7 @@ namespace API.Models.Orders;
 public class OrderLine
 {
     public int Id { get; protected set; }
-    public Item Item { get; protected set; }
+    public Item? Item { get; set; }
     public int ItemId { get; protected set; }
     public double LinePrice { get; protected set; } = 0;
     public double? ItemPrice { get; protected set; }

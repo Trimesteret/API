@@ -20,7 +20,6 @@ public class InboundOrder : Order
     {
         this.OrderDate = orderDate;
         this.DeliveryDate = deliveryDate;
-        this.OrderLinesRelations = new List<OrderOrderLineRelation>();
         this.TotalPrice = 0;
         this.InboundOrderState = inboundOrderState;
     }

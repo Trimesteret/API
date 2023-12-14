@@ -1,5 +1,6 @@
 using API.DataTransferObjects;
 using API.Models.Items;
+using API.Models.Orders;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Models.Suppliers;
@@ -9,6 +10,7 @@ public class Supplier
     public int Id { get; set; }
     public string Name { get; set; }
     public List<SupplierItemRelation>? SupplierItemRelations { get; set; }
+    public List<InboundOrder>? InboundOrders { get; set; }
 
     public Supplier(string name)
     {
