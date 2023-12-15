@@ -8,7 +8,7 @@ public class PurchaseOrderDto
 {
     public int? Id { get; set; }
     public double TotalPrice { get; set; }
-    public User user;
+    public UserStandardDto Customer;
     public DateTime? DeliveryDate { get; set; }
     public DateTime? OrderDate { get; set; }
     public Address Address { get; set; }

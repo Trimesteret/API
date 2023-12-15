@@ -141,12 +141,16 @@ public class OrderService : IOrderService
 
         purchaseOrderToCreate.SetOrderLines(orderLines);
 
-        var activeUser = await this._authorizationService.GetActiveUser() as Customer;
+        var customer = await _sharedContext.Customers.FirstOrDefaultAsync(user => user.Email == purchaseOrder.Customer.Email);
 
-        if(activeUser != null)
+        if (customer == null)
         {
-            purchaseOrderToCreate.SetCustomer(activeUser);
+            customer = new Customer(purchaseOrder.Customer.FirstName, purchaseOrder.Customer.LastName, purchaseOrder.Customer.Phone, purchaseOrder.Customer.Email);
+            _sharedContext.Customers.Add(customer);
+            await _sharedContext.SaveChangesAsync();
         }
+
+        purchaseOrderToCreate.SetCustomer(customer);
 
         _sharedContext.PurchaseOrders.Add(purchaseOrderToCreate);
         await _sharedContext.SaveChangesAsync();

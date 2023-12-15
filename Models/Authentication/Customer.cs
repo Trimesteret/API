@@ -5,7 +5,20 @@ namespace API.Models.Authentication;
 
 public class Customer : User
 {
+    public new string? Password { get; protected set; }
+    public new Byte[]? Salt { get; protected set; }
+    public new string? Token { get; protected set; }
     public List<PurchaseOrder> PurchaseOrders { get; protected set; }
+
+    public Customer(string firstName, string lastName, string phone, string email)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        Phone = phone;
+        Email = email;
+        PurchaseOrders = new List<PurchaseOrder>();
+        Role = Role.Customer;
+    }
 
     public Customer(string firstName, string lastName, string phone, string email, string password, Byte[] salt)
     {
@@ -15,7 +28,6 @@ public class Customer : User
         Email = email;
         Password = password;
         Salt = salt;
-        Token = "";
         PurchaseOrders = new List<PurchaseOrder>();
         Role = Role.Customer;
     }
