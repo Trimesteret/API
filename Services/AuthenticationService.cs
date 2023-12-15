@@ -6,7 +6,7 @@ using API.Models;
 using API.Models.Authentication;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Services.Shared
+namespace API.Services
 {
     public class AuthenticationService : IAuthenticationService
     {
@@ -32,7 +32,17 @@ namespace API.Services.Shared
         {
             var dbUser = await _sharedContext.Users.FirstOrDefaultAsync(u => u.Email == loginDto.Email);
 
-            if(dbUser == null || HashPassword(loginDto.Password, dbUser.Salt) != dbUser.Password)
+            if (dbUser == null)
+            {
+                throw new Exception("Incorrect email or password");
+            }
+
+            if (dbUser.SignedUp == false)
+            {
+                throw new Exception("User has not finished sign up");
+            }
+
+            if(HashPassword(loginDto.Password, dbUser.Salt) != dbUser.Password)
             {
                 throw new Exception("Incorrect email or password");
             }
@@ -44,6 +54,35 @@ namespace API.Services.Shared
             await _sharedContext.SaveChangesAsync();
 
             return dbUser.GetTokenAuthPas();
+        }
+
+        /// <summary>
+        /// Gives a random password if the user has forgotten
+        /// </summary>
+        /// <param name="forgotPasswordDto"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async Task<string> ForgotPassword(ForgotPasswordDto forgotPasswordDto)
+        {
+            var dbUser = await _sharedContext.Users.FirstOrDefaultAsync(u => u.Email == forgotPasswordDto.Email);
+
+            if (dbUser == null)
+            {
+                throw new Exception("Incorrect email");
+            }
+
+            var salt = GenerateSalt();
+
+            var randomPassword = GenerateRandomPassword();
+
+            var password = HashPassword(randomPassword, salt);
+
+            dbUser.ChangePassword(password, salt);
+            dbUser.SetSignedUp(true);
+
+            await _sharedContext.SaveChangesAsync();
+
+            return randomPassword;
         }
 
         /// <summary>
@@ -102,6 +141,11 @@ namespace API.Services.Shared
                 throw new Exception("Failed trying to verify incorrect token");
             }
 
+            if (dbUser.SignedUp == false)
+            {
+                throw new Exception("User has not finished sign up");
+            }
+
             if (dbUser.TokenExpiration == null || dbUser.TokenExpiration <= DateTime.Now)
             {
                 dbUser.SetToken("", null);
@@ -126,6 +170,11 @@ namespace API.Services.Shared
             if (dbUser == null)
             {
                 throw new Exception("Failed trying to verify incorrect token");
+            }
+
+            if (dbUser.SignedUp == false)
+            {
+                throw new Exception("User has not finished signup");
             }
 
             if((int) dbUser.Role <= (int) expectedRole)
@@ -161,10 +210,9 @@ namespace API.Services.Shared
                 throw new Exception("Email already exists");
             }
 
-            var customer = new Customer(signupDto.FirstName, signupDto.LastName, signupDto.Phone, signupDto.Email, signupDto.Password, salt);
+            var customer = new Customer(signupDto.FirstName, signupDto.LastName, signupDto.Email, signupDto.Phone, signupDto.Password, salt);
 
-            await _sharedContext.Customers.AddAsync(customer);
-            await _sharedContext.Customers.AddAsync(customer);
+            _sharedContext.Customers.Add(customer);
             await _sharedContext.SaveChangesAsync();
 
             return customer;
@@ -174,6 +222,19 @@ namespace API.Services.Shared
         {
             var salt = RandomNumberGenerator.GetBytes(KeySize);
             return salt;
+        }
+
+        public static string GenerateRandomPassword()
+        {
+            var random = new Random();
+            var password = new StringBuilder();
+
+            for (int i = 0; i < 8; i++)
+            {
+                password.Append((char)random.Next(33, 126));
+            }
+
+            return password.ToString();
         }
     }
 }

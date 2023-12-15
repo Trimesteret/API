@@ -2,13 +2,15 @@ using API.DataTransferObjects;
 using API.Enums;
 using API.Models.Authentication;
 
-namespace API.Services.Shared;
+namespace API.Services;
 
 public interface IAuthenticationService
 {
     Task<Customer> SignupNewCustomer(SignupDto signupDto);
 
     Task<AuthPas> Login(LoginDto loginDto);
+
+    Task<string> ForgotPassword(ForgotPasswordDto forgotPasswordDto);
 
     Task<bool> LogOut(AuthPas authPas);
 

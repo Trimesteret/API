@@ -4,7 +4,7 @@ using API.Models;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Services.Shared;
+namespace API.Services;
 
 public class SupplierService : ISupplierService
 {

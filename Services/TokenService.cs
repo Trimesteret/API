@@ -5,7 +5,7 @@ using API.Models.Authentication;
 using Microsoft.OpenApi.Extensions;
 
 
-namespace API.Services.Shared;
+namespace API.Services;
 
 public class TokenService : ITokenService
 {

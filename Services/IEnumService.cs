@@ -1,7 +1,7 @@
 using API.DataTransferObjects;
 using API.Enums;
 
-namespace API.Services.Shared;
+namespace API.Services;
 
 public interface IEnumService
 {

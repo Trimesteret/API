@@ -3,7 +3,7 @@ using API.Enums;
 using API.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Services.Shared;
+namespace API.Services;
 
 public class EnumService : IEnumService
 {

@@ -1,9 +1,9 @@
 using API.DataTransferObjects;
 using API.Enums;
-using API.Services.Shared;
+using API.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers.Shared
+namespace Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

@@ -7,7 +7,7 @@ using API.Models.Authentication;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Services.Shared;
+namespace API.Services;
 
 public class UserService : IUserService
 {
@@ -85,24 +85,23 @@ public class UserService : IUserService
         _sharedContext.Users.Remove(existingUser);
         await _sharedContext.SaveChangesAsync();
 
-
         switch (userStandardDto.Role)
         {
             case Role.Admin:
                 Admin admin = new Admin(existingUser);
-                await _sharedContext.Users.AddAsync(admin);
+                _sharedContext.Users.Add(admin);
                 await _sharedContext.SaveChangesAsync();
                 return _mapper.Map<UserStandardDto>(admin);
 
             case Role.Employee:
                 Employee employee = new Employee(existingUser);
-                await _sharedContext.Employees.AddAsync(employee);
+                _sharedContext.Employees.Add(employee);
                 await _sharedContext.SaveChangesAsync();
                 return _mapper.Map<UserStandardDto>(employee);
 
             case Role.Customer:
                 Customer customer = new Customer(existingUser);
-                await _sharedContext.Customers.AddAsync(customer);
+                _sharedContext.Customers.Add(customer);
                 await _sharedContext.SaveChangesAsync();
                 return _mapper.Map<UserStandardDto>(customer);
 
@@ -110,6 +109,53 @@ public class UserService : IUserService
                 throw new ArgumentOutOfRangeException();
         }
     }
+
+    /// <summary>
+    /// Creates a new user in the application given a userStandardDto
+    /// </summary>
+    /// <param name="userStandardDto"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    public async Task<UserStandardDto> CreateUser(UserStandardDto userStandardDto)
+    {
+        var existingUser = await _sharedContext.Users.FirstOrDefaultAsync(user => user.Email == userStandardDto.Email);
+
+        if (existingUser != null && existingUser.SignedUp)
+        {
+            throw new Exception("User already exists");
+        }
+
+        if (existingUser != null)
+        {
+            return await EditUser(userStandardDto);
+        }
+
+        switch (userStandardDto.Role)
+        {
+            case Role.Admin:
+                Admin admin = new Admin(userStandardDto.FirstName, userStandardDto.LastName, userStandardDto.Email, userStandardDto.Phone);
+                _sharedContext.Users.Add(admin);
+                await _sharedContext.SaveChangesAsync();
+                return _mapper.Map<UserStandardDto>(admin);
+
+            case Role.Employee:
+                Employee employee = new Employee(userStandardDto.FirstName, userStandardDto.LastName, userStandardDto.Email, userStandardDto.Phone);
+                _sharedContext.Employees.Add(employee);
+                await _sharedContext.SaveChangesAsync();
+                return _mapper.Map<UserStandardDto>(employee);
+
+            case Role.Customer:
+                Customer customer = new Customer(userStandardDto.FirstName, userStandardDto.LastName, userStandardDto.Phone, userStandardDto.Email, null, null);
+                _sharedContext.Customers.Add(customer);
+                await _sharedContext.SaveChangesAsync();
+                return _mapper.Map<UserStandardDto>(customer);
+
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
     /// <summary>
     /// Edits the currently logged in user
     /// </summary>

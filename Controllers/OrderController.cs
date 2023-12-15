@@ -1,14 +1,14 @@
 using API.DataTransferObjects;
 using API.Models.Orders;
-using API.Services.Shared;
+using API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
-namespace API.Controllers.Shared
+namespace Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrderController
+    public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
         public OrderController(IOrderService orderService)
@@ -37,9 +37,17 @@ namespace API.Controllers.Shared
         }
 
         [HttpPost("purchaseOrder")]
-        public async Task<PurchaseOrderDto> PostPurchaseOrder([FromBody] PurchaseOrderDto purchaseOrder)
+        public async Task<ActionResult<PurchaseOrderDto>> PostPurchaseOrder([FromBody] PurchaseOrderDto purchaseOrder)
         {
-            return await _orderService.CreatePurchaseOrder(purchaseOrder);
+            try
+            {
+                return Ok(await _orderService.CreatePurchaseOrder(purchaseOrder));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpGet("inboundOrder/{id}")]
@@ -49,15 +57,31 @@ namespace API.Controllers.Shared
         }
 
         [HttpPut("inboundOrder")]
-        public async Task<InboundOrderDto> PutInboundOrder([FromBody] InboundOrderDto inboundOrder)
+        public async Task<ActionResult<InboundOrderDto>> PutInboundOrder([FromBody] InboundOrderDto inboundOrder)
         {
-            return await _orderService.EditInboundOrder(inboundOrder);
+            try
+            {
+                return await _orderService.EditInboundOrder(inboundOrder);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPost("inboundOrder")]
-        public async Task<InboundOrderDto> PostInboundOrder([FromBody] InboundOrderDto inboundOrder)
+        public async Task<ActionResult<InboundOrderDto>> PostInboundOrder([FromBody] InboundOrderDto inboundOrder)
         {
-            return await _orderService.CreateInboundOrder(inboundOrder);
+            try
+            {
+                return Ok(await _orderService.CreateInboundOrder(inboundOrder));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest(e.Message);
+            }
         }
     }
 }

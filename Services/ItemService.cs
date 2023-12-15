@@ -6,7 +6,7 @@ using API.Models.Items;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Services.Shared;
+namespace API.Services;
 
 public class ItemService : IItemService
 {
@@ -78,7 +78,7 @@ public class ItemService : IItemService
         {
             case ItemType.Wine:
                 Wine wine = activeAdminUser.CreateWine(itemDto);
-                await _sharedContext.Wines.AddAsync(wine);
+                _sharedContext.Wines.Add(wine);
                 await wine.SetSuitableFor(_sharedContext, itemDto.SuitableForEnumIds);
                 await _sharedContext.SaveChangesAsync();
                 var createdItemDto = _mapper.Map<ItemDto>(wine);
@@ -87,13 +87,13 @@ public class ItemService : IItemService
 
             case ItemType.Liquor:
                 Liquor liquor = activeAdminUser.CreateLiquor(itemDto);
-                await _sharedContext.Liquors.AddAsync(liquor);
+                _sharedContext.Liquors.Add(liquor);
                 await _sharedContext.SaveChangesAsync();
                 return _mapper.Map<ItemDto>(liquor);
 
             case ItemType.DefaultItem:
                 DefaultItem defaultItem = activeAdminUser.CreateDefaultItem(itemDto);
-                await _sharedContext.DefaultItems.AddAsync(defaultItem);
+                _sharedContext.DefaultItems.Add(defaultItem);
                 await _sharedContext.SaveChangesAsync();
                 return _mapper.Map<ItemDto>(defaultItem);
             default:

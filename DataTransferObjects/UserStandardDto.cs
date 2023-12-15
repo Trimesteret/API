@@ -9,5 +9,6 @@ public class UserStandardDto
     public string LastName { get; set; }
     public string Phone { get; set; }
     public string Email { get; set; }
+    public bool? SignedUp { get; set; }
     public Role? Role { get; set; }
 }

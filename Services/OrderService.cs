@@ -5,7 +5,7 @@ using API.Models.Orders;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 
-namespace API.Services.Shared;
+namespace API.Services;
 
 public class OrderService : IOrderService
 {
@@ -141,11 +141,20 @@ public class OrderService : IOrderService
 
         purchaseOrderToCreate.SetOrderLines(orderLines);
 
-        var customer = await _sharedContext.Customers.FirstOrDefaultAsync(user => user.Email == purchaseOrder.Customer.Email);
+        Console.WriteLine(purchaseOrder);
+        var user = await _sharedContext.Users.FirstOrDefaultAsync(user => user.Email == purchaseOrder.OrderCustomer.Email);
 
-        if (customer == null)
+        var customer = user as Customer;
+
+        if (user != null && customer == null)
         {
-            customer = new Customer(purchaseOrder.Customer.FirstName, purchaseOrder.Customer.LastName, purchaseOrder.Customer.Phone, purchaseOrder.Customer.Email);
+            throw new Exception("User is not a customer, and can therefore not create a purchase order");
+        }
+
+        if (user == null)
+        {
+            var customerDto = purchaseOrder.OrderCustomer;
+            customer = new Customer(customerDto.FirstName, customerDto.LastName,  customerDto.Phone, customerDto.Email, null, null);
             _sharedContext.Customers.Add(customer);
             await _sharedContext.SaveChangesAsync();
         }
@@ -159,6 +168,12 @@ public class OrderService : IOrderService
         return purchaseOrderDto;
     }
 
+    /// <summary>
+    /// Creates a new inbound order
+    /// </summary>
+    /// <param name="inboundOrder"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public async Task<InboundOrderDto> CreateInboundOrder(InboundOrderDto inboundOrder)
     {
         var existingInboundOrder = await _sharedContext.InboundOrders.FirstOrDefaultAsync(po => po.Id == inboundOrder.Id);

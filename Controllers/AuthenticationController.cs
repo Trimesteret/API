@@ -1,9 +1,9 @@
 using API.DataTransferObjects;
 using API.Enums;
-using API.Services.Shared;
+using API.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers.Shared
+namespace Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -23,6 +23,20 @@ namespace API.Controllers.Shared
             {
                 var authPas = await _authenticationService.Login(loginDto);
                 return authPas;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPost("ForgotPassword")]
+        public async Task<ActionResult<string>> ForgotPassword([FromBody] ForgotPasswordDto forgotPasswordDto)
+        {
+            try
+            {
+                return Ok(new {newPassword = await _authenticationService.ForgotPassword(forgotPasswordDto)});
             }
             catch (Exception e)
             {

@@ -3,7 +3,7 @@ using API.Models.Items;
 using API.Models.Suppliers;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Services.Shared;
+namespace API.Services;
 
 public interface ISupplierService
 {

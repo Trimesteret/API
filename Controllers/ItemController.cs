@@ -1,11 +1,11 @@
 using API.DataTransferObjects;
 using API.Enums;
 using API.Models.Items;
-using API.Services.Shared;
+using API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers.Shared
+namespace Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

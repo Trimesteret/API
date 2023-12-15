@@ -1,9 +1,9 @@
 using API.DataTransferObjects;
-using API.Services.Shared;
+using API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers.Shared
+namespace Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -68,6 +68,13 @@ namespace API.Controllers.Shared
                 Console.WriteLine(e.Message);
                 return BadRequest(e.Message);
             }
+        }
+
+        [HttpPost]
+        [Authorize(Policy = "require-admin-role")]
+        public async Task<ActionResult<UserStandardDto>> CreateUser([FromBody] UserStandardDto user)
+        {
+            return await _userService.CreateUser(user);
         }
 
         [HttpPut]

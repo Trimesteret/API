@@ -6,17 +6,38 @@ namespace API.Models.Authentication;
 
 public class Admin : Employee
 {
-    public Admin(string firstName, string lastName, string phone, string email, string password)
+    /// <summary>
+    /// Empty constructor for entity framework core
+    /// </summary>
+    public Admin()
+    {
+
+    }
+
+    /// <summary>
+    /// Constructor for creating a new admin that is not signed up yet
+    /// </summary>
+    /// <param name="firstName"></param>
+    /// <param name="lastName"></param>
+    /// <param name="phone"></param>
+    /// <param name="email"></param>
+    public Admin(string firstName, string lastName, string email, string phone)
     {
         FirstName = firstName;
         LastName = lastName;
         Phone = phone;
         Email = email;
-        Password = password;
-        Token = "";
         Role = Role.Admin;
+        SignedUp = false;
+        Token = null;
+        TokenExpiration = null;
+        SignedUp = false;
     }
 
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="user"></param>
     public Admin(User user)
     {
         Id = user.Id;
@@ -28,17 +49,7 @@ public class Admin : Employee
         Token = user.Token;
         Salt = user.Salt;
         Role = Role.Admin;
-    }
-
-    protected void ChangeAdmin(string firstName, string lastName, string phone, string email, string password, int? phoneNumber)
-    {
-        FirstName = firstName;
-        LastName = lastName;
-        Phone = phone;
-        Email = email;
-        Password = password;
-        Token = "";
-        Role = Role.Admin;
+        SignedUp = false;
     }
 
     public Wine CreateWine(ItemDto itemDto)

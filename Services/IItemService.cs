@@ -2,7 +2,7 @@ using API.DataTransferObjects;
 using API.Enums;
 using API.Models.Items;
 
-namespace API.Services.Shared;
+namespace API.Services;
 
 public interface IItemService
 {

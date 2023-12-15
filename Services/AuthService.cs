@@ -3,7 +3,7 @@ using API.Models;
 using API.Models.Authentication;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Services.Shared
+namespace API.Services
 {
     public class AuthService : IAuthService
     {

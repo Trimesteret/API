@@ -1,10 +1,10 @@
 using API.DataTransferObjects;
 using Microsoft.AspNetCore.Mvc;
 using API.Models.Suppliers;
-using API.Services.Shared;
+using API.Services;
 using Microsoft.AspNetCore.Authorization;
 
-namespace API.Controllers.Shared
+namespace Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

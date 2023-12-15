@@ -2,7 +2,7 @@ using API.DataTransferObjects;
 using API.Models.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Services.Shared;
+namespace API.Services;
 
 public interface IUserService
 {
@@ -11,6 +11,8 @@ public interface IUserService
     public Task<UserStandardDto> GetSelf();
 
     public Task<UserStandardDto> GetUserById(int id);
+
+    public Task<UserStandardDto> CreateUser(UserStandardDto userStandardDto);
 
     public Task<UserStandardDto> EditUser(UserStandardDto userStandardDto);
 

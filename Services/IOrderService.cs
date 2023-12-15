@@ -1,7 +1,7 @@
 using API.DataTransferObjects;
 using API.Models.Orders;
 
-namespace API.Services.Shared;
+namespace API.Services;
 
 public interface IOrderService
 {
