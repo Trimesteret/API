@@ -1,4 +1,3 @@
-using API.DataTransferObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Models.Orders;
@@ -12,19 +11,8 @@ public abstract class Order
 
     public List<OrderLine> OrderLines { get; protected set; }
 
-
-    /// <summary>
-    /// Sets the order lines for the order
-    /// </summary>
-    /// <param name="context"></param>
-    /// <param name="orderLines"></param>
-    public void SetOrderLines(List<OrderLine> orderLines)
+    public async Task<List<OrderLine>> GetOrderLines(SharedContext context)
     {
-        this.OrderLines = orderLines;
-    }
-
-    public void ClearOrderLines(SharedContext context)
-    {
-        this.OrderLines.Clear();
+        return await context.OrderLines.Where(ol => ol.Id == this.Id).ToListAsync();
     }
 }

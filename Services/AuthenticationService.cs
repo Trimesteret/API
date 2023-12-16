@@ -210,7 +210,7 @@ namespace API.Services
                 throw new Exception("Email already exists");
             }
 
-            var customer = new Customer(signupDto.FirstName, signupDto.LastName, signupDto.Email, signupDto.Phone, signupDto.Password, salt);
+            var customer = new Customer(signupDto.FirstName, signupDto.LastName, signupDto.Phone, signupDto.Email, signupDto.Password, salt);
 
             _sharedContext.Customers.Add(customer);
             await _sharedContext.SaveChangesAsync();

@@ -5,7 +5,11 @@ namespace API.Services;
 
 public interface IOrderService
 {
-    public Task<List<Order>> GetAllOrders();
+    public Task<List<InboundOrder>> GetAllInboundOrders();
+
+    public Task<List<PurchaseOrder>> GetAllPurchaseOrders();
+
+    public Task<List<PurchaseOrder>> GetCurrentUserPurchaseOrders();
 
     public Task<InboundOrderDto> GetInboundOrderById(int id);
 

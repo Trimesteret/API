@@ -1,6 +1,5 @@
 using API.DataTransferObjects;
 using API.Models;
-using API.Models.Authentication;
 using API.Models.Orders;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
@@ -21,13 +20,40 @@ public class OrderService : IOrderService
     }
 
     /// <summary>
-    ///
+    /// Gets all purchase orders in the application
     /// </summary>
     /// <returns></returns>
-    public async Task<List<Order>> GetAllOrders()
+    public async Task<List<PurchaseOrder>> GetAllPurchaseOrders()
     {
-        var orders = await _sharedContext.Order.ToListAsync();
-        return orders;
+       return await _sharedContext.PurchaseOrders.ToListAsync();
+    }
+
+    /// <summary>
+    /// Gets all purchase orders for the current user
+    /// </summary>
+    /// <returns></returns>
+    public async Task<List<PurchaseOrder>> GetCurrentUserPurchaseOrders()
+    {
+        try
+        {
+            var activeCustomer = await this._authorizationService.GetActiveUserAsCustomer();
+
+            return await activeCustomer.GetPurchaseOrders(_sharedContext);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return new List<PurchaseOrder>();
+        }
+    }
+
+    /// <summary>
+    /// Gets all inbound orders in the application
+    /// </summary>
+    /// <returns></returns>
+    public async Task<List<InboundOrder>> GetAllInboundOrders()
+    {
+        return await _sharedContext.InboundOrders.ToListAsync();
     }
 
     /// <summary>
@@ -65,10 +91,6 @@ public class OrderService : IOrderService
             throw new Exception("Inbound order not found");
         }
 
-        var orderLines = _mapper.Map<List<OrderLine>>(inboundOrder.OrderLines);
-
-        inboundOrderToEdit.SetOrderLines(orderLines);
-
         await _sharedContext.SaveChangesAsync();
 
         var inboundOrderDto = _mapper.Map<InboundOrderDto>(inboundOrderToEdit);
@@ -90,10 +112,6 @@ public class OrderService : IOrderService
             throw new Exception("Purchase order not found");
         }
 
-        var orderLines = _mapper.Map<List<OrderLine>>(purchaseOrder.OrderLines);
-
-        purchaseOrderToEdit.SetOrderLines(orderLines);
-
         await _sharedContext.SaveChangesAsync();
 
         var purchaseOrderDto = _mapper.Map<PurchaseOrderDto>(purchaseOrderToEdit);
@@ -108,7 +126,8 @@ public class OrderService : IOrderService
     /// <exception cref="Exception">Throws if he purchaseOrder is not found</exception>
     public async Task<PurchaseOrderDto> GetPurchaseOrderById(int id)
     {
-        var purchaseOrder = await _sharedContext.PurchaseOrders.FirstOrDefaultAsync(po => po.Id == id);
+        var purchaseOrder = await _sharedContext.PurchaseOrders.Include(po => po.OrderLines)
+            .ThenInclude(ol => ol.Item).FirstOrDefaultAsync(po => po.Id == id);
 
         if(purchaseOrder == null)
         {
@@ -120,79 +139,64 @@ public class OrderService : IOrderService
         return purchaseOrderDto;
     }
 
+    public async Task<List<OrderLineDto>> GetPurchaseOrderOrderLines(int purchaseOrderId)
+    {
+        var purchaseOrder = await _sharedContext.PurchaseOrders.Include(order => order.OrderLines)
+            .ThenInclude(orderLine => orderLine.Item).FirstOrDefaultAsync(po => po.Id == purchaseOrderId);
+
+        if(purchaseOrder == null)
+        {
+            throw new Exception("Purchase order not found");
+        }
+
+        var orderLinesDtos = _mapper.Map<List<OrderLineDto>>(purchaseOrder.OrderLines);
+
+        return orderLinesDtos;
+    }
+
     /// <summary>
     /// Creates a new purchase order
     /// </summary>
-    /// <param name="purchaseOrder"></param>
+    /// <param name="purchaseOrderDto"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public async Task<PurchaseOrderDto> CreatePurchaseOrder(PurchaseOrderDto purchaseOrder)
+    public async Task<PurchaseOrderDto> CreatePurchaseOrder(PurchaseOrderDto purchaseOrderDto)
     {
-        var existingPurchaseOrder = await _sharedContext.PurchaseOrders.FirstOrDefaultAsync(po => po.Id == purchaseOrder.Id);
+        var existingPurchaseOrder = await _sharedContext.PurchaseOrders.FirstOrDefaultAsync(po => po.Id == purchaseOrderDto.Id);
 
         if(existingPurchaseOrder != null)
         {
             throw new Exception("Purchase order already exists");
         }
 
-        var purchaseOrderToCreate = new PurchaseOrder(purchaseOrder.OrderDate, purchaseOrder.DeliveryDate, purchaseOrder.Address, purchaseOrder.PurchaseOrderState);
-
-        var orderLines = _mapper.Map<List<OrderLine>>(purchaseOrder.OrderLines);
-
-        purchaseOrderToCreate.SetOrderLines(orderLines);
-
-        Console.WriteLine(purchaseOrder);
-        var user = await _sharedContext.Users.FirstOrDefaultAsync(user => user.Email == purchaseOrder.OrderCustomer.Email);
-
-        var customer = user as Customer;
-
-        if (user != null && customer == null)
-        {
-            throw new Exception("User is not a customer, and can therefore not create a purchase order");
-        }
-
-        if (user == null)
-        {
-            var customerDto = purchaseOrder.OrderCustomer;
-            customer = new Customer(customerDto.FirstName, customerDto.LastName,  customerDto.Phone, customerDto.Email, null, null);
-            _sharedContext.Customers.Add(customer);
-            await _sharedContext.SaveChangesAsync();
-        }
-
-        purchaseOrderToCreate.SetCustomer(customer);
+        var purchaseOrderToCreate = new PurchaseOrder(purchaseOrderDto);
 
         _sharedContext.PurchaseOrders.Add(purchaseOrderToCreate);
         await _sharedContext.SaveChangesAsync();
 
-        var purchaseOrderDto = _mapper.Map<PurchaseOrderDto>(purchaseOrderToCreate);
         return purchaseOrderDto;
     }
 
     /// <summary>
     /// Creates a new inbound order
     /// </summary>
-    /// <param name="inboundOrder"></param>
+    /// <param name="inboundOrderDto"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public async Task<InboundOrderDto> CreateInboundOrder(InboundOrderDto inboundOrder)
+    public async Task<InboundOrderDto> CreateInboundOrder(InboundOrderDto inboundOrderDto)
     {
-        var existingInboundOrder = await _sharedContext.InboundOrders.FirstOrDefaultAsync(po => po.Id == inboundOrder.Id);
+        var existingInboundOrder = await _sharedContext.InboundOrders.FirstOrDefaultAsync(po => po.Id == inboundOrderDto.Id);
 
         if(existingInboundOrder != null)
         {
             throw new Exception("Inbound order already exists");
         }
 
-        var inboundOrderToCreate = new InboundOrder(inboundOrder.OrderDate, inboundOrder.DeliveryDate, inboundOrder.InboundOrderState);
-
-        var orderLines = _mapper.Map<List<OrderLine>>(inboundOrder.OrderLines);
-
-        inboundOrderToCreate.SetOrderLines(orderLines);
+        var inboundOrderToCreate = new InboundOrder(inboundOrderDto);
 
         _sharedContext.InboundOrders.Add(inboundOrderToCreate);
         await _sharedContext.SaveChangesAsync();
 
-        var purchaseOrderDto = _mapper.Map<InboundOrderDto>(inboundOrderToCreate);
-        return purchaseOrderDto;
+        return inboundOrderDto;
     }
 }

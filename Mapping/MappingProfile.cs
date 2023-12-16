@@ -1,4 +1,5 @@
 using API.DataTransferObjects;
+using API.Models.Authentication;
 using API.Models.Items;
 using API.Models.Orders;
 using API.Models.Suppliers;
@@ -10,21 +11,16 @@ public class MappingProfile: Profile
 {
     public MappingProfile()
     {
-        CreateMap<Models.Authentication.User, DataTransferObjects.UserStandardDto>();
-        CreateMap<DataTransferObjects.UserStandardDto, Models.Authentication.User>();
-        CreateMap<ItemDto, Item>();
-        CreateMap<Item, ItemDto>();
-        CreateMap<ItemDto, Liquor>();
-        CreateMap<Liquor, ItemDto>();
-        CreateMap<ItemDto, DefaultItem>();
-        CreateMap<DefaultItem, ItemDto>();
-        CreateMap<ItemDto, Wine>();
-        CreateMap<Wine, ItemDto>();
-        CreateMap<SupplierDto, Supplier>();
-        CreateMap<Supplier, SupplierDto>();
-        CreateMap<PurchaseOrderDto, PurchaseOrder>();
-        CreateMap<PurchaseOrder, PurchaseOrderDto>();
-        CreateMap<OrderLine, OrderLineDto>();
-        CreateMap<OrderLineDto, OrderLine>();
+        CreateMap<User, UserStandardDto>().ReverseMap();
+        CreateMap<ItemDto, Item>().ReverseMap();
+        CreateMap<ItemDto, Liquor>().ReverseMap();
+        CreateMap<ItemDto, DefaultItem>().ReverseMap();
+        CreateMap<ItemDto, Wine>().ReverseMap();
+        CreateMap<SupplierDto, Supplier>().ReverseMap();
+        CreateMap<PurchaseOrderDto, PurchaseOrder>().ReverseMap();
+        CreateMap<OrderLine, OrderLineDto>()
+            .ForMember(dest => dest.ItemDto, opt => opt.MapFrom(src => src.Item))
+            .ForMember(dest => dest.ItemName, opt => opt.MapFrom(src => src.Item!.Name))
+            .ReverseMap();
     }
 }

@@ -16,12 +16,25 @@ namespace Api.Controllers
             _orderService = orderService;
         }
 
-        [HttpGet]
+        [HttpGet("PurchaseOrders")]
         [Authorize(Policy = "require-admin-role")]
-        public async Task<ActionResult<List<Order>>> GetOrders()
+        public async Task<ActionResult<List<PurchaseOrder>>> GetPurchaseOrders()
         {
-            var order = await _orderService.GetAllOrders();
-            return await _orderService.GetAllOrders();
+            return await _orderService.GetAllPurchaseOrders();
+        }
+
+        [HttpGet("currentUserPurchaseOrders")]
+        [Authorize(Policy = "require-admin-role")]
+        public async Task<ActionResult<List<PurchaseOrder>>> GetCurentUserPurchaseOrders()
+        {
+            return await _orderService.GetCurrentUserPurchaseOrders();
+        }
+
+        [HttpGet("InboundOrders")]
+        [Authorize(Policy = "require-admin-role")]
+        public async Task<ActionResult<List<InboundOrder>>> GetInboundOrders()
+        {
+            return await _orderService.GetAllInboundOrders();
         }
 
         [HttpGet("purchaseOrder/{id}")]
@@ -51,9 +64,17 @@ namespace Api.Controllers
         }
 
         [HttpGet("inboundOrder/{id}")]
-        public async Task<InboundOrderDto> GetInboundOrderById(int id)
+        public async Task<ActionResult<InboundOrderDto>> GetInboundOrderById(int id)
         {
-            return await _orderService.GetInboundOrderById(id);
+            try
+            {
+                return Ok(await _orderService.GetInboundOrderById(id));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPut("inboundOrder")]

@@ -3,6 +3,7 @@ using System;
 using API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(SharedContext))]
-    partial class SharedContextModelSnapshot : ModelSnapshot
+    [Migration("20231216152813_PurchaseOrderChange")]
+    partial class PurchaseOrderChange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -285,17 +288,13 @@ namespace API.Migrations
                     b.Property<int>("ItemId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ItemName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<double>("ItemPrice")
+                    b.Property<double?>("ItemPrice")
                         .HasColumnType("double");
 
                     b.Property<double>("LinePrice")
                         .HasColumnType("double");
 
-                    b.Property<int>("OrderId")
+                    b.Property<int?>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -450,6 +449,9 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("int");
+
                     b.Property<string>("CustomerLastName")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -470,6 +472,8 @@ namespace API.Migrations
 
                     b.Property<int>("PurchaseOrderState")
                         .HasColumnType("int");
+
+                    b.HasIndex("CustomerId");
 
                     b.HasDiscriminator().HasValue("PurchaseOrder");
                 });
@@ -514,9 +518,7 @@ namespace API.Migrations
 
                     b.HasOne("API.Models.Orders.Order", null)
                         .WithMany("OrderLines")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderId");
 
                     b.Navigation("Item");
                 });
@@ -539,6 +541,13 @@ namespace API.Migrations
                     b.Navigation("Supplier");
                 });
 
+            modelBuilder.Entity("API.Models.Orders.PurchaseOrder", b =>
+                {
+                    b.HasOne("API.Models.Authentication.Customer", null)
+                        .WithMany("PurchaseOrders")
+                        .HasForeignKey("CustomerId");
+                });
+
             modelBuilder.Entity("API.Models.Orders.Order", b =>
                 {
                     b.Navigation("OrderLines");
@@ -549,6 +558,11 @@ namespace API.Migrations
                     b.Navigation("InboundOrders");
 
                     b.Navigation("SupplierItemRelations");
+                });
+
+            modelBuilder.Entity("API.Models.Authentication.Customer", b =>
+                {
+                    b.Navigation("PurchaseOrders");
                 });
 
             modelBuilder.Entity("API.Models.Items.Wine", b =>

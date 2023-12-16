@@ -10,5 +10,6 @@ public class OrderLineDto
     public int ItemId { get; set; }
     public double LinePrice { get; set; }
     public double ItemPrice { get; set; }
+    public string ItemName{ get; set; }
     public int Quantity { get; set; }
 }

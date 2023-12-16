@@ -6,8 +6,18 @@ namespace API.Models.Orders;
 
 public class PurchaseOrder: Order
 {
-    public Address? Address { get; protected set; }
-    public Customer? Customer { get; protected set; }
+    public string CustomerFirstName { get; set; }
+    public string CustomerLastName { get; set; }
+    public string CustomerPhone { get; set; }
+    public string CustomerEmail { get; set; }
+
+    public string AddressLine { get; set; }
+    public string? Floor { get; set; }
+    public string? Door { get; set; }
+    public string PostalCode { get; set; }
+    public string City { get; set; }
+    public string Country { get; set; }
+
     public PurchaseOrderState PurchaseOrderState { get; protected set; }
 
     public double TotalPrice { get; protected set; }
@@ -20,17 +30,20 @@ public class PurchaseOrder: Order
 
     }
 
-    public PurchaseOrder(DateTime? orderDate, DateTime? deliveryDate, Address? deliveryAddress, PurchaseOrderState purchaseOrderState)
+    public PurchaseOrder(PurchaseOrderDto purchaseOrderDto)
     {
-        this.OrderDate = orderDate;
-        this.DeliveryDate = deliveryDate;
-        this.Address = deliveryAddress;
-        this.TotalPrice = 0;
-        this.PurchaseOrderState = purchaseOrderState;
-    }
-
-    public void SetCustomer(Customer customer)
-    {
-        this.Customer = customer;
+        this.CustomerFirstName = purchaseOrderDto.CustomerFirstName;
+        this.CustomerLastName = purchaseOrderDto.CustomerLastName;
+        this.CustomerPhone = purchaseOrderDto.CustomerPhone;
+        this.CustomerEmail = purchaseOrderDto.CustomerEmail;
+        this.AddressLine = purchaseOrderDto.AddressLine;
+        this.Floor = purchaseOrderDto.Floor;
+        this.Door = purchaseOrderDto.Door;
+        this.PostalCode = purchaseOrderDto.PostalCode;
+        this.City = purchaseOrderDto.City;
+        this.Country = purchaseOrderDto.Country;
+        this.OrderLines = purchaseOrderDto.OrderLines.Select(orderLineDto => new OrderLine(orderLineDto)).ToList();
+        this.PurchaseOrderState = purchaseOrderDto.PurchaseOrderState;
+        this.TotalPrice = purchaseOrderDto.TotalPrice;
     }
 }

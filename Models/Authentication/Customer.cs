@@ -1,12 +1,11 @@
 using API.Enums;
 using API.Models.Orders;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Models.Authentication;
 
 public class Customer : User
 {
-    public List<PurchaseOrder> PurchaseOrders { get; protected set; }
-
     /// <summary>
     /// Constructor for creating a customer that is signed up
     /// </summary>
@@ -22,7 +21,6 @@ public class Customer : User
         LastName = lastName;
         Phone = phone;
         Email = email;
-        PurchaseOrders = new List<PurchaseOrder>();
         Role = Role.Customer;
         Token = null;
         TokenExpiration = null;
@@ -53,8 +51,12 @@ public class Customer : User
         Password = user.Password;
         Salt = user.Salt;
         Token = user.Token;
-        PurchaseOrders = new List<PurchaseOrder>();
         Role = Role.Customer;
         SignedUp = false;
+    }
+
+    public async Task<List<PurchaseOrder>> GetPurchaseOrders(SharedContext context)
+    {
+        return await context.PurchaseOrders.Where(po => po.CustomerEmail == this.Email).ToListAsync();
     }
 }

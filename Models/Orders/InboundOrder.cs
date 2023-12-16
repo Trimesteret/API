@@ -1,3 +1,4 @@
+using API.DataTransferObjects;
 using API.Enums;
 using API.Models.Suppliers;
 
@@ -14,6 +15,15 @@ public class InboundOrder : Order
     public InboundOrder()
     {
 
+    }
+
+    public InboundOrder(InboundOrderDto inboundOrderDto)
+    {
+        this.TotalPrice = inboundOrderDto.TotalPrice;
+        this.DeliveryDate = inboundOrderDto.DeliveryDate;
+        this.OrderDate = inboundOrderDto.OrderDate;
+        this.OrderLines = inboundOrderDto.OrderLines.Select(orderLineDto => new OrderLine(orderLineDto)).ToList();
+        this.InboundOrderState = inboundOrderDto.InboundOrderState;
     }
 
     public InboundOrder(DateTime? orderDate, DateTime? deliveryDate, InboundOrderState inboundOrderState)
