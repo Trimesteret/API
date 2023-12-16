@@ -11,7 +11,7 @@ public class OrderLine
     public int ItemId { get; protected set; }
     public double LinePrice { get; protected set; } = 0;
     public double ItemPrice { get; protected set; }
-    public string ItemName{ get; protected set; }
+    public string ItemName { get; protected set; }
     public int Quantity { get; protected set; }
     public int OrderId { get; protected set; }
 
@@ -30,11 +30,6 @@ public class OrderLine
         this.Quantity = orderLineDto.Quantity;
         this.LinePrice = orderLineDto.LinePrice;
         this.ItemPrice = orderLineDto.ItemPrice;
-    }
-
-    public OrderLine(Item item, int quantity)
-    {
-        this.Item = item;
-        this.Quantity = quantity;
+        this.ItemName = orderLineDto.ItemName;
     }
 }

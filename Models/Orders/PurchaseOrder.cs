@@ -45,5 +45,6 @@ public class PurchaseOrder: Order
         this.OrderLines = purchaseOrderDto.OrderLines.Select(orderLineDto => new OrderLine(orderLineDto)).ToList();
         this.PurchaseOrderState = purchaseOrderDto.PurchaseOrderState;
         this.TotalPrice = purchaseOrderDto.TotalPrice;
+        this.OrderDate = purchaseOrderDto.OrderDate;
     }
 }
