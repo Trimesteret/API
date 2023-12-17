@@ -117,6 +117,69 @@ namespace API.Migrations
                             EnumType = 0,
                             Key = "Dessert",
                             Value = "Dessert"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            EnumType = 1,
+                            Key = "RedWine",
+                            Value = "Rødvin"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            EnumType = 1,
+                            Key = "WhiteWine",
+                            Value = "Hvidvin"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            EnumType = 1,
+                            Key = "RoseWine",
+                            Value = "Rosévin"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            EnumType = 2,
+                            Key = "Whiskey",
+                            Value = "Whiskey"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            EnumType = 2,
+                            Key = "Vodka",
+                            Value = "Vodka"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            EnumType = 2,
+                            Key = "Gin",
+                            Value = "Gin"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            EnumType = 2,
+                            Key = "Rum",
+                            Value = "Rom"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            EnumType = 2,
+                            Key = "Tequila",
+                            Value = "Tequila"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            EnumType = 2,
+                            Key = "Liqueur",
+                            Value = "Likør"
                         });
                 });
 
@@ -169,7 +232,6 @@ namespace API.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Phone")
@@ -180,11 +242,12 @@ namespace API.Migrations
                         .HasColumnType("int");
 
                     b.Property<byte[]>("Salt")
-                        .IsRequired()
                         .HasColumnType("longblob");
 
+                    b.Property<bool>("SignedUp")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Token")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime?>("TokenExpiration")
@@ -254,13 +317,18 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Comment")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<DateTime?>("DeliveryDate")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("OrderDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<double>("TotalPrice")
+                        .HasColumnType("double");
 
                     b.HasKey("Id");
 
@@ -280,10 +348,17 @@ namespace API.Migrations
                     b.Property<int>("ItemId")
                         .HasColumnType("int");
 
-                    b.Property<double>("Price")
+                    b.Property<string>("ItemName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<double>("ItemPrice")
                         .HasColumnType("double");
 
-                    b.Property<int>("PurchaseOrderId")
+                    b.Property<double>("LinePrice")
+                        .HasColumnType("double");
+
+                    b.Property<int>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -293,9 +368,9 @@ namespace API.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.HasIndex("PurchaseOrderId");
+                    b.HasIndex("OrderId");
 
-                    b.ToTable("OrderLine");
+                    b.ToTable("OrderLines");
                 });
 
             modelBuilder.Entity("API.Models.Suppliers.Supplier", b =>
@@ -332,18 +407,18 @@ namespace API.Migrations
                     b.ToTable("SupplierItemRelations");
                 });
 
+            modelBuilder.Entity("API.Models.Authentication.Customer", b =>
+                {
+                    b.HasBaseType("API.Models.Authentication.User");
+
+                    b.HasDiscriminator().HasValue("Customer");
+                });
+
             modelBuilder.Entity("API.Models.Authentication.Employee", b =>
                 {
                     b.HasBaseType("API.Models.Authentication.User");
 
                     b.HasDiscriminator().HasValue("Employee");
-                });
-
-            modelBuilder.Entity("API.Models.Authentication.Guest", b =>
-                {
-                    b.HasBaseType("API.Models.Authentication.User");
-
-                    b.HasDiscriminator().HasValue("Guest");
                 });
 
             modelBuilder.Entity("API.Models.Items.DefaultItem", b =>
@@ -356,6 +431,20 @@ namespace API.Migrations
             modelBuilder.Entity("API.Models.Items.Liquor", b =>
                 {
                     b.HasBaseType("API.Models.Items.Item");
+
+                    b.Property<double?>("AlcoholPercentage")
+                        .HasColumnType("double");
+
+                    b.Property<int>("LiquorTypeEnumId")
+                        .HasColumnType("int");
+
+                    b.Property<double?>("Volume")
+                        .HasColumnType("double");
+
+                    b.Property<int?>("Year")
+                        .HasColumnType("int");
+
+                    b.HasIndex("LiquorTypeEnumId");
 
                     b.HasDiscriminator().HasValue("Liquor");
                 });
@@ -386,7 +475,7 @@ namespace API.Migrations
                     b.Property<double?>("Volume")
                         .HasColumnType("double");
 
-                    b.Property<int?>("WineType")
+                    b.Property<int>("WineTypeEnumId")
                         .HasColumnType("int");
 
                     b.Property<string>("Winery")
@@ -396,28 +485,82 @@ namespace API.Migrations
                     b.Property<int?>("Year")
                         .HasColumnType("int");
 
+                    b.HasIndex("WineTypeEnumId");
+
+                    b.ToTable("Items", t =>
+                        {
+                            t.Property("AlcoholPercentage")
+                                .HasColumnName("Wine_AlcoholPercentage");
+
+                            t.Property("Volume")
+                                .HasColumnName("Wine_Volume");
+
+                            t.Property("Year")
+                                .HasColumnName("Wine_Year");
+                        });
+
                     b.HasDiscriminator().HasValue("Wine");
+                });
+
+            modelBuilder.Entity("API.Models.Orders.InboundOrder", b =>
+                {
+                    b.HasBaseType("API.Models.Orders.Order");
+
+                    b.Property<int>("InboundOrderState")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("SupplierId");
+
+                    b.HasDiscriminator().HasValue("InboundOrder");
                 });
 
             modelBuilder.Entity("API.Models.Orders.PurchaseOrder", b =>
                 {
                     b.HasBaseType("API.Models.Orders.Order");
 
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
+                    b.Property<string>("AddressLine")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
-                    b.Property<int>("GuestId")
-                        .HasColumnType("int");
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CustomerEmail")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CustomerFirstName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CustomerLastName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CustomerPhone")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Door")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Floor")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<int>("PurchaseOrderState")
                         .HasColumnType("int");
-
-                    b.Property<double>("TotalPrice")
-                        .HasColumnType("double");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("GuestId");
 
                     b.HasDiscriminator().HasValue("PurchaseOrder");
                 });
@@ -427,13 +570,6 @@ namespace API.Migrations
                     b.HasBaseType("API.Models.Authentication.Employee");
 
                     b.HasDiscriminator().HasValue("Admin");
-                });
-
-            modelBuilder.Entity("API.Models.Authentication.Customer", b =>
-                {
-                    b.HasBaseType("API.Models.Authentication.Guest");
-
-                    b.HasDiscriminator().HasValue("Customer");
                 });
 
             modelBuilder.Entity("API.Enums.ItemEnumRelation", b =>
@@ -467,63 +603,70 @@ namespace API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API.Models.Orders.PurchaseOrder", "PurchaseOrder")
+                    b.HasOne("API.Models.Orders.Order", null)
                         .WithMany("OrderLines")
-                        .HasForeignKey("PurchaseOrderId")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Item");
-
-                    b.Navigation("PurchaseOrder");
                 });
 
             modelBuilder.Entity("API.Models.Suppliers.SupplierItemRelation", b =>
                 {
                     b.HasOne("API.Models.Suppliers.Supplier", null)
-                        .WithMany("Items")
+                        .WithMany("SupplierItemRelations")
                         .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("API.Models.Orders.PurchaseOrder", b =>
+            modelBuilder.Entity("API.Models.Items.Liquor", b =>
                 {
-                    b.HasOne("API.Models.Authentication.Customer", "Customer")
+                    b.HasOne("API.Enums.CustomEnum", "LiquorTypeEnum")
                         .WithMany()
-                        .HasForeignKey("CustomerId")
+                        .HasForeignKey("LiquorTypeEnumId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API.Models.Authentication.Guest", "Guest")
-                        .WithMany("PurchaseOrders")
-                        .HasForeignKey("GuestId")
+                    b.Navigation("LiquorTypeEnum");
+                });
+
+            modelBuilder.Entity("API.Models.Items.Wine", b =>
+                {
+                    b.HasOne("API.Enums.CustomEnum", "WineTypeEnum")
+                        .WithMany()
+                        .HasForeignKey("WineTypeEnumId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Customer");
+                    b.Navigation("WineTypeEnum");
+                });
 
-                    b.Navigation("Guest");
+            modelBuilder.Entity("API.Models.Orders.InboundOrder", b =>
+                {
+                    b.HasOne("API.Models.Suppliers.Supplier", "Supplier")
+                        .WithMany("InboundOrders")
+                        .HasForeignKey("SupplierId");
+
+                    b.Navigation("Supplier");
+                });
+
+            modelBuilder.Entity("API.Models.Orders.Order", b =>
+                {
+                    b.Navigation("OrderLines");
                 });
 
             modelBuilder.Entity("API.Models.Suppliers.Supplier", b =>
                 {
-                    b.Navigation("Items");
-                });
+                    b.Navigation("InboundOrders");
 
-            modelBuilder.Entity("API.Models.Authentication.Guest", b =>
-                {
-                    b.Navigation("PurchaseOrders");
+                    b.Navigation("SupplierItemRelations");
                 });
 
             modelBuilder.Entity("API.Models.Items.Wine", b =>
                 {
                     b.Navigation("SuitableFor");
-                });
-
-            modelBuilder.Entity("API.Models.Orders.PurchaseOrder", b =>
-                {
-                    b.Navigation("OrderLines");
                 });
 #pragma warning restore 612, 618
         }

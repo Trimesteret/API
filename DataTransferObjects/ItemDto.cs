@@ -10,6 +10,7 @@ public class ItemDto
     public string Description { get; set; }
     public double Price { get; set; }
     public int Quantity { get; set; }
+    public int ReservedQuantity { get; set; }
     public string? ImageUrl { get; set; }
     public int? Year { get; set; }
     public double? Volume { get; set; }
@@ -20,6 +21,7 @@ public class ItemDto
     public string? Winery { get; set; }
     public string? TastingNotes { get; set; }
     public List<int>? SuitableForEnumIds { get; set; }
-    public WineType? WineType { get; set; }
     public ItemType ItemType { get; set; }
+    public CustomEnum? WineTypeEnum { get; set; }
+    public CustomEnum? LiquorTypeEnum { get; set; }
 }

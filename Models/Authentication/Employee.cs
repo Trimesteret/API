@@ -4,19 +4,36 @@ namespace API.Models.Authentication;
 
 public class Employee : User
 {
-    public Employee(){}
+    /// <summary>
+    /// Parameterless constructor for creating an an Admin
+    /// </summary>
+    public Employee()
+    {
 
-    public Employee(string firstName, string lastName, string phone, string email, string password)
+    }
+
+    /// <summary>
+    /// Constructor for creating an employee that is not signed up yet
+    /// </summary>
+    /// <param name="firstName"></param>
+    /// <param name="lastName"></param>
+    /// <param name="phone"></param>
+    /// <param name="email"></param>
+    public Employee(string firstName, string lastName, string email, string phone)
     {
         FirstName = firstName;
         LastName = lastName;
         Phone = phone;
         Email = email;
-        Password = password;
-        Token = "";
+        Token = null;
         Role = Role.Employee;
+        SignedUp = false;
     }
 
+    /// <summary>
+    /// Constructor for creating an employee from a user
+    /// </summary>
+    /// <param name="user"></param>
     public Employee(User user)
     {
         Id = user.Id;
@@ -28,15 +45,6 @@ public class Employee : User
         Token = user.Token;
         Salt = user.Salt;
         Role = Role.Employee;
-    }
-
-    protected void ChangeEmployee(string firstName, string lastName, string phone, string email, string password, int? phoneNumber)
-    {
-        FirstName = firstName;
-        LastName = lastName;
-        Phone = phone;
-        Email = email;
-        Password = password;
-        Token = "";
+        SignedUp = false;
     }
 }

@@ -10,9 +10,10 @@ public abstract class User
     public string LastName { get; protected set; }
     public string Phone { get; protected set; }
     public string Email { get; protected set; }
-    public string Password { get; protected set; }
-    public Byte[] Salt { get; protected set; }
-    public string Token { get; protected set; }
+    public string? Password { get; protected set; }
+    public Byte[]? Salt { get; protected set; }
+    public string? Token { get; protected set; }
+    public bool SignedUp { get; protected set; } = false;
     public DateTime? TokenExpiration { get; protected set; }
     public Role Role { get; protected set; }
 
@@ -33,7 +34,7 @@ public abstract class User
         LastName = lastName;
         Phone = phone;
         Email = email;
-        Token = "";
+        Token = null;
         TokenExpiration = null;
     }
 
@@ -43,4 +44,13 @@ public abstract class User
         this.Salt = salt;
     }
 
+    public void SetSignedUp(bool signedUp)
+    {
+        if(signedUp && Password == null)
+        {
+            return;
+        }
+
+        SignedUp = signedUp;
+    }
 }

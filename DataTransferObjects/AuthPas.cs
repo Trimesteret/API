@@ -4,7 +4,7 @@ namespace API.DataTransferObjects;
 
 public class AuthPas
 {
-    public string Token { get; set; }
+    public string? Token { get; set; }
     public DateTime? ExpirationDate { get; set; }
     public Role? Role { get; set; }
 
