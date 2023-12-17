@@ -3,6 +3,7 @@ using System;
 using API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(SharedContext))]
-    partial class SharedContextModelSnapshot : ModelSnapshot
+    [Migration("20231217113357_LilleMigration")]
+    partial class LilleMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -117,69 +120,6 @@ namespace API.Migrations
                             EnumType = 0,
                             Key = "Dessert",
                             Value = "Dessert"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            EnumType = 1,
-                            Key = "RedWine",
-                            Value = "Rødvin"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            EnumType = 1,
-                            Key = "WhiteWine",
-                            Value = "Hvidvin"
-                        },
-                        new
-                        {
-                            Id = 14,
-                            EnumType = 1,
-                            Key = "RoseWine",
-                            Value = "Rosévin"
-                        },
-                        new
-                        {
-                            Id = 15,
-                            EnumType = 2,
-                            Key = "Whiskey",
-                            Value = "Whiskey"
-                        },
-                        new
-                        {
-                            Id = 16,
-                            EnumType = 2,
-                            Key = "Vodka",
-                            Value = "Vodka"
-                        },
-                        new
-                        {
-                            Id = 17,
-                            EnumType = 2,
-                            Key = "Gin",
-                            Value = "Gin"
-                        },
-                        new
-                        {
-                            Id = 18,
-                            EnumType = 2,
-                            Key = "Rum",
-                            Value = "Rom"
-                        },
-                        new
-                        {
-                            Id = 19,
-                            EnumType = 2,
-                            Key = "Tequila",
-                            Value = "Tequila"
-                        },
-                        new
-                        {
-                            Id = 20,
-                            EnumType = 2,
-                            Key = "Liqueur",
-                            Value = "Likør"
                         });
                 });
 
@@ -435,7 +375,7 @@ namespace API.Migrations
                     b.Property<double?>("AlcoholPercentage")
                         .HasColumnType("double");
 
-                    b.Property<int>("LiquorTypeEnumId")
+                    b.Property<int>("LiquorTypeId")
                         .HasColumnType("int");
 
                     b.Property<double?>("Volume")
@@ -444,7 +384,7 @@ namespace API.Migrations
                     b.Property<int?>("Year")
                         .HasColumnType("int");
 
-                    b.HasIndex("LiquorTypeEnumId");
+                    b.HasIndex("LiquorTypeId");
 
                     b.HasDiscriminator().HasValue("Liquor");
                 });
@@ -475,7 +415,7 @@ namespace API.Migrations
                     b.Property<double?>("Volume")
                         .HasColumnType("double");
 
-                    b.Property<int>("WineTypeEnumId")
+                    b.Property<int>("WineTypeId")
                         .HasColumnType("int");
 
                     b.Property<string>("Winery")
@@ -485,7 +425,7 @@ namespace API.Migrations
                     b.Property<int?>("Year")
                         .HasColumnType("int");
 
-                    b.HasIndex("WineTypeEnumId");
+                    b.HasIndex("WineTypeId");
 
                     b.ToTable("Items", t =>
                         {
@@ -623,24 +563,24 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.Items.Liquor", b =>
                 {
-                    b.HasOne("API.Enums.CustomEnum", "LiquorTypeEnum")
+                    b.HasOne("API.Enums.CustomEnum", "LiquorType")
                         .WithMany()
-                        .HasForeignKey("LiquorTypeEnumId")
+                        .HasForeignKey("LiquorTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("LiquorTypeEnum");
+                    b.Navigation("LiquorType");
                 });
 
             modelBuilder.Entity("API.Models.Items.Wine", b =>
                 {
-                    b.HasOne("API.Enums.CustomEnum", "WineTypeEnum")
+                    b.HasOne("API.Enums.CustomEnum", "WineType")
                         .WithMany()
-                        .HasForeignKey("WineTypeEnumId")
+                        .HasForeignKey("WineTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("WineTypeEnum");
+                    b.Navigation("WineType");
                 });
 
             modelBuilder.Entity("API.Models.Orders.InboundOrder", b =>

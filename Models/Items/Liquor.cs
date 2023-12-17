@@ -1,9 +1,16 @@
+using API.DataTransferObjects;
 using API.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Models.Items;
 
 public class Liquor: Item
 {
+    public int? Year { get; protected set; }
+    public double? Volume { get; protected set; }
+    public double? AlcoholPercentage { get; protected set; }
+    public CustomEnum LiquorTypeEnum { get; protected set; }
+
     /// <summary>
     /// Parameterless constructor for Entity Framework.
     /// </summary>
@@ -13,24 +20,47 @@ public class Liquor: Item
     }
 
 
-    public Liquor(string name, string ean, int quantity, double price, string description, string imageUrl)
+    /// <summary>
+    /// Constructor for creating a new liquor
+    /// </summary>
+    /// <param name="itemDto"></param>
+    /// <param name="context"></param>
+    /// <exception cref="Exception"></exception>
+    public Liquor(ItemDto itemDto, SharedContext context)
     {
-        this.Name = name;
-        this.Ean = ean;
-        this.ImageUrl = imageUrl;
-        this.Quantity = quantity;
-        this.Price = price;
-        this.Description = description;
+        this.Name = itemDto.Name;
+        this.Ean = itemDto.Ean;
+        this.Quantity = itemDto.Quantity;
+        this.ReservedQuantity = itemDto.ReservedQuantity;
+        this.ImageUrl = itemDto.ImageUrl;
+        this.Price = itemDto.Price;
+        this.Description = itemDto.Description;
+        this.Year = itemDto.Year;
+        this.Volume = itemDto.Volume;
+        this.AlcoholPercentage = itemDto.AlcoholPercentage;
         this.ItemType = ItemType.Liquor;
+
+        if (itemDto.LiquorTypeEnum == null)
+        {
+            throw new Exception("Liquor type cannot be null");
+        }
+
+        var existingEnum = context.CustomEnums.Find(itemDto.LiquorTypeEnum.Id);
+
+        this.LiquorTypeEnum = existingEnum ?? throw new Exception("Enum does not exist");
     }
 
-    public void ChangeLiquorProperties(string name, string ean, int quantity, double price, string description, string imageUrl)
+    public void ChangeLiquorProperties(ItemDto itemDto)
     {
-        Name = name;
-        Ean = ean;
-        Quantity = quantity;
-        ImageUrl = imageUrl;
-        Price = price;
-        Description = description;
+        this.Name = itemDto.Name;
+        this.Ean = itemDto.Ean;
+        this.Quantity = itemDto.Quantity;
+        this.Year = itemDto.Year;
+        this.AlcoholPercentage = itemDto.AlcoholPercentage;
+        this.Volume = itemDto.Volume;
+        this.ImageUrl = itemDto.ImageUrl;
+        this.Price = itemDto.Price;
+        this.Description = itemDto.Description;
+        this.LiquorTypeEnum = itemDto.LiquorTypeEnum ?? this.LiquorTypeEnum;
     }
 }

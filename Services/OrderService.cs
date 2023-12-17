@@ -11,12 +11,14 @@ public class OrderService : IOrderService
     private readonly SharedContext _sharedContext;
     private readonly IMapper _mapper;
     private readonly IAuthService _authorizationService;
+    private readonly IItemService _itemService;
 
-    public OrderService(SharedContext dbSharedContext, IMapper mapper, IAuthService authorizationService)
+    public OrderService(SharedContext dbSharedContext, IMapper mapper, IAuthService authorizationService, IItemService itemService)
     {
         _sharedContext = dbSharedContext;
         _mapper = mapper;
         _authorizationService = authorizationService;
+        _itemService = itemService;
     }
 
     /// <summary>
@@ -139,21 +141,6 @@ public class OrderService : IOrderService
         return purchaseOrderDto;
     }
 
-    public async Task<List<OrderLineDto>> GetPurchaseOrderOrderLines(int purchaseOrderId)
-    {
-        var purchaseOrder = await _sharedContext.PurchaseOrders.Include(order => order.OrderLines)
-            .ThenInclude(orderLine => orderLine.Item).FirstOrDefaultAsync(po => po.Id == purchaseOrderId);
-
-        if(purchaseOrder == null)
-        {
-            throw new Exception("Purchase order not found");
-        }
-
-        var orderLinesDtos = _mapper.Map<List<OrderLineDto>>(purchaseOrder.OrderLines);
-
-        return orderLinesDtos;
-    }
-
     /// <summary>
     /// Creates a new purchase order
     /// </summary>
@@ -172,6 +159,8 @@ public class OrderService : IOrderService
         var purchaseOrderToCreate = new PurchaseOrder(purchaseOrderDto);
 
         _sharedContext.PurchaseOrders.Add(purchaseOrderToCreate);
+
+        await _itemService.ReserveItems(purchaseOrderToCreate.OrderLines);
         await _sharedContext.SaveChangesAsync();
 
         return purchaseOrderDto;

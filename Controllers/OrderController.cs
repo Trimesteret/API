@@ -44,9 +44,17 @@ namespace Api.Controllers
         }
 
         [HttpPut("purchaseOrder")]
-        public async Task<PurchaseOrderDto> PutPurchaseOrder([FromBody] PurchaseOrderDto purchaseOrder)
+        public async Task<ActionResult<PurchaseOrderDto>> PutPurchaseOrder([FromBody] PurchaseOrderDto purchaseOrder)
         {
-            return await _orderService.EditPurchaseOrder(purchaseOrder);
+            try
+            {
+                return await _orderService.EditPurchaseOrder(purchaseOrder);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPost("purchaseOrder")]

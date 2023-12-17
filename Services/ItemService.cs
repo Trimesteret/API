@@ -3,6 +3,7 @@ using API.Enums;
 using API.Models;
 using API.Models.Authentication;
 using API.Models.Items;
+using API.Models.Orders;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +22,14 @@ public class ItemService : IItemService
         _mapper = mapper;
     }
 
+    /// <summary>
+    /// Gets items by a search, sort and filter
+    /// </summary>
+    /// <param name="search"></param>
+    /// <param name="amountOfItemsShown"></param>
+    /// <param name="sortByPrice"></param>
+    /// <param name="itemType"></param>
+    /// <returns></returns>
     public async Task<List<Item>> GetItemsBySearch(string? search, int amountOfItemsShown, SortByPrice? sortByPrice,
         ItemType? itemType)
     {
@@ -31,6 +40,12 @@ public class ItemService : IItemService
         return await query.Take(amountOfItemsShown).ToListAsync();
     }
 
+    /// <summary>
+    /// Gets an item given the id of the item
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public async Task<ItemDto> GetItemById(int id)
     {
         var item = await _sharedContext.Items.FirstOrDefaultAsync(item => item.Id == id);
@@ -42,13 +57,18 @@ public class ItemService : IItemService
 
         var itemDto = _mapper.Map<ItemDto>(item);
 
-        Wine wine = item as Wine;
-        if (wine == null)
+        var wine = await _sharedContext.Wines.Include(wine => wine.WineTypeEnum).FirstOrDefaultAsync(wine => wine.Id == id);
+        if (wine != null)
         {
-            return itemDto;
+            itemDto.SuitableForEnumIds = await wine.GetSuitableForAsIntList(_sharedContext);
+            itemDto.WineTypeEnum = wine.WineTypeEnum;
         }
 
-        itemDto.SuitableForEnumIds = await wine.GetSuitableForAsIntList(_sharedContext);
+        var liquor = await _sharedContext.Liquors.Include(liquor => liquor.LiquorTypeEnum).FirstOrDefaultAsync(liquor => liquor.Id == id);
+        if (liquor != null)
+        {
+            itemDto.LiquorTypeEnum = liquor.LiquorTypeEnum;
+        }
 
         return itemDto;
     }
@@ -62,22 +82,10 @@ public class ItemService : IItemService
     /// <exception cref="NotImplementedException"></exception>
     public async Task<ItemDto> CreateItem(ItemDto itemDto)
     {
-        var activeUser = await _authService.GetActiveUser();
-
-        if (activeUser.Role < Role.Admin)
-        {
-            throw new Exception("You do not have permission to create items");
-        }
-
-        if (activeUser is not Admin activeAdminUser)
-        {
-            throw new Exception("You do not have permission to create items");
-        }
-
         switch (itemDto.ItemType)
         {
             case ItemType.Wine:
-                Wine wine = activeAdminUser.CreateWine(itemDto);
+                Wine wine = new Wine(itemDto, _sharedContext);
                 _sharedContext.Wines.Add(wine);
                 await wine.SetSuitableFor(_sharedContext, itemDto.SuitableForEnumIds);
                 await _sharedContext.SaveChangesAsync();
@@ -86,13 +94,13 @@ public class ItemService : IItemService
                 return createdItemDto;
 
             case ItemType.Liquor:
-                Liquor liquor = activeAdminUser.CreateLiquor(itemDto);
+                Liquor liquor = new Liquor(itemDto, _sharedContext);
                 _sharedContext.Liquors.Add(liquor);
                 await _sharedContext.SaveChangesAsync();
                 return _mapper.Map<ItemDto>(liquor);
 
             case ItemType.DefaultItem:
-                DefaultItem defaultItem = activeAdminUser.CreateDefaultItem(itemDto);
+                DefaultItem defaultItem = new DefaultItem(itemDto);
                 _sharedContext.DefaultItems.Add(defaultItem);
                 await _sharedContext.SaveChangesAsync();
                 return _mapper.Map<ItemDto>(defaultItem);
@@ -176,35 +184,19 @@ public class ItemService : IItemService
             throw new Exception("Could not find item with id: " + itemDto.Id);
         }
 
-        var activeUser = await _authService.GetActiveUser();
-
-        if (activeUser.Role < Role.Admin)
-        {
-            throw new Exception("You do not have permission to create items");
-        }
-
-        if (activeUser is not Admin activeAdminUser)
-        {
-            throw new Exception("You do not have permission to create items");
-        }
-
         switch (itemToEdit)
         {
             case Wine wine:
-                wine.ChangeWineProperties(itemDto.Name, itemDto.Ean, itemDto.Quantity, itemDto.ImageUrl, itemDto.Price,
-                    itemDto.Description, itemDto.WineType, itemDto.Year, itemDto.Volume, itemDto.AlcoholPercentage,
-                    itemDto.Country, itemDto.Region, itemDto.GrapeSort, itemDto.Winery, itemDto.TastingNotes);
+                wine.ChangeWineProperties(itemDto);
 
                 await wine.SetSuitableFor(_sharedContext, itemDto.SuitableForEnumIds);
                 break;
             case Liquor liquor:
-                liquor.ChangeLiquorProperties(itemDto.Name, itemDto.Ean, itemDto.Quantity, itemDto.Price,
-                    itemDto.Description, itemDto.ImageUrl);
+                liquor.ChangeLiquorProperties(itemDto);
                 break;
 
             case DefaultItem defaultItem:
-                defaultItem.ChangeDefaultItemProperties(itemDto.Name, itemDto.Ean, itemDto.Quantity, itemDto.Price,
-                    itemDto.Description, itemDto.ImageUrl);
+                defaultItem.ChangeDefaultItemProperties(itemDto);
                 break;
 
             default:
@@ -273,5 +265,25 @@ public class ItemService : IItemService
         _sharedContext.Remove(existingItem);
 
         await _sharedContext.SaveChangesAsync();
+    }
+
+    /// <summary>
+    /// Reserves items given a list of orderLines
+    /// </summary>
+    /// <param name="orderLines"></param>
+    /// <exception cref="Exception"></exception>
+    public async Task ReserveItems(List<OrderLine> orderLines)
+    {
+        foreach (var orderLine in orderLines)
+        {
+            var item = await _sharedContext.Items.FirstOrDefaultAsync(item => item.Id == orderLine.ItemId);
+
+            if (item == null)
+            {
+                throw new Exception("Item could not be found");
+            }
+
+            item.ReserveQuantity(orderLine.Quantity);
+        }
     }
 }

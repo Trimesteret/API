@@ -27,7 +27,18 @@ public class SharedContext : DbContext
             new CustomEnum { Id = 8, EnumType = EnumType.SuitableFor, Key = "Pizza", Value = "Pizza" },
             new CustomEnum { Id = 9, EnumType = EnumType.SuitableFor, Key = "Vegetarian", Value = "Vegetar" },
             new CustomEnum { Id = 10, EnumType = EnumType.SuitableFor, Key = "Salad", Value = "Salat" },
-            new CustomEnum { Id = 11, EnumType = EnumType.SuitableFor, Key = "Dessert", Value = "Dessert" }
+            new CustomEnum { Id = 11, EnumType = EnumType.SuitableFor, Key = "Dessert", Value = "Dessert" },
+
+            new CustomEnum { Id = 12, EnumType = EnumType.WineType, Key = "RedWine", Value = "Rødvin" },
+            new CustomEnum { Id = 13, EnumType = EnumType.WineType, Key = "WhiteWine", Value = "Hvidvin" },
+            new CustomEnum { Id = 14, EnumType = EnumType.WineType, Key = "RoseWine", Value = "Rosévin" },
+
+            new CustomEnum { Id = 15, EnumType = EnumType.LiqourType, Key = "Whiskey", Value = "Whiskey" },
+            new CustomEnum { Id = 16, EnumType = EnumType.LiqourType, Key = "Vodka", Value = "Vodka" },
+            new CustomEnum { Id = 17, EnumType = EnumType.LiqourType, Key = "Gin", Value = "Gin" },
+            new CustomEnum { Id = 18, EnumType = EnumType.LiqourType, Key = "Rum", Value = "Rom" },
+            new CustomEnum { Id = 19, EnumType = EnumType.LiqourType, Key = "Tequila", Value = "Tequila" },
+            new CustomEnum { Id = 20, EnumType = EnumType.LiqourType, Key = "Liqueur", Value = "Likør" }
         );
     }
 

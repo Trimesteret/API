@@ -1,3 +1,4 @@
+using API.DataTransferObjects;
 using API.Enums;
 
 namespace API.Models.Items;
@@ -12,24 +13,26 @@ public class DefaultItem: Item
 
     }
 
-    public DefaultItem(string name, string ean, int quantity, double price, string description, string imageUrl)
+    public DefaultItem(ItemDto itemDto)
     {
-        this.Name = name;
-        this.Ean = ean;
-        this.Quantity = quantity;
-        this.ImageUrl = imageUrl;
-        this.Price = price;
-        this.Description = description;
+        this.Name = itemDto.Name;
+        this.Ean = itemDto.Ean;
+        this.Quantity = itemDto.Quantity;
+        this.ReservedQuantity = itemDto.ReservedQuantity;
+        this.ImageUrl = itemDto.ImageUrl;
+        this.Price = itemDto.Price;
+        this.Description = itemDto.Description;
         this.ItemType = ItemType.DefaultItem;
     }
 
-    public void ChangeDefaultItemProperties(string name, string ean, int quantity, double price, string description, string imageUrl)
+    public void ChangeDefaultItemProperties(ItemDto itemDto)
     {
-        Name = name;
-        Ean = ean;
-        Quantity = quantity;
-        ImageUrl = imageUrl;
-        Price = price;
-        Description = description;
+        this.Name = itemDto.Name;
+        this.Ean = itemDto.Ean;
+        this.Quantity = itemDto.Quantity;
+        this.ReservedQuantity = itemDto.ReservedQuantity;
+        this.ImageUrl = itemDto.ImageUrl;
+        this.Price = itemDto.Price;
+        this.Description = itemDto.Description;
     }
 }

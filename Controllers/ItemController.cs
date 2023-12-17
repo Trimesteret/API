@@ -49,7 +49,7 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "require-employee-role")]
+        [Authorize(Policy = "require-admin-role")]
         public async Task<ActionResult<ItemDto>> PostItem([FromBody] ItemDto item)
         {
             try
@@ -64,7 +64,7 @@ namespace Api.Controllers
         }
 
         [HttpPut]
-        [Authorize(Policy = "require-employee-role")]
+        [Authorize(Policy = "require-admin-role")]
         public async Task<ActionResult<ItemDto>> PutItem([FromBody] ItemDto item)
         {
             try
@@ -79,7 +79,7 @@ namespace Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Policy = "require-employee-role")]
+        [Authorize(Policy = "require-admin-role")]
         public async Task<ActionResult<Boolean>> DeleteItem(int id)
         {
             try

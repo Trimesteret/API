@@ -1,3 +1,4 @@
+using API.DataTransferObjects;
 using API.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,7 +15,7 @@ public class Wine : Item
     public string Winery { get; protected set; }
     public string TastingNotes { get; protected set; }
     public List<ItemEnumRelation>? SuitableFor { get; set; }
-    public WineType? WineType { get; protected set; }
+    public CustomEnum WineTypeEnum { get; protected set; }
 
     /// <summary>
     /// Parameterless constructor for Entity Framework.
@@ -24,66 +25,62 @@ public class Wine : Item
 
     }
 
-    public Wine(string name, string ean, int quantity, string imageUrl, double price, string description,
-                WineType? wineType, int? year, double? volume,
-                double? alcoholPercentage, string country, string region, string grapeSort,
-                string winery, string tastingNotes)
+    /// <summary>
+    /// Constructor for creating a new wine
+    /// </summary>
+    /// <param name="itemDto"></param>
+    /// <param name="context"></param>
+    public Wine(ItemDto itemDto, SharedContext context)
     {
-        this.Name = name;
-        this.Ean = ean;
-        this.Quantity = quantity;
-        this.ImageUrl = imageUrl;
-        this.Price = price;
-        this.Description = description;
-        this.WineType = wineType;
+        this.Name = itemDto.Name;
+        this.Ean = itemDto.Ean;
+        this.Quantity = itemDto.Quantity;
+        this.ReservedQuantity = itemDto.ReservedQuantity;
+        this.ImageUrl = itemDto.ImageUrl;
+        this.Price = itemDto.Price;
+        this.Description = itemDto.Description;
+        this.Year = itemDto.Year;
+        this.Volume = itemDto.Volume;
+        this.AlcoholPercentage = itemDto.AlcoholPercentage;
+        this.Country = itemDto.Country ?? "";
+        this.Region = itemDto.Region ?? "";
+        this.GrapeSort = itemDto.GrapeSort ?? "";
+        this.Winery = itemDto.Winery ?? "";
+        this.TastingNotes = itemDto.TastingNotes ?? "";
         this.ItemType = ItemType.Wine;
-        this.Year = year;
-        this.Volume = volume;
-        this.AlcoholPercentage = alcoholPercentage;
-        this.Country = country;
-        this.Region = region;
-        this.GrapeSort = grapeSort;
-        this.Winery = winery;
-        this.TastingNotes = tastingNotes;
+
+        if (itemDto.WineTypeEnum == null)
+        {
+            throw new Exception("Wine type cannot be null");
+        }
+
+        var existingEnum = context.CustomEnums.Find(itemDto.WineTypeEnum.Id);
+
+        this.WineTypeEnum = existingEnum?? throw new Exception("Enum does not exist");
     }
 
     /// <summary>
     /// Function for changing the properties of a wine
     /// </summary>
-    /// <param name="name"></param>
-    /// <param name="ean"></param>
-    /// <param name="quantity"></param>
-    /// <param name="imageUrl"></param>
-    /// <param name="price"></param>
-    /// <param name="description"></param>
-    /// <param name="wineType"></param>
-    /// <param name="year"></param>
-    /// <param name="volume"></param>
-    /// <param name="alcoholPercentage"></param>
-    /// <param name="country"></param>
-    /// <param name="region"></param>
-    /// <param name="grapeSort"></param>
-    /// <param name="winery"></param>
-    /// <param name="tastingNotes"></param>
-    public void ChangeWineProperties(string name, string ean, int quantity, string imageUrl, double price, string description,
-        WineType? wineType, int? year, double? volume, double? alcoholPercentage, string country, string region,
-        string grapeSort, string winery, string tastingNotes)
+    /// <param name="itemDto"></param>
+    public void ChangeWineProperties(ItemDto itemDto)
     {
-        this.Name = name;
-        this.Ean = ean;
-        this.Quantity = quantity;
-        this.ImageUrl = imageUrl;
-        this.Price = price;
-        this.Description = description;
-        this.WineType = wineType;
-        this.Year = year;
-        this.Volume = volume;
-        this.AlcoholPercentage = alcoholPercentage;
-        this.Country = country;
-        this.Region = region;
-        this.GrapeSort = grapeSort;
-        this.Winery = winery;
-        this.TastingNotes = tastingNotes;
+        this.Name = itemDto.Name;
+        this.Ean = itemDto.Ean;
+        this.Quantity = itemDto.Quantity;
+        this.ImageUrl = itemDto.ImageUrl;
+        this.Price = itemDto.Price;
+        this.Description = itemDto.Description;
+        this.Year = itemDto.Year;
+        this.Volume = itemDto.Volume;
+        this.AlcoholPercentage = itemDto.AlcoholPercentage;
+        this.Country = itemDto.Country ?? this.Country;
+        this.Region = itemDto.Region ?? this.Region;
+        this.GrapeSort = itemDto.GrapeSort ?? this.GrapeSort;
+        this.Winery = itemDto.Winery ?? this.Winery;
+        this.TastingNotes = itemDto.TastingNotes ?? this.TastingNotes;
+        this.ReservedQuantity = itemDto.ReservedQuantity;
+        this.WineTypeEnum = itemDto.WineTypeEnum ?? this.WineTypeEnum;
     }
 
     /// <summary>
