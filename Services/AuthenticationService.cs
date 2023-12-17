@@ -194,7 +194,12 @@ namespace API.Services
         {
             signupDto.Email = signupDto.Email.ToLower();
 
-            if (signupDto.Password != signupDto.RepeatPassword || signupDto.Password.Length < 6)
+            if(signupDto.Password.Length <= 6 || signupDto.RepeatPassword.Length <= 6)
+            {
+                throw new Exception("Password must be above 7 characters");
+            }
+
+            if (signupDto.Password != signupDto.RepeatPassword )
             {
                 throw new Exception("Passwords do not match");
             }
