@@ -1,7 +1,6 @@
 using API.DataTransferObjects;
 using API.Enums;
 using API.Models;
-using API.Models.Authentication;
 using API.Models.Items;
 using API.Models.Orders;
 using AutoMapper;
@@ -12,13 +11,11 @@ namespace API.Services;
 public class ItemService : IItemService
 {
     private readonly SharedContext _sharedContext;
-    private readonly IAuthService _authService;
     private readonly IMapper _mapper;
 
-    public ItemService(SharedContext dbSharedContext, IAuthService authService, IMapper mapper)
+    public ItemService(SharedContext dbSharedContext, IMapper mapper)
     {
         _sharedContext = dbSharedContext;
-        _authService = authService;
         _mapper = mapper;
     }
 

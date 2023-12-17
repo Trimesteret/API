@@ -1,6 +1,5 @@
 using API.DataTransferObjects;
 using API.Enums;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Models.Items;
 
