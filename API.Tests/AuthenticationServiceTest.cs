@@ -131,4 +131,14 @@ public class AuthenticationServiceTest
         var exception = await Assert.ThrowsAsync<Exception>(async () => await authenticationService.SignupNewCustomer(signUpDto1));
         Assert.Equal("Password must be above 7 characters", exception.Message);
     }
+    [Fact]
+    public async void PassHashingTestPasswordIsSalted()
+    {
+        var testPassword = "TestPassword";
+        var salt1 = AuthenticationService.GenerateSalt();
+        var salt2 = AuthenticationService.GenerateSalt();
+        var hashedPass1=AuthenticationService.HashPassword(testPassword, salt1);
+        var hashedpass2=AuthenticationService.HashPassword(testPassword, salt2);
+        Assert.NotEqual(hashedPass1,hashedpass2);
+    }
 }
