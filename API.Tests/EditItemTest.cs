@@ -87,4 +87,48 @@ public class EditItemTest
         Assert.Equal(editedItemDto.AlcoholPercentage, editItemDto.AlcoholPercentage);
         Assert.Equal(editedItemDto.WineTypeEnum?.Id, editItemDto.WineTypeEnum.Id);
     }
+    [Fact]
+    public async void PassEditDefaultItem()
+    {
+        var context = SharedTesting.GetContext();
+        var mapper = SharedTesting.GetMapper();
+
+        var itemService = new ItemService(context, mapper);
+
+        var originalItemDto = new ItemDto { ItemType = ItemType.DefaultItem, Name = "Test1", Ean = "123456789", Quantity = 10, ReservedQuantity = 0, ImageUrl = "test",
+            Price = 10, Description = "test"};
+
+        var createdItemDto = await itemService.CreateItem(originalItemDto);
+        Assert.NotNull(createdItemDto);
+
+        var editItemDto = new ItemDto { Id = createdItemDto.Id, ItemType = ItemType.DefaultItem, Name = "Testen", Ean = "132132345", Quantity = 14, ReservedQuantity = 3, ImageUrl = "test",
+            Price = 109, Description = "testen er lykkedes"};
+
+        var editedItemDto = await itemService.EditItem(editItemDto);
+        Assert.NotNull(editedItemDto);
+
+        Assert.Equal(editedItemDto.Id, editItemDto.Id);
+        Assert.Equal(editedItemDto.Name, editItemDto.Name);
+        Assert.Equal(editedItemDto.Ean, editItemDto.Ean);
+        Assert.Equal(editedItemDto.Quantity, editItemDto.Quantity);
+        Assert.Equal(editedItemDto.ReservedQuantity, editItemDto.ReservedQuantity);
+        Assert.Equal(editedItemDto.ImageUrl, editItemDto.ImageUrl);
+        Assert.Equal(editedItemDto.Price, editItemDto.Price);
+        Assert.Equal(editedItemDto.Description, editItemDto.Description);
+    }
+    [Fact]
+    public async void FailEditNullItem()
+    {
+        var context = SharedTesting.GetContext();
+        var mapper = SharedTesting.GetMapper();
+
+        var itemService = new ItemService(context, mapper);
+
+        var nonExistingDto = new ItemDto {Id = 0, ItemType = ItemType.DefaultItem, Name = "Test1", Ean = "123456789", Quantity = 10, ReservedQuantity = 0, ImageUrl = "test",
+            Price = 10, Description = "test"};
+
+        var exception = await Assert.ThrowsAsync<Exception>(async () => await itemService.EditItem(nonExistingDto));
+        Assert.Equal("Could not find item with id: " + nonExistingDto.Id, exception.Message);
+        
+    }
 }
