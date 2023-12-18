@@ -68,6 +68,7 @@ public class Wine : Item
         this.Name = itemDto.Name;
         this.Ean = itemDto.Ean;
         this.Quantity = itemDto.Quantity;
+        this.ReservedQuantity = itemDto.ReservedQuantity;
         this.ImageUrl = itemDto.ImageUrl;
         this.Price = itemDto.Price;
         this.Description = itemDto.Description;

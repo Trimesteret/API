@@ -1,24 +1,12 @@
 using API.DataTransferObjects;
 using API.Enums;
-using API.Models.Items;
 using API.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Tests;
 
-public class ItemTest
+public class CreateItemTest
 {
-
-    [Fact]
-    public void Test1()
-    {
-        // Arrange
-        var liquor = new Liquor();
-
-        // Assert
-        Assert.NotNull(liquor);
-    }
-
     [Fact]
     public async void PassCreateLiquorTest()
     {
@@ -31,10 +19,10 @@ public class ItemTest
         context.CustomEnums.Add(customEnum1);
         await context.SaveChangesAsync();
 
-        var itemDto1 = new ItemDto { ItemType = ItemType.Liquor, Name = "Test1", Ean = "123456789", Quantity = 10, ReservedQuantity = 0, ImageUrl = "test",
+        var testItemDto = new ItemDto { ItemType = ItemType.Liquor, Name = "Test1", Ean = "123456789", Quantity = 10, ReservedQuantity = 0, ImageUrl = "test",
             Price = 10, Description = "test", Year = 1999, Volume = 0.7, AlcoholPercentage = 40, LiquorTypeEnum = customEnum1 };
 
-        var createdItemDto = await itemService.CreateItem(itemDto1);
+        var createdItemDto = await itemService.CreateItem(testItemDto);
         Assert.NotNull(createdItemDto);
 
         var createdLiquor = await context.Liquors.FirstOrDefaultAsync(liq => liq.Id == createdItemDto.Id);
@@ -58,10 +46,11 @@ public class ItemTest
         context.CustomEnums.Add(customEnum1);
         await context.SaveChangesAsync();
 
-        var itemDto1 = new ItemDto { ItemType = ItemType.Wine, Name = "Test1", Ean = "123456789", Quantity = 10, ReservedQuantity = 0, ImageUrl = "test",
-            Price = 10, Description = "test", Year = 1999, Volume = 0.7, AlcoholPercentage = 40, WineTypeEnum = customEnum1 };
 
-        var createdItemDto = await itemService.CreateItem(itemDto1);
+        var testItemDto = new ItemDto { ItemType = ItemType.Wine, Name = "Test1", Ean = "123456789", Quantity = 10, ReservedQuantity = 0, ImageUrl = "test",
+            Price = 10, Description = "test", Year = 1999, Volume = 0.7, AlcoholPercentage = 40, SuitableForEnumIds = new List<int> { 0, 1 }, WineTypeEnum = customEnum1 };
+
+        var createdItemDto = await itemService.CreateItem(testItemDto);
         Assert.NotNull(createdItemDto);
 
         var createdWine = await context.Wines.FirstOrDefaultAsync(wine => wine.Id == createdItemDto.Id);

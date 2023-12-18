@@ -185,9 +185,9 @@ public class ItemService : IItemService
         {
             case Wine wine:
                 wine.ChangeWineProperties(itemDto);
-
                 await wine.SetSuitableFor(_sharedContext, itemDto.SuitableForEnumIds);
                 break;
+
             case Liquor liquor:
                 liquor.ChangeLiquorProperties(itemDto);
                 break;

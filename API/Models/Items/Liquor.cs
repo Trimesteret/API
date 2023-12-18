@@ -54,6 +54,7 @@ public class Liquor: Item
         this.Name = itemDto.Name;
         this.Ean = itemDto.Ean;
         this.Quantity = itemDto.Quantity;
+        this.ReservedQuantity = itemDto.ReservedQuantity;
         this.Year = itemDto.Year;
         this.AlcoholPercentage = itemDto.AlcoholPercentage;
         this.Volume = itemDto.Volume;
