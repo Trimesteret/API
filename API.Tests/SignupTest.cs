@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Tests;
 
+[Collection("Sequential")]
 public class SignupTest
 {
     /// <summary>
@@ -26,12 +27,6 @@ public class SignupTest
             Password = "12345678",
             RepeatPassword = "12345678"
         };
-
-        var customersFromDb = await context.Customers.ToListAsync();
-        foreach (var customerFromDb in customersFromDb)
-        {
-            Console.WriteLine(customerFromDb.FirstName);
-        }
 
         var customer = await authenticationService.SignupNewCustomer(signUpDto);
         Assert.NotNull(customer);

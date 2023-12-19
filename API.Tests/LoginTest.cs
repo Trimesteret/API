@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Tests;
 
+[Collection("Sequential")]
 public class LoginTest
 {
     [Fact]
@@ -43,7 +44,6 @@ public class LoginTest
         Assert.NotEqual(loginRes.ExpirationDate, customerFromDb.TokenExpiration);
         Assert.Equal(loginRes.Role, customerFromDb.Role);
 
-        context.Users.Remove(customerFromDb);
-        await context.SaveChangesAsync();
+        await context.Database.EnsureDeletedAsync();
     }
 }

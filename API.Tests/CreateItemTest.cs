@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Tests;
 
+[Collection("Sequential")]
 public class CreateItemTest
 {
     [Fact]
@@ -29,9 +30,7 @@ public class CreateItemTest
         Assert.NotNull(createdLiquor);
 
         Assert.Equal(createdItemDto.Id, createdLiquor.Id);
-        context.CustomEnums.Remove(customEnum1);
-        context.Liquors.Remove(createdLiquor);
-        await context.SaveChangesAsync();
+        await context.Database.EnsureDeletedAsync();
     }
 
     [Fact]
@@ -57,9 +56,7 @@ public class CreateItemTest
         Assert.NotNull(createdWine);
 
         Assert.Equal(createdItemDto.Id, createdWine.Id);
-        context.CustomEnums.Remove(customEnum1);
-        context.Wines.Remove(createdWine);
-        await context.SaveChangesAsync();
+        await context.Database.EnsureDeletedAsync();
     }
 
     [Fact]
@@ -82,7 +79,6 @@ public class CreateItemTest
         Assert.NotNull(createdItem);
 
         Assert.Equal(createdItemDto.Id, createdItem.Id);
-        context.DefaultItems.Remove(createdItem);
-        await context.SaveChangesAsync();
+        await context.Database.EnsureDeletedAsync();
     }
 }

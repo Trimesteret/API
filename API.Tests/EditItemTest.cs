@@ -4,8 +4,12 @@ using API.Services;
 
 namespace API.Tests;
 
+[Collection("Sequential")]
 public class EditItemTest
 {
+    /// <summary>
+    /// Pass edit liqour
+    /// </summary>
     [Fact]
     public async void PassEditLiquor()
     {
@@ -46,6 +50,9 @@ public class EditItemTest
         Assert.Equal(editedItemDto.LiquorTypeEnum?.Id, editItemDto.LiquorTypeEnum.Id);
     }
 
+    /// <summary>
+    /// Pass edit wine
+    /// </summary>
     [Fact]
     public async void PassEditWine()
     {
@@ -86,7 +93,12 @@ public class EditItemTest
         Assert.Equal(editedItemDto.Volume, editItemDto.Volume);
         Assert.Equal(editedItemDto.AlcoholPercentage, editItemDto.AlcoholPercentage);
         Assert.Equal(editedItemDto.WineTypeEnum?.Id, editItemDto.WineTypeEnum.Id);
+        await context.Database.EnsureDeletedAsync();
     }
+
+    /// <summary>
+    /// Pass edit default item
+    /// </summary>
     [Fact]
     public async void PassEditDefaultItem()
     {
@@ -115,7 +127,12 @@ public class EditItemTest
         Assert.Equal(editedItemDto.ImageUrl, editItemDto.ImageUrl);
         Assert.Equal(editedItemDto.Price, editItemDto.Price);
         Assert.Equal(editedItemDto.Description, editItemDto.Description);
+        await context.Database.EnsureDeletedAsync();
     }
+
+    /// <summary>
+    /// Fail to edit item with null id
+    /// </summary>
     [Fact]
     public async void FailEditNullItem()
     {
@@ -129,6 +146,6 @@ public class EditItemTest
 
         var exception = await Assert.ThrowsAsync<Exception>(async () => await itemService.EditItem(nonExistingDto));
         Assert.Equal("Could not find item with id: " + nonExistingDto.Id, exception.Message);
-        
+        await context.Database.EnsureDeletedAsync();
     }
 }
