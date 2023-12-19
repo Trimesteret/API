@@ -36,18 +36,7 @@ public class EditItemTest
         var editedItemDto = await itemService.EditItem(editItemDto);
         Assert.NotNull(editedItemDto);
 
-        Assert.Equal(editedItemDto.Id, editItemDto.Id);
-        Assert.Equal(editedItemDto.Name, editItemDto.Name);
-        Assert.Equal(editedItemDto.Ean, editItemDto.Ean);
-        Assert.Equal(editedItemDto.Quantity, editItemDto.Quantity);
-        Assert.Equal(editedItemDto.ReservedQuantity, editItemDto.ReservedQuantity);
-        Assert.Equal(editedItemDto.ImageUrl, editItemDto.ImageUrl);
-        Assert.Equal(editedItemDto.Price, editItemDto.Price);
-        Assert.Equal(editedItemDto.Description, editItemDto.Description);
-        Assert.Equal(editedItemDto.Year, editItemDto.Year);
-        Assert.Equal(editedItemDto.Volume, editItemDto.Volume);
-        Assert.Equal(editedItemDto.AlcoholPercentage, editItemDto.AlcoholPercentage);
-        Assert.Equal(editedItemDto.LiquorTypeEnum?.Id, editItemDto.LiquorTypeEnum.Id);
+        Assert.Equal(editedItemDto, createdItemDto);
     }
 
     /// <summary>
@@ -63,8 +52,6 @@ public class EditItemTest
 
         var customEnum1 = new CustomEnum { Key = "wtest1", Value = "wTest1", EnumType = EnumType.WineType};
         var customEnum2 = new CustomEnum { Key = "wtest2", Value = "wTest2", EnumType = EnumType.WineType};
-        var suitableFor1 = new CustomEnum { Key = "stest1", Value = "sTest1", EnumType = EnumType.SuitableFor};
-        var suitableFor2 = new CustomEnum { Key = "stest2", Value = "sTest2", EnumType = EnumType.SuitableFor};
         context.CustomEnums.Add(customEnum1);
         context.CustomEnums.Add(customEnum2);
         await context.SaveChangesAsync();
@@ -81,18 +68,7 @@ public class EditItemTest
         var editedItemDto = await itemService.EditItem(editItemDto);
         Assert.NotNull(editedItemDto);
 
-        Assert.Equal(editedItemDto.Id, editItemDto.Id);
-        Assert.Equal(editedItemDto.Name, editItemDto.Name);
-        Assert.Equal(editedItemDto.Ean, editItemDto.Ean);
-        Assert.Equal(editedItemDto.Quantity, editItemDto.Quantity);
-        Assert.Equal(editedItemDto.ReservedQuantity, editItemDto.ReservedQuantity);
-        Assert.Equal(editedItemDto.ImageUrl, editItemDto.ImageUrl);
-        Assert.Equal(editedItemDto.Price, editItemDto.Price);
-        Assert.Equal(editedItemDto.Description, editItemDto.Description);
-        Assert.Equal(editedItemDto.Year, editItemDto.Year);
-        Assert.Equal(editedItemDto.Volume, editItemDto.Volume);
-        Assert.Equal(editedItemDto.AlcoholPercentage, editItemDto.AlcoholPercentage);
-        Assert.Equal(editedItemDto.WineTypeEnum?.Id, editItemDto.WineTypeEnum.Id);
+        Assert.Equal(editedItemDto, editItemDto);
         await context.Database.EnsureDeletedAsync();
     }
 
@@ -119,14 +95,7 @@ public class EditItemTest
         var editedItemDto = await itemService.EditItem(editItemDto);
         Assert.NotNull(editedItemDto);
 
-        Assert.Equal(editedItemDto.Id, editItemDto.Id);
-        Assert.Equal(editedItemDto.Name, editItemDto.Name);
-        Assert.Equal(editedItemDto.Ean, editItemDto.Ean);
-        Assert.Equal(editedItemDto.Quantity, editItemDto.Quantity);
-        Assert.Equal(editedItemDto.ReservedQuantity, editItemDto.ReservedQuantity);
-        Assert.Equal(editedItemDto.ImageUrl, editItemDto.ImageUrl);
-        Assert.Equal(editedItemDto.Price, editItemDto.Price);
-        Assert.Equal(editedItemDto.Description, editItemDto.Description);
+        Assert.Equal(editedItemDto, editItemDto);
         await context.Database.EnsureDeletedAsync();
     }
 

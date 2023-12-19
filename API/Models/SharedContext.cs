@@ -52,7 +52,7 @@ public class SharedContext : DbContext
     public DbSet<Item> Items { get; set; }
     public DbSet<Wine> Wines { get; set; }
     public DbSet<Supplier> Suppliers { get; set; }
-    public DbSet<Order> Order { get; set; }
+    public DbSet<Order> Orders { get; set; }
     public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
     public DbSet<OrderLine> OrderLines { get; set; }
     public DbSet<InboundOrder> InboundOrders { get; set; }

@@ -11,8 +11,27 @@ public abstract class Order
 
     public List<OrderLine> OrderLines { get; protected set; }
 
+    /// <summary>
+    /// Gets order lines associated with this order
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
     public async Task<List<OrderLine>> GetOrderLines(SharedContext context)
     {
-        return await context.OrderLines.Where(ol => ol.Id == this.Id).ToListAsync();
+        var orderLines = await context.InboundOrders.Where(order => order.Id == this.Id).Include(order => order.OrderLines).
+            Select(order => order.OrderLines).FirstOrDefaultAsync();
+
+        return orderLines ?? new List<OrderLine>();
+    }
+
+    /// <summary>
+    /// Clears order lines associated with this order
+    /// </summary>
+    /// <param name="context"></param>
+    public async Task ClearOrderLines(SharedContext context)
+    {
+        var relatedOrderLines = await this.GetOrderLines(context);
+        context.OrderLines.RemoveRange(relatedOrderLines);
+        await context.SaveChangesAsync();
     }
 }

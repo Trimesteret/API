@@ -6,8 +6,8 @@ namespace API.Models.Orders;
 
 public class InboundOrder : Order
 {
-    public InboundOrderState InboundOrderState { get; set; }
-    public Supplier? Supplier { get; protected set; }
+    public InboundOrderState InboundOrderState { get; protected set; }
+    public Supplier Supplier { get; protected set; }
 
     /// <summary>
     /// Parameterless constructor for EF Core
@@ -17,20 +17,26 @@ public class InboundOrder : Order
 
     }
 
-    public InboundOrder(InboundOrderDto inboundOrderDto)
+    public InboundOrder(InboundOrderDto inboundOrderDto, Supplier supplier)
     {
         this.TotalPrice = inboundOrderDto.TotalPrice;
         this.DeliveryDate = inboundOrderDto.DeliveryDate;
         this.OrderDate = inboundOrderDto.OrderDate;
         this.OrderLines = inboundOrderDto.OrderLines.Select(orderLineDto => new OrderLine(orderLineDto)).ToList();
         this.InboundOrderState = inboundOrderDto.InboundOrderState;
+        this.Supplier = supplier;
     }
 
-    public InboundOrder(DateTime? orderDate, DateTime? deliveryDate, InboundOrderState inboundOrderState)
+    /// <summary>
+    /// Changes the properties of an inbound order
+    /// </summary>
+    /// <param name="inboundOrderDto"></param>
+    public void ChangeInboundOrderProperties(InboundOrderDto inboundOrderDto)
     {
-        this.OrderDate = orderDate;
-        this.DeliveryDate = deliveryDate;
-        this.TotalPrice = 0;
-        this.InboundOrderState = inboundOrderState;
+        this.TotalPrice = inboundOrderDto.TotalPrice;
+        this.DeliveryDate = inboundOrderDto.DeliveryDate;
+        this.OrderDate = inboundOrderDto.OrderDate;
+        this.OrderLines = inboundOrderDto.OrderLines.Select(orderLineDto => new OrderLine(orderLineDto)).ToList();
+        this.InboundOrderState = inboundOrderDto.InboundOrderState;
     }
 }

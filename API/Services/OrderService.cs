@@ -53,9 +53,12 @@ public class OrderService : IOrderService
     /// Gets all inbound orders in the application
     /// </summary>
     /// <returns></returns>
-    public async Task<List<InboundOrder>> GetAllInboundOrders()
+    public async Task<List<InboundOrderDto>> GetAllInboundOrders()
     {
-        return await _sharedContext.InboundOrders.ToListAsync();
+        var inboundOrders = await _sharedContext.InboundOrders.Include(inbound => inbound.Supplier).ToListAsync();
+
+        var inboundOrderDtos = _mapper.Map<List<InboundOrderDto>>(inboundOrders);
+        return inboundOrderDtos;
     }
 
     /// <summary>
@@ -66,7 +69,8 @@ public class OrderService : IOrderService
     /// <exception cref="Exception">If the inbound order is not found</exception>
     public async Task<InboundOrderDto> GetInboundOrderById(int id)
     {
-        var inboundOrder = await _sharedContext.InboundOrders.FirstOrDefaultAsync(io => io.Id == id);
+        var inboundOrder = await _sharedContext.InboundOrders.Include(po => po.Supplier).Include(po => po.OrderLines)
+            .FirstOrDefaultAsync(io => io.Id == id);
 
         if (inboundOrder == null)
         {
@@ -81,22 +85,25 @@ public class OrderService : IOrderService
     /// <summary>
     ///
     /// </summary>
-    /// <param name="inboundOrder"></param>
+    /// <param name="inboundOrderDto"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public async Task<InboundOrderDto> EditInboundOrder(InboundOrderDto inboundOrder)
+    public async Task<InboundOrderDto> EditInboundOrder(InboundOrderDto inboundOrderDto)
     {
-        var inboundOrderToEdit = await _sharedContext.InboundOrders.FirstOrDefaultAsync(io => io.Id == inboundOrder.Id);
+        var inboundOrderToEdit = await _sharedContext.InboundOrders.FirstOrDefaultAsync(io => io.Id == inboundOrderDto.Id);
 
         if (inboundOrderToEdit == null)
         {
             throw new Exception("Inbound order not found");
         }
 
+        await inboundOrderToEdit.ClearOrderLines(_sharedContext);
+        inboundOrderToEdit.ChangeInboundOrderProperties(inboundOrderDto);
         await _sharedContext.SaveChangesAsync();
 
-        var inboundOrderDto = _mapper.Map<InboundOrderDto>(inboundOrderToEdit);
-        return inboundOrderDto;
+        var inboundOrderResponse = _mapper.Map<InboundOrderDto>(inboundOrderToEdit);
+        inboundOrderResponse.Supplier = inboundOrderDto.Supplier;
+        return inboundOrderResponse;
     }
 
     /// <summary>
@@ -181,11 +188,38 @@ public class OrderService : IOrderService
             throw new Exception("Inbound order already exists");
         }
 
-        var inboundOrderToCreate = new InboundOrder(inboundOrderDto);
+        var supplier = await _sharedContext.Suppliers.FirstOrDefaultAsync(supplier => supplier.Id == inboundOrderDto.Supplier.Id);
+
+        if(supplier == null)
+        {
+            throw new Exception("Supplier not found with id: " + inboundOrderDto.Supplier.Id);
+        }
+
+        var inboundOrderToCreate = new InboundOrder(inboundOrderDto, supplier);
 
         _sharedContext.InboundOrders.Add(inboundOrderToCreate);
         await _sharedContext.SaveChangesAsync();
 
-        return inboundOrderDto;
+        var inboundOrderDtoToReturn = _mapper.Map<InboundOrderDto>(inboundOrderToCreate);
+
+        return inboundOrderDtoToReturn;
+    }
+
+    /// <summary>
+    /// Deletes an order by id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <exception cref="Exception"></exception>
+    public async Task DeleteOrder(int id)
+    {
+        var order = await _sharedContext.Orders.FirstOrDefaultAsync(order => order.Id == id);
+
+        if (order == null)
+        {
+            throw new Exception("Order not found");
+        }
+
+        _sharedContext.Orders.Remove(order);
+        await _sharedContext.SaveChangesAsync();
     }
 }
