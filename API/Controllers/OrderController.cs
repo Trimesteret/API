@@ -25,7 +25,7 @@ namespace Api.Controllers
 
         [HttpGet("currentUserPurchaseOrders")]
         [Authorize(Policy = "require-admin-role")]
-        public async Task<ActionResult<List<PurchaseOrder>>> GetCurentUserPurchaseOrders()
+        public async Task<ActionResult<List<PurchaseOrder>>> GetCurrentUserPurchaseOrders()
         {
             return await _orderService.GetCurrentUserPurchaseOrders();
         }
