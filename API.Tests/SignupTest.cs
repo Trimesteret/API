@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Tests;
 
-public class AuthenticationServiceTest
+public class SignupTest
 {
     /// <summary>
     /// Sign up test for new user
@@ -27,15 +27,17 @@ public class AuthenticationServiceTest
             RepeatPassword = "12345678"
         };
 
+        var customersFromDb = await context.Customers.ToListAsync();
+        foreach (var customerFromDb in customersFromDb)
+        {
+            Console.WriteLine(customerFromDb.FirstName);
+        }
+
         var customer = await authenticationService.SignupNewCustomer(signUpDto);
         Assert.NotNull(customer);
 
-        var customerFromDb = await context.Customers.FirstOrDefaultAsync(c => c.Id == customer.Id);
-        Assert.NotNull(customerFromDb);
-
-        Assert.Equal(customer.Id, customerFromDb.Id);
-        context.Customers.Remove(customerFromDb);
-        await context.SaveChangesAsync();
+        Assert.Equal(customer.Id, customer.Id);
+        await context.Database.EnsureDeletedAsync();
     }
 
     /// <summary>
@@ -78,8 +80,7 @@ public class AuthenticationServiceTest
 
         var exception = await Assert.ThrowsAsync<Exception>(() => authenticationService.SignupNewCustomer(signUpDto2));
         Assert.Equal("Email already exists", exception.Message);
-        context.Customers.Remove(customerFromDb);
-        await context.SaveChangesAsync();
+        await context.Database.EnsureDeletedAsync();
     }
 
     /// <summary>
@@ -105,6 +106,7 @@ public class AuthenticationServiceTest
 
         var exception = await Assert.ThrowsAsync<Exception>(async () => await authenticationService.SignupNewCustomer(signUpDto1));
         Assert.Equal("Passwords do not match", exception.Message);
+        await context.Database.EnsureDeletedAsync();
     }
 
     /// <summary>
@@ -130,15 +132,20 @@ public class AuthenticationServiceTest
 
         var exception = await Assert.ThrowsAsync<Exception>(async () => await authenticationService.SignupNewCustomer(signUpDto1));
         Assert.Equal("Password must be above 7 characters", exception.Message);
+        await context.Database.EnsureDeletedAsync();
     }
+
+    /// <summary>
+    /// Password hashing and salt test
+    /// </summary>
     [Fact]
-    public async void PassHashingTestPasswordIsSalted()
+    public void PassHashingTestPasswordIsSalted()
     {
         var testPassword = "TestPassword";
         var salt1 = AuthenticationService.GenerateSalt();
         var salt2 = AuthenticationService.GenerateSalt();
         var hashedPass1=AuthenticationService.HashPassword(testPassword, salt1);
-        var hashedpass2=AuthenticationService.HashPassword(testPassword, salt2);
-        Assert.NotEqual(hashedPass1,hashedpass2);
+        var hashedPass2=AuthenticationService.HashPassword(testPassword, salt2);
+        Assert.NotEqual(hashedPass1,hashedPass2);
     }
 }

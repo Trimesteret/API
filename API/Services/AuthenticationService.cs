@@ -37,7 +37,7 @@ namespace API.Services
                 throw new Exception("Incorrect email or password");
             }
 
-            if (dbUser.SignedUp == false)
+            if (dbUser.SignedUp == false || dbUser.Salt == null || dbUser.Password == null)
             {
                 throw new Exception("User has not finished sign up");
             }
@@ -192,8 +192,6 @@ namespace API.Services
         /// <returns>A success boolean</returns>
         public async Task<Customer> SignupNewCustomer(SignupDto signupDto)
         {
-            signupDto.Email = signupDto.Email.ToLower();
-
             if(signupDto.Password.Length <= 6 || signupDto.RepeatPassword.Length <= 6)
             {
                 throw new Exception("Password must be above 7 characters");
@@ -204,10 +202,6 @@ namespace API.Services
                 throw new Exception("Passwords do not match");
             }
 
-            var salt = GenerateSalt();
-
-            signupDto.Password = HashPassword(signupDto.Password, salt);
-
             var dbUser = await _sharedContext.Users.FirstOrDefaultAsync(u => u.Email == signupDto.Email);
 
             if (dbUser != null)
@@ -215,7 +209,7 @@ namespace API.Services
                 throw new Exception("Email already exists");
             }
 
-            var customer = new Customer(signupDto.FirstName, signupDto.LastName, signupDto.Phone, signupDto.Email, signupDto.Password, salt);
+            var customer = new Customer(signupDto);
 
             _sharedContext.Customers.Add(customer);
             await _sharedContext.SaveChangesAsync();

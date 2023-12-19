@@ -10,5 +10,5 @@ public class UserStandardDto
     public string Phone { get; set; }
     public string Email { get; set; }
     public bool? SignedUp { get; set; }
-    public Role? Role { get; set; }
+    public Role Role { get; set; }
 }

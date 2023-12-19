@@ -1,5 +1,3 @@
-using System.Diagnostics;
-using System.Security.Cryptography;
 using API.DataTransferObjects;
 using API.Enums;
 using API.Models;
@@ -14,16 +12,12 @@ public class UserService : IUserService
     private readonly SharedContext _sharedContext;
     private readonly IAuthService _authService;
     private readonly IMapper _mapper;
-    private readonly IAuthenticationService _authenticationService;
 
-    const int KeySize = 64;
-
-    public UserService(SharedContext dbSharedContext, IAuthService authService, IMapper mapper, IAuthenticationService authenticationService)
+    public UserService(SharedContext dbSharedContext, IAuthService authService, IMapper mapper)
     {
         _sharedContext = dbSharedContext;
         _authService = authService;
         _mapper = mapper;
-        _authenticationService = authenticationService;
     }
 
     /// <summary>
@@ -121,39 +115,34 @@ public class UserService : IUserService
     {
         var existingUser = await _sharedContext.Users.FirstOrDefaultAsync(user => user.Email == userStandardDto.Email);
 
-        if (existingUser != null && existingUser.SignedUp)
+        if (existingUser != null)
         {
             throw new Exception("User already exists");
         }
 
-        if (existingUser != null)
-        {
-            return await EditUser(userStandardDto);
-        }
+        User user;
 
         switch (userStandardDto.Role)
         {
             case Role.Admin:
-                Admin admin = new Admin(userStandardDto.FirstName, userStandardDto.LastName, userStandardDto.Email, userStandardDto.Phone);
-                _sharedContext.Users.Add(admin);
-                await _sharedContext.SaveChangesAsync();
-                return _mapper.Map<UserStandardDto>(admin);
+                user = new Admin(userStandardDto);
+                break;
 
             case Role.Employee:
-                Employee employee = new Employee(userStandardDto.FirstName, userStandardDto.LastName, userStandardDto.Email, userStandardDto.Phone);
-                _sharedContext.Employees.Add(employee);
-                await _sharedContext.SaveChangesAsync();
-                return _mapper.Map<UserStandardDto>(employee);
+                user = new Employee(userStandardDto);
+                break;
 
             case Role.Customer:
-                Customer customer = new Customer(userStandardDto.FirstName, userStandardDto.LastName, userStandardDto.Phone, userStandardDto.Email, null, null);
-                _sharedContext.Customers.Add(customer);
-                await _sharedContext.SaveChangesAsync();
-                return _mapper.Map<UserStandardDto>(customer);
+                user = new Customer(userStandardDto);
+                break;
 
             default:
-                throw new ArgumentOutOfRangeException();
+                throw new Exception("Role not found");
         }
+
+        _sharedContext.Users.Add(user);
+        await _sharedContext.SaveChangesAsync();
+        return _mapper.Map<UserStandardDto>(user);
     }
 
     /// <summary>

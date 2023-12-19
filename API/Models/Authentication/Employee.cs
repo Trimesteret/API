@@ -1,3 +1,4 @@
+using API.DataTransferObjects;
 using API.Enums;
 
 namespace API.Models.Authentication;
@@ -15,18 +16,18 @@ public class Employee : User
     /// <summary>
     /// Constructor for creating an employee that is not signed up yet
     /// </summary>
-    /// <param name="firstName"></param>
-    /// <param name="lastName"></param>
-    /// <param name="phone"></param>
-    /// <param name="email"></param>
-    public Employee(string firstName, string lastName, string email, string phone)
+    /// <param name="userStandardDto"></param>
+    public Employee(UserStandardDto userStandardDto)
     {
-        FirstName = firstName;
-        LastName = lastName;
-        Phone = phone;
-        Email = email;
+        FirstName = userStandardDto.FirstName;
+        LastName = userStandardDto.LastName;
+        Phone = userStandardDto.Phone;
+        Email = userStandardDto.Email;
         Token = null;
         Role = Role.Employee;
+        TokenExpiration = null;
+        Salt = null;
+        Password = null;
         SignedUp = false;
     }
 
