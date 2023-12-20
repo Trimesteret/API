@@ -47,4 +47,22 @@ public class PurchaseOrder: Order
         this.TotalPrice = purchaseOrderDto.TotalPrice;
         this.OrderDate = purchaseOrderDto.OrderDate;
     }
+
+    public void ChangeOrderProperties(PurchaseOrderDto purchaseOrderDto)
+    {
+        this.CustomerFirstName = purchaseOrderDto.CustomerFirstName;
+        this.CustomerLastName = purchaseOrderDto.CustomerLastName;
+        this.CustomerPhone = purchaseOrderDto.CustomerPhone;
+        this.CustomerEmail = purchaseOrderDto.CustomerEmail;
+        this.AddressLine = purchaseOrderDto.AddressLine;
+        this.Floor = purchaseOrderDto.Floor;
+        this.Door = purchaseOrderDto.Door;
+        this.PostalCode = purchaseOrderDto.PostalCode;
+        this.City = purchaseOrderDto.City;
+        this.Country = purchaseOrderDto.Country;
+        this.OrderLines = purchaseOrderDto.OrderLines.Select(orderLineDto => new OrderLine(orderLineDto)).ToList();
+        this.PurchaseOrderState = purchaseOrderDto.PurchaseOrderState;
+        this.TotalPrice = purchaseOrderDto.TotalPrice;
+        this.OrderDate = purchaseOrderDto.OrderDate;
+    }
 }
