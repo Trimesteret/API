@@ -48,6 +48,8 @@ public class EditItemTest
         Assert.Equal(editedItemDto.Volume, editItemDto.Volume);
         Assert.Equal(editedItemDto.AlcoholPercentage, editItemDto.AlcoholPercentage);
         Assert.Equal(editedItemDto.LiquorTypeEnum?.Id, editItemDto.LiquorTypeEnum.Id);
+        
+        await context.Database.EnsureDeletedAsync();
     }
 
     /// <summary>
