@@ -10,12 +10,9 @@ namespace API.Tests;
 [Collection("Sequential")]
 public class EditPurchaseOrderTest
 {
-    private readonly ITestOutputHelper output;
-
-    public EditPurchaseOrderTest(ITestOutputHelper output)
-    {
-        this.output = output;
-    }
+    /// <summary>
+    /// Tests if EditPurchaseOrder() returns a correctly edited PurchaseOrder.
+    /// </summary>
     [Fact]
     public async void PassEditPurchaseOrderTest()
     {
@@ -25,18 +22,9 @@ public class EditPurchaseOrderTest
         var authService = new AuthService(httpProcessor, context);
         var itemService = new ItemService(context, mapper);
         var orderService = new OrderService(context, mapper, authService, itemService);
-
-        var items = context.Items.ToList(); // Retrieve all items from the table
-
-        foreach (var item in items)
-        {
-            // Print or process each item as needed
-            output.WriteLine($"Item Id: {item.Id}, Property1: {item.Id}, Property2: {item.Name}");
-        }
         
         var customEnum1 = new CustomEnum { Key = "ltest1", Value = "lTest1", EnumType = EnumType.WineType};
         context.CustomEnums.Add(customEnum1);
-        
         
         await context.SaveChangesAsync();
 
@@ -116,6 +104,9 @@ public class EditPurchaseOrderTest
         Assert.Equal(editPurchaseOrder.TotalPrice,editedItePurchaseOrder.TotalPrice);
         await context.Database.EnsureDeletedAsync();
     }
+    /// <summary>
+    /// Tests if a non-existing purchase order can be edited.
+    /// </summary>
     [Fact]
     public async void FailEditPurchaseOrderTest()
     {

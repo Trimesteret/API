@@ -7,6 +7,9 @@ namespace API.Tests;
 [Collection("Sequential")]
 public class GetPurchaseOrderByIdTest
 {
+    /// <summary>
+    /// Tests if a purchase order can be fetched back from the database with, and still have the same values.
+    /// </summary>
     [Fact]
     public async void PassGetPurchaseOrderByIdTest()
     {
@@ -79,6 +82,9 @@ public class GetPurchaseOrderByIdTest
         Assert.Equal(createdPurchaseOrder.TotalPrice,fetchedPurchaseOrder.TotalPrice);
         await context.Database.EnsureDeletedAsync();
     }
+    /// <summary>
+    /// Tests if an invalid purchase order can be fetched from the database.
+    /// </summary>
     [Fact]
     public async void FailGetPurchaseOrderByIdTestOrderDoesNotExist()
     {

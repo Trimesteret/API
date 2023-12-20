@@ -7,6 +7,9 @@ namespace API.Tests;
 [Collection("Sequential")]
 public class CreatePurchaseOrderTest
 {
+    /// <summary>
+    /// Tests if a purchase order can be created and returned with no exceptions and without being null.
+    /// </summary>
     [Fact]
     public async void PassCreatePurchaseOrderTest()
     {
@@ -68,6 +71,9 @@ public class CreatePurchaseOrderTest
         await context.Database.EnsureDeletedAsync();
         
     }
+    /// <summary>
+    /// Tests if it's possible to create a purchase order that already exists.
+    /// </summary>
     [Fact]
     public async void FailCreatePurchaseOrderTestOrderAlreadyExists()
     {
