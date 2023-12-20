@@ -1,4 +1,3 @@
-using API.DataTransferObjects;
 using API.Enums;
 using API.Services;
 
@@ -18,25 +17,36 @@ public class EditItemTest
 
         var itemService = new ItemService(context, mapper);
 
-        var customEnum1 = new CustomEnum { Key = "ltest1", Value = "lTest1", EnumType = EnumType.LiqourType};
-        var customEnum2 = new CustomEnum { Key = "ltest2", Value = "lTest2", EnumType = EnumType.LiqourType};
-        context.CustomEnums.Add(customEnum1);
-        context.CustomEnums.Add(customEnum2);
-        await context.SaveChangesAsync();
-
-        var originalItemDto = new ItemDto { ItemType = ItemType.Liquor, Name = "Test1", Ean = "123456789", Quantity = 10, ReservedQuantity = 0, ImageUrl = "test",
-            Price = 10, Description = "test", Year = 1999, Volume = 0.7, AlcoholPercentage = 40, LiquorTypeEnum = customEnum1 };
+        var originalItemDto = await SharedTesting.GetRandomItemDto(context, mapper, ItemType.Liquor, false);
 
         var createdItemDto = await itemService.CreateItem(originalItemDto);
         Assert.NotNull(createdItemDto);
 
-        var editItemDto = new ItemDto { Id = createdItemDto.Id, ItemType = ItemType.Liquor, Name = "Testen", Ean = "132132345", Quantity = 14, ReservedQuantity = 3, ImageUrl = "test",
-            Price = 109, Description = "testen er lykkedes", Year = 2031, Volume = 1.6, AlcoholPercentage = 26, LiquorTypeEnum = customEnum2 };
+        var editItemDto = await SharedTesting.GetRandomItemDto(context, mapper, ItemType.Liquor, false);
+        editItemDto.Id = createdItemDto.Id;
 
         var editedItemDto = await itemService.EditItem(editItemDto);
         Assert.NotNull(editedItemDto);
 
-        Assert.Equal(editedItemDto, createdItemDto);
+        Assert.Equal(editItemDto.Id, editedItemDto.Id);
+        Assert.Equal(editItemDto.ItemType, editedItemDto.ItemType);
+        Assert.Null(editedItemDto.SuitableForEnumIds);
+        Assert.Equal(editItemDto.AlcoholPercentage, editedItemDto.AlcoholPercentage);
+        Assert.Null(editedItemDto.Country);
+        Assert.Equal(editItemDto.Description, editedItemDto.Description);
+        Assert.Equal(editedItemDto.Ean, editItemDto.Ean);
+        Assert.Null(editedItemDto.GrapeSort);
+        Assert.Equal(editedItemDto.ImageUrl, editItemDto.ImageUrl);
+        Assert.Equal(editedItemDto.LiquorTypeEnum, editItemDto.LiquorTypeEnum);
+        Assert.Equal(editedItemDto.Name, editItemDto.Name);
+        Assert.Equal(editedItemDto.Price, editItemDto.Price);
+        Assert.Equal(editedItemDto.Quantity, editItemDto.Quantity);
+        Assert.Null(editedItemDto.Region);
+        Assert.Equal(editedItemDto.ReservedQuantity, editedItemDto.ReservedQuantity);
+        Assert.Null(editedItemDto.WineTypeEnum);
+        Assert.Null(editedItemDto.Winery);
+        Assert.Null(editedItemDto.Year);
+        await context.Database.EnsureDeletedAsync();
     }
 
     /// <summary>
@@ -50,25 +60,34 @@ public class EditItemTest
 
         var itemService = new ItemService(context, mapper);
 
-        var customEnum1 = new CustomEnum { Key = "wtest1", Value = "wTest1", EnumType = EnumType.WineType};
-        var customEnum2 = new CustomEnum { Key = "wtest2", Value = "wTest2", EnumType = EnumType.WineType};
-        context.CustomEnums.Add(customEnum1);
-        context.CustomEnums.Add(customEnum2);
-        await context.SaveChangesAsync();
-
-        var originalItemDto = new ItemDto { ItemType = ItemType.Wine, Name = "Test1", Ean = "123456789", Quantity = 10, ReservedQuantity = 0, ImageUrl = "test",
-            Price = 10, Description = "test", Year = 1999, Volume = 0.7, AlcoholPercentage = 40, WineTypeEnum = customEnum1 };
-
+        var originalItemDto = await SharedTesting.GetRandomItemDto(context, mapper, ItemType.Wine, false);
         var createdItemDto = await itemService.CreateItem(originalItemDto);
         Assert.NotNull(createdItemDto);
 
-        var editItemDto = new ItemDto { Id = createdItemDto.Id, ItemType = ItemType.Wine, Name = "Testen", Ean = "132132345", Quantity = 14, ReservedQuantity = 3, ImageUrl = "test",
-            Price = 109, Description = "testen er lykkedes", Year = 2031, Volume = 1.6, AlcoholPercentage = 26, WineTypeEnum = customEnum2 };
+        var editItemDto = await SharedTesting.GetRandomItemDto(context, mapper, ItemType.Wine, false);
+        editItemDto.Id = createdItemDto.Id;
 
         var editedItemDto = await itemService.EditItem(editItemDto);
         Assert.NotNull(editedItemDto);
 
-        Assert.Equal(editedItemDto, editItemDto);
+        Assert.Equal(editItemDto.Id, editedItemDto.Id);
+        Assert.Equal(editItemDto.ItemType, editedItemDto.ItemType);
+        Assert.True(editItemDto.SuitableForEnumIds.All(id => editedItemDto.SuitableForEnumIds.Contains(id)));
+        Assert.Equal(editItemDto.AlcoholPercentage, editedItemDto.AlcoholPercentage);
+        Assert.Equal(editItemDto.Country, editedItemDto.Country);
+        Assert.Equal(editItemDto.Description, editedItemDto.Description);
+        Assert.Equal(editedItemDto.Ean, editItemDto.Ean);
+        Assert.Equal(editItemDto.GrapeSort, editedItemDto.GrapeSort);
+        Assert.Equal(editedItemDto.ImageUrl, editItemDto.ImageUrl);
+        Assert.Null(editedItemDto.LiquorTypeEnum);
+        Assert.Equal(editedItemDto.Name, editItemDto.Name);
+        Assert.Equal(editedItemDto.Price, editItemDto.Price);
+        Assert.Equal(editedItemDto.Quantity, editItemDto.Quantity);
+        Assert.Equal(editedItemDto.Region, editItemDto.Region);
+        Assert.Equal(editedItemDto.ReservedQuantity, editedItemDto.ReservedQuantity);
+        Assert.Equal(editedItemDto.WineTypeEnum, editItemDto.WineTypeEnum);
+        Assert.Equal(editedItemDto.Winery, editItemDto.Winery);
+        Assert.Equal(editedItemDto.Year, editItemDto.Year);
         await context.Database.EnsureDeletedAsync();
     }
 
@@ -83,19 +102,35 @@ public class EditItemTest
 
         var itemService = new ItemService(context, mapper);
 
-        var originalItemDto = new ItemDto { ItemType = ItemType.DefaultItem, Name = "Test1", Ean = "123456789", Quantity = 10, ReservedQuantity = 0, ImageUrl = "test",
-            Price = 10, Description = "test"};
+        var originalItemDto = await SharedTesting.GetRandomItemDto(context, mapper, ItemType.DefaultItem, false);
 
         var createdItemDto = await itemService.CreateItem(originalItemDto);
         Assert.NotNull(createdItemDto);
 
-        var editItemDto = new ItemDto { Id = createdItemDto.Id, ItemType = ItemType.DefaultItem, Name = "Testen", Ean = "132132345", Quantity = 14, ReservedQuantity = 3, ImageUrl = "test",
-            Price = 109, Description = "testen er lykkedes"};
+        var editItemDto = await SharedTesting.GetRandomItemDto(context, mapper, ItemType.DefaultItem, false);
+        editItemDto.Id = createdItemDto.Id;
 
         var editedItemDto = await itemService.EditItem(editItemDto);
         Assert.NotNull(editedItemDto);
 
-        Assert.Equal(editedItemDto, editItemDto);
+        Assert.Equal(editItemDto.Id, editedItemDto.Id);
+        Assert.Equal(editItemDto.ItemType, editedItemDto.ItemType);
+        Assert.Null(editedItemDto.SuitableForEnumIds);
+        Assert.Null(editedItemDto.AlcoholPercentage);
+        Assert.Null(editedItemDto.Country);
+        Assert.Equal(editItemDto.Description, editedItemDto.Description);
+        Assert.Equal(editedItemDto.Ean, editItemDto.Ean);
+        Assert.Null(editedItemDto.GrapeSort);
+        Assert.Equal(editedItemDto.ImageUrl, editItemDto.ImageUrl);
+        Assert.Null(editedItemDto.LiquorTypeEnum);
+        Assert.Equal(editedItemDto.Name, editItemDto.Name);
+        Assert.Equal(editedItemDto.Price, editItemDto.Price);
+        Assert.Equal(editedItemDto.Quantity, editItemDto.Quantity);
+        Assert.Null(editedItemDto.Region);
+        Assert.Equal(editedItemDto.ReservedQuantity, editedItemDto.ReservedQuantity);
+        Assert.Null(editedItemDto.WineTypeEnum);
+        Assert.Null(editedItemDto.Winery);
+        Assert.Null(editedItemDto.Year);
         await context.Database.EnsureDeletedAsync();
     }
 
@@ -110,8 +145,7 @@ public class EditItemTest
 
         var itemService = new ItemService(context, mapper);
 
-        var nonExistingDto = new ItemDto {Id = 0, ItemType = ItemType.DefaultItem, Name = "Test1", Ean = "123456789", Quantity = 10, ReservedQuantity = 0, ImageUrl = "test",
-            Price = 10, Description = "test"};
+        var nonExistingDto = await SharedTesting.GetRandomItemDto(context, mapper, null, false);
 
         var exception = await Assert.ThrowsAsync<Exception>(async () => await itemService.EditItem(nonExistingDto));
         Assert.Equal("Could not find item with id: " + nonExistingDto.Id, exception.Message);
