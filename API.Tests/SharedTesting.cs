@@ -29,10 +29,16 @@ public class SharedTesting
         return new SharedContext(dbContextOptions);
     }
 
-    static int GetRandomInt()
+    static int GetRandomInt(int min = 0, int max = 1000000)
     {
         var random = new Random();
-        return random.Next(100, 1000000);
+        return random.Next(min, max);
+    }
+
+    static double GetRandomDouble(int min = 1, int max = 1000000)
+    {
+        var random = new Random();
+        return (double) random.Next(min*100, max*100)/100;
     }
 
     static string GetRandomString(int minLength = 8, int maxLength = 28)
@@ -79,7 +85,38 @@ public class SharedTesting
         return mapper.Map<SupplierDto>(supplier);
     }
 
-    public async static Task<OrderLineDto> GetRandomOrderLineDto(SharedContext context, IMapper mapper)
+    public static async Task<PurchaseOrderDto> GetRandomPurchaseOrderDto(SharedContext context, IMapper mapper)
+    {
+        var orderLines = new List<OrderLineDto>
+        {
+            await GetRandomOrderLineDto(context, mapper),
+            await GetRandomOrderLineDto(context, mapper),
+            await GetRandomOrderLineDto(context, mapper),
+        };
+
+        var purchaseOrder = new PurchaseOrderDto
+        {
+            AddressLine = "Testvej 1",
+            City = "Aalborg",
+            Floor = "2",
+            Door = "3",
+            Country = "Danmark",
+            PostalCode = "9000",
+            CustomerEmail = "test@test.dk",
+            CustomerFirstName = "Test",
+            CustomerLastName = "Test",
+            CustomerPhone = "12345678",
+            DeliveryDate = DateTime.Now.AddDays(1),
+            OrderDate = DateTime.Now,
+            PurchaseOrderState = GetRandomEnum<PurchaseOrderState>(),
+            TotalPrice = GetRandomInt(),
+            OrderLines = orderLines
+        };
+
+        return purchaseOrder;
+    }
+
+    static async Task<OrderLineDto> GetRandomOrderLineDto(SharedContext context, IMapper mapper)
     {
         var itemDto = await GetRandomItemDto(context, mapper);
 
@@ -89,7 +126,7 @@ public class SharedTesting
             ItemId = itemDto.Id,
             ItemName = itemDto.Name,
             ItemPrice = itemDto.Price,
-            Quantity = GetRandomInt(),
+            Quantity = GetRandomInt(1, 99),
             LinePrice = itemDto.Price * itemDto.Quantity
         };
     }
@@ -119,14 +156,14 @@ public class SharedTesting
         var itemDto = new ItemDto
         {
             Ean = GetRandomInt().ToString(),
-            Quantity = GetRandomInt(),
+            Quantity = GetRandomInt(100, 10000),
             Country = GetRandomString(),
             Description = GetRandomString(),
             Name = GetRandomString(),
-            Price = GetRandomInt(),
+            Price = GetRandomInt(50, 2000),
             Region = GetRandomString(),
-            Volume = GetRandomInt(),
-            AlcoholPercentage = GetRandomInt(),
+            Volume = GetRandomDouble(1, 3),
+            AlcoholPercentage = GetRandomDouble(10, 38),
             GrapeSort = GetRandomString(),
             Winery = GetRandomString(),
             TastingNotes = GetRandomString(),

@@ -1,5 +1,6 @@
 using API.DataTransferObjects;
 using API.Enums;
+using API.Models;
 using API.Services;
 using Microsoft.AspNetCore.Http;
 namespace API.Tests;
@@ -15,123 +16,44 @@ public class CreatePurchaseOrderTest
     {
         var context = SharedTesting.GetContext();
         var mapper = SharedTesting.GetMapper();
-        var httpProcessor = new HttpContextAccessor();
-        var authService = new AuthService(httpProcessor, context);
-        var itemService = new ItemService(context, mapper);
-        var orderService = new OrderService(context, mapper, authService, itemService);
 
-        var customEnum1 = new CustomEnum { Key = "ltest1", Value = "lTest1", EnumType = EnumType.WineType};
-        context.CustomEnums.Add(customEnum1);
-        
-        await context.SaveChangesAsync();
+        var orderService = new OrderService(context, mapper, new AuthService(null, context), new ItemService(context, mapper));
 
-        var testItemDto = new ItemDto 
-        {
-            Id = 1, 
-            ItemType = ItemType.Wine, 
-            Name = "Test1", 
-            Ean = "123456789", 
-            Quantity = 50, 
-            ReservedQuantity = 0, 
-            ImageUrl = "test",
-            Price = 10, 
-            Description = "test", 
-            Year = 1999, 
-            Volume = 0.7, 
-            AlcoholPercentage = 40, 
-            SuitableForEnumIds = new List<int> { 0, 1 }, 
-            WineTypeEnum = customEnum1 
-        };
-       
-        await itemService.CreateItem(testItemDto);
-        
-        var testOrderLines = new List<OrderLineDto>
-        {
-            new OrderLineDto{ItemId = 1,LinePrice = 20,ItemPrice = 5,ItemName = "Testvin1",Quantity = 4},
-            new OrderLineDto{ItemId = 1,LinePrice = 60,ItemPrice = 10,ItemName = "Testvin2",Quantity = 6},
-            new OrderLineDto{ItemId = 1,LinePrice = 100,ItemPrice = 20,ItemName = "Testvin3",Quantity = 5}
-        };
-        var testPurchaseOrder = new PurchaseOrderDto
-        {
-            TotalPrice = 20, 
-            CustomerFirstName = "Bob", 
-            CustomerLastName = "Testmand", 
-            CustomerPhone = "12121212", 
-            CustomerEmail = "bobtestmand@gmail.com", 
-            AddressLine = "Testvej 51", 
-            PostalCode = "9000", 
-            City = "Aalborg", 
-            Country = "Danmark", 
-            OrderLines = testOrderLines, 
-            PurchaseOrderState = PurchaseOrderState.Payed
-        };
+        var testPurchaseOrder = await SharedTesting.GetRandomPurchaseOrderDto(context, mapper);
 
         var createdPurchaseOrder = await orderService.CreatePurchaseOrder(testPurchaseOrder);
         Assert.NotNull(createdPurchaseOrder);
+
+        Assert.Equal(createdPurchaseOrder.TotalPrice, testPurchaseOrder.TotalPrice);
+        Assert.Equal(createdPurchaseOrder.CustomerFirstName, testPurchaseOrder.CustomerFirstName);
+        Assert.Equal(createdPurchaseOrder.CustomerLastName, testPurchaseOrder.CustomerLastName);
+        Assert.Equal(createdPurchaseOrder.CustomerPhone, testPurchaseOrder.CustomerPhone);
+        Assert.Equal(createdPurchaseOrder.CustomerEmail, testPurchaseOrder.CustomerEmail);
+        Assert.Equal(createdPurchaseOrder.AddressLine, testPurchaseOrder.AddressLine);
+        Assert.Equal(createdPurchaseOrder.PostalCode, testPurchaseOrder.PostalCode);
+        Assert.Equal(createdPurchaseOrder.City, testPurchaseOrder.City);
+        Assert.Equal(createdPurchaseOrder.Country, testPurchaseOrder.Country);
+        Assert.Equal(createdPurchaseOrder.OrderLines.Count, testPurchaseOrder.OrderLines.Count);
+        Assert.Equal(createdPurchaseOrder.PurchaseOrderState, testPurchaseOrder.PurchaseOrderState);
         await context.Database.EnsureDeletedAsync();
-        
     }
+
     /// <summary>
     /// Tests if it's possible to create a purchase order that already exists.
     /// </summary>
     [Fact]
     public async void FailCreatePurchaseOrderTestOrderAlreadyExists()
     {
-         var context = SharedTesting.GetContext();
+        var context = SharedTesting.GetContext();
         var mapper = SharedTesting.GetMapper();
-        var httpProcessor = new HttpContextAccessor();
-        var authService = new AuthService(httpProcessor, context);
-        var itemService = new ItemService(context, mapper);
-        var orderService = new OrderService(context, mapper, authService, itemService);
 
-        var customEnum1 = new CustomEnum { Key = "ltest1", Value = "lTest1", EnumType = EnumType.WineType};
-        context.CustomEnums.Add(customEnum1);
-        
-        await context.SaveChangesAsync();
+        var orderService = new OrderService(context, mapper, new AuthService(null, context), new ItemService(context, mapper));
 
-        var testItemDto = new ItemDto 
-        {
-            Id = 1, 
-            ItemType = ItemType.Wine, 
-            Name = "Test1", 
-            Ean = "123456789", 
-            Quantity = 50, 
-            ReservedQuantity = 0, 
-            ImageUrl = "test",
-            Price = 10, 
-            Description = "test", 
-            Year = 1999, 
-            Volume = 0.7, 
-            AlcoholPercentage = 40, 
-            SuitableForEnumIds = new List<int> { 0, 1 }, 
-            WineTypeEnum = customEnum1 
-        };
-       
-        await itemService.CreateItem(testItemDto);
-        
-        var testOrderLines = new List<OrderLineDto>
-        {
-            new OrderLineDto{ItemId = 1,LinePrice = 20,ItemPrice = 5,ItemName = "Testvin1",Quantity = 4},
-            new OrderLineDto{ItemId = 1,LinePrice = 60,ItemPrice = 10,ItemName = "Testvin2",Quantity = 6},
-            new OrderLineDto{ItemId = 1,LinePrice = 100,ItemPrice = 20,ItemName = "Testvin3",Quantity = 5}
-        };
-        var testPurchaseOrder = new PurchaseOrderDto
-        {
-            Id = 1,
-            TotalPrice = 20, 
-            CustomerFirstName = "Bob", 
-            CustomerLastName = "Testmand", 
-            CustomerPhone = "12121212", 
-            CustomerEmail = "bobtestmand@gmail.com", 
-            AddressLine = "Testvej 51", 
-            PostalCode = "9000", 
-            City = "Aalborg", 
-            Country = "Danmark", 
-            OrderLines = testOrderLines, 
-            PurchaseOrderState = PurchaseOrderState.Payed
-        };
-        
-        await orderService.CreatePurchaseOrder(testPurchaseOrder);
+        var testPurchaseOrder = await SharedTesting.GetRandomPurchaseOrderDto(context, mapper);
+
+        var createdPurchaseOrder = await orderService.CreatePurchaseOrder(testPurchaseOrder);
+        testPurchaseOrder.Id = createdPurchaseOrder.Id;
+        Assert.NotNull(createdPurchaseOrder);
         await Assert.ThrowsAsync<Exception>(async () =>await orderService.CreatePurchaseOrder(testPurchaseOrder));
         await context.Database.EnsureDeletedAsync();
     }
