@@ -113,7 +113,7 @@ public class OrderService : IOrderService
         {
             throw new Exception("Purchase order not found");
         }
-
+        purchaseOrderToEdit.ChangeOrderProperties(purchaseOrder);
         await _sharedContext.SaveChangesAsync();
 
         var purchaseOrderDto = _mapper.Map<PurchaseOrderDto>(purchaseOrderToEdit);
@@ -151,19 +151,21 @@ public class OrderService : IOrderService
     {
         var existingPurchaseOrder = await _sharedContext.PurchaseOrders.FirstOrDefaultAsync(po => po.Id == purchaseOrderDto.Id);
 
+        
         if(existingPurchaseOrder != null)
         {
             throw new Exception("Purchase order already exists");
         }
-
+        
         var purchaseOrderToCreate = new PurchaseOrder(purchaseOrderDto);
 
         _sharedContext.PurchaseOrders.Add(purchaseOrderToCreate);
 
         await _itemService.ReserveItems(purchaseOrderToCreate.OrderLines);
         await _sharedContext.SaveChangesAsync();
-
-        return purchaseOrderDto;
+        var purchaseOrderResponse = _mapper.Map<PurchaseOrderDto>(purchaseOrderToCreate);
+        
+        return purchaseOrderResponse;
     }
 
     /// <summary>
