@@ -25,14 +25,14 @@ namespace Api.Controllers
 
         [HttpGet("currentUserPurchaseOrders")]
         [Authorize(Policy = "require-admin-role")]
-        public async Task<ActionResult<List<PurchaseOrder>>> GetCurentUserPurchaseOrders()
+        public async Task<ActionResult<List<PurchaseOrder>>> GetCurrentUserPurchaseOrders()
         {
             return await _orderService.GetCurrentUserPurchaseOrders();
         }
 
         [HttpGet("InboundOrders")]
         [Authorize(Policy = "require-admin-role")]
-        public async Task<ActionResult<List<InboundOrder>>> GetInboundOrders()
+        public async Task<ActionResult<List<InboundOrderDto>>> GetInboundOrders()
         {
             return await _orderService.GetAllInboundOrders();
         }
@@ -105,6 +105,21 @@ namespace Api.Controllers
             try
             {
                 return Ok(await _orderService.CreateInboundOrder(inboundOrder));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<bool>> DeleteOrder(int id)
+        {
+            try
+            {
+                await _orderService.DeleteOrder(id);
+                return Ok(true);
             }
             catch (Exception e)
             {

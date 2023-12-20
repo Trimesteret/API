@@ -24,7 +24,7 @@ public abstract class Item
     {
         if (this.ReservedQuantity + quantityToReserve > Quantity)
         {
-            throw new Exception("Not enough items in stock to reserve that amount");
+            throw new Exception("Not enough items in stock to reserve that amount.\nTried to reserve: " + quantityToReserve + "\nRemaining unreserved: " + this.Quantity + "\nCurrently Reserved: " + ReservedQuantity);
         }
 
         this.ReservedQuantity += quantityToReserve;
