@@ -3,8 +3,7 @@ using API.DataTransferObjects;
 using API.Enums;
 using API.Mapping;
 using API.Models;
-using API.Models.Items;
-using API.Models.Suppliers;
+using API.Services;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
@@ -72,17 +71,30 @@ public class SharedTesting
             return customEnum;
         }
 
-        context.CustomEnums.Add(customEnum);
-        await context.SaveChangesAsync();
+        var customEnumDto = new CustomEnumDto
+        {
+            EnumType = enumType,
+            Key = GetRandomString(),
+            Value = GetRandomString()
+        };
+
+        var enumService = new EnumService(context);
+        customEnum = await enumService.CreateCustomEnum(customEnumDto);
         return customEnum;
     }
 
-    static SupplierDto GetRandomSupplierDto(SharedContext context, IMapper mapper)
+    static async Task<SupplierDto> GetRandomSupplierDto(SharedContext context, IMapper mapper)
     {
-        var supplier = new Supplier(GetRandomString());
-        context.Suppliers.Add(supplier);
+        var supplierService = new SupplierService(context, mapper);
 
-        return mapper.Map<SupplierDto>(supplier);
+        var supplierDto = new SupplierDto
+        {
+            Name = GetRandomString()
+        };
+
+        var supplier = await supplierService.CreateSupplier(supplierDto);
+
+        return supplier;
     }
 
     public static async Task<PurchaseOrderDto> GetRandomPurchaseOrderDto(SharedContext context, IMapper mapper)
@@ -179,26 +191,9 @@ public class SharedTesting
         {
             return itemDto;
         }
-
-        Item item = null!;
-        switch (itemDto.ItemType)
-        {
-            case ItemType.Liquor:
-                item = new Liquor(itemDto, context);
-                break;
-            case ItemType.Wine:
-                Wine wine = new Wine(itemDto, context);
-                await wine.SetSuitableFor(context, itemDto.SuitableForEnumIds);
-                item = wine;
-                break;
-            case ItemType.DefaultItem:
-                item = new DefaultItem(itemDto);
-                break;
-        }
-
-        context.Items.Add(item);
-        await context.SaveChangesAsync();
-        return mapper.Map<ItemDto>(item);
+        var itemService = new ItemService(context, mapper);
+        var itemDtoRes = await itemService.CreateItem(itemDto);
+        return itemDtoRes;
     }
 
     public static async Task<InboundOrderDto> GetRandomInboundOrderDto(SharedContext context, IMapper mapper, int minOrderLines = 1, int maxOrderLines = 8)
@@ -211,7 +206,7 @@ public class SharedTesting
             orderLines.Add(await GetRandomOrderLineDto(context, mapper));
         }
 
-        var supplierDto = GetRandomSupplierDto(context, mapper);
+        var supplierDto = await GetRandomSupplierDto(context, mapper);
         await context.SaveChangesAsync();
 
         return new InboundOrderDto

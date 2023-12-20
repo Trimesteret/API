@@ -31,7 +31,12 @@ public class SignupTest
         var customer = await authenticationService.SignupNewCustomer(signUpDto);
         Assert.NotNull(customer);
 
-        Assert.Equal(customer.Id, customer.Id);
+        Assert.Equal(signUpDto.FirstName, customer.FirstName);
+        Assert.Equal(signUpDto.LastName, customer.LastName);
+        Assert.Equal(signUpDto.Phone, customer.Phone);
+        Assert.Equal(signUpDto.Email.ToLower(), customer.Email);
+        Assert.NotEqual(signUpDto.Password, customer.Password);
+        
         await context.Database.EnsureDeletedAsync();
     }
 
